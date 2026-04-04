@@ -265,31 +265,68 @@
             {
                 "name": "masquehuellas.es",
                 "description": "Web digitalization of the veterinary clinic +QHuellas.",
+                "details": "Freelance full design and development project. Includes service catalog, appointment system, and patient gallery. Mobile-optimized responsive design.",
+                "tags": [
+                    "Nuxt",
+                    "Vue.js",
+                    "Responsive",
+                    "SEO"
+                ],
                 "url": "https://masquehuellas.es/"
             },
             {
                 "name": "foroebc.org",
                 "description": "Promoting new areas and professional competencies.",
+                "details": "Web portal for the Canary Islands Blue Economy Forum. Event management, news and resources for maritime sector professionals.",
+                "tags": [
+                    "Vue.js",
+                    "CMS",
+                    "UI/UX"
+                ],
                 "url": "https://foroebc.org/"
             },
             {
                 "name": "businessevolver.net",
-                "description": "Partnership project to lead companies towards a sustainable development (SDGs) and digitalization future.",
+                "description": "Partnership project for sustainable development (SDGs) and digitalization.",
+                "details": "Business partnership platform focused on Sustainable Development Goals. Interactive dashboard, company profiles and collaboration matching.",
+                "tags": [
+                    "Vue.js",
+                    "Node.js",
+                    "Dashboard"
+                ],
                 "url": "https://businessevolver.net/"
             },
             {
                 "name": "lajairadeana.com",
                 "description": "Website for the farm school La Jaira de Ana.",
+                "details": "Website with activity gallery, booking system and blog. Photography and design aligned with the rural identity of the business.",
+                "tags": [
+                    "HTML/CSS",
+                    "JavaScript",
+                    "Design"
+                ],
                 "url": "https://lajairadeana.com/"
             },
             {
                 "name": "doelhierro.es",
                 "description": "Website for the Denomination of Origin of Vinos del Hierro.",
+                "details": "Institutional portal with winery catalog, interactive vineyard map and news section. Focus on visual storytelling and local SEO.",
+                "tags": [
+                    "Vue.js",
+                    "SEO",
+                    "Maps"
+                ],
                 "url": "https://doelhierro.es/"
             },
             {
                 "name": "JamApp",
-                "description": "Project completed at the end of studies, awarded by the center, with business support from the EOI and Gran Canaria's Cabildo."
+                "description": "Award-winning final project with EOI and Gran Canaria Cabildo support.",
+                "details": "App to connect local musicians. Features include chat, band creation, rehearsal calendar and search by instrument and music style.",
+                "tags": [
+                    "Vue.js",
+                    "Firebase",
+                    "Mobile"
+                ]
             }
         ]
     }

@@ -6,7 +6,6 @@ useSeoMeta({
   description: t('app.description'),
 })
 
-const { data: projects } = await useAsyncData('home-projects', () => $fetch('/api/public/projects'))
 const skillKeys = ['frontend', 'backend', 'design', 'tools', 'ai', 'principles'] as const
 
 function resolveStringArray(key: string): string[] {
@@ -112,39 +111,12 @@ function resolveStringArray(key: string): string[] {
       </div>
     </section>
 
-    <!-- Featured Projects -->
-    <section v-if="projects?.length">
-      <div class="flex items-center justify-between mb-8">
-        <h2 class="text-2xl font-bold">
-          {{ t('nav.projects') }}
-        </h2>
-        <UButton :label="t('nav.projects')" to="/projects" variant="ghost" icon="i-lucide-arrow-right" trailing />
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        <UCard v-for="project in projects.slice(0, 6)" :key="project._id">
-          <template #header>
-            <div class="flex items-center justify-between">
-              <h3 class="font-semibold">{{ project.name }}</h3>
-              <UBadge v-if="project.isActive" color="success" :label="t('cv.active')" size="xs" />
-            </div>
-          </template>
-          <p class="text-sm text-(--ui-text-muted) line-clamp-2">{{ project.description }}</p>
-          <template #footer>
-            <div class="flex gap-2">
-              <UButton
-                v-if="project.url"
-                :to="project.url"
-                :label="t('common.visit')"
-                size="xs"
-                variant="outline"
-                icon="i-lucide-external-link"
-                target="_blank"
-                external
-              />
-            </div>
-          </template>
-        </UCard>
-      </div>
+    <!-- Projects Carousel -->
+    <section>
+      <h2 class="text-2xl font-bold mb-8">
+        {{ t('nav.projects') }}
+      </h2>
+      <ProjectCarousel />
     </section>
   </div>
 </template>

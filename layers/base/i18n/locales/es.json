@@ -265,31 +265,68 @@
             {
                 "name": "masquehuellas.es",
                 "description": "Digitalización web de la clínica veterinaria +QHuellas.",
+                "details": "Proyecto freelance de diseño y desarrollo completo. Incluye catálogo de servicios, sistema de citas, y galería de pacientes. Diseño responsive optimizado para móviles.",
+                "tags": [
+                    "Nuxt",
+                    "Vue.js",
+                    "Responsive",
+                    "SEO"
+                ],
                 "url": "https://masquehuellas.es/"
             },
             {
                 "name": "foroebc.org",
                 "description": "Promover nuevos ámbitos y competencias profesionales.",
+                "details": "Portal web para el Foro de Economía Azul de Canarias. Gestión de eventos, noticias y recursos para profesionales del sector marítimo.",
+                "tags": [
+                    "Vue.js",
+                    "CMS",
+                    "UI/UX"
+                ],
                 "url": "https://foroebc.org/"
             },
             {
                 "name": "businessevolver.net",
-                "description": "Proyecto de alianzas para llevar a las empresas a un futuro en desarrollo sostenible (ODS) y digitalización.",
+                "description": "Alianzas para un futuro en desarrollo sostenible (ODS) y digitalización.",
+                "details": "Plataforma de alianzas empresariales enfocada en los Objetivos de Desarrollo Sostenible. Dashboard interactivo, perfiles de empresa y matching de colaboraciones.",
+                "tags": [
+                    "Vue.js",
+                    "Node.js",
+                    "Dashboard"
+                ],
                 "url": "https://businessevolver.net/"
             },
             {
                 "name": "lajairadeana.com",
                 "description": "Web para la granja escuela La Jaira de Ana.",
+                "details": "Sitio web con galería de actividades, sistema de reservas y blog. Fotografía y diseño alineados con la identidad rural del negocio.",
+                "tags": [
+                    "HTML/CSS",
+                    "JavaScript",
+                    "Diseño"
+                ],
                 "url": "https://lajairadeana.com/"
             },
             {
                 "name": "doelhierro.es",
                 "description": "Web de la Denominación de Origen de Vinos del Hierro.",
+                "details": "Portal institucional con catálogo de bodegas, mapa interactivo de viñedos y sección de noticias. Enfoque en storytelling visual y SEO local.",
+                "tags": [
+                    "Vue.js",
+                    "SEO",
+                    "Maps"
+                ],
                 "url": "https://doelhierro.es/"
             },
             {
                 "name": "JamApp",
-                "description": "Proyecto ejecutado al finalizar los estudios obteniendo un premio por el centro, apoyo empresarial de la EOI y del Cabildo de Gran Canaria."
+                "description": "Proyecto fin de estudios premiado con apoyo de la EOI y el Cabildo de Gran Canaria.",
+                "details": "Aplicación para conectar músicos locales. Funcionalidades de chat, creación de bandas, calendario de ensayos y búsqueda por instrumento y estilo musical.",
+                "tags": [
+                    "Vue.js",
+                    "Firebase",
+                    "Mobile"
+                ]
             }
         ]
     }
