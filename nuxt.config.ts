@@ -12,6 +12,14 @@ export default defineNuxtConfig({
     url: process.env.CONVEX_URL ?? '',
   },
 
+  runtimeConfig: {
+    public: {
+      convex: {
+        url: process.env.CONVEX_URL ?? '',
+      },
+    },
+  },
+
   extends: [
     './layers/base',
     './layers/public',
