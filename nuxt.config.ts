@@ -9,13 +9,13 @@ export default defineNuxtConfig({
   modules: ['convex-nuxt'],
 
   convex: {
-    url: process.env.CONVEX_URL ?? '',
+    url: (process.env.CONVEX_URL ?? '').replace(/\/$/, ''),
   },
 
   runtimeConfig: {
     public: {
       convex: {
-        url: process.env.CONVEX_URL ?? '',
+        url: (process.env.CONVEX_URL ?? '').replace(/\/$/, ''),
       },
     },
   },
