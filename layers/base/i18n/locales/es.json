@@ -8,7 +8,9 @@
         "blog": "Blog",
         "projects": "Proyectos",
         "labs": "Labs",
-        "cv": "CV"
+        "cv": "CV",
+        "open_menu": "Abrir menú",
+        "close_menu": "Cerrar menú"
     },
     "common": {
         "loading": "Cargando...",
@@ -149,7 +151,8 @@
                 "studyType": "Grado en Ingeniería",
                 "area": "Informática, comunicaciones y servicios de asistencia",
                 "startDate": "Feb 2022",
-                "endDate": "Feb 2026"
+                "endDate": "",
+                "note": "En curso · 140 créditos superados"
             },
             {
                 "institution": "CIFP Villa de Agüimes",

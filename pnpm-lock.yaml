@@ -45,6 +45,9 @@ importers:
       '@testing-library/vue':
         specifier: ^8.1.0
         version: 8.1.0(@vue/compiler-sfc@3.5.32)(vue@3.5.32(typescript@5.9.3))
+      '@types/node':
+        specifier: ^25.5.2
+        version: 25.5.2
       '@vue/test-utils':
         specifier: ^2.4.6
         version: 2.4.6

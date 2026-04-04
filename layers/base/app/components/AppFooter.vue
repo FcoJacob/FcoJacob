@@ -11,23 +11,23 @@ const { t } = useI18n()
             &copy; {{ new Date().getFullYear() }} {{ t('app.title') }}
           </p>
         </div>
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-3">
           <UButton
             to="https://www.linkedin.com/in/fcojacob/"
             icon="i-lucide-linkedin"
             variant="ghost"
             color="neutral"
-            size="sm"
+            size="md"
             target="_blank"
             external
             aria-label="LinkedIn"
           />
           <UButton
-            to="https://github.com/fsarmiento"
+            to="https://github.com/FcoJacob"
             icon="i-lucide-github"
             variant="ghost"
             color="neutral"
-            size="sm"
+            size="md"
             target="_blank"
             external
             aria-label="GitHub"
@@ -37,7 +37,7 @@ const { t } = useI18n()
             icon="i-lucide-mail"
             variant="ghost"
             color="neutral"
-            size="sm"
+            size="md"
             external
             aria-label="Email"
           />

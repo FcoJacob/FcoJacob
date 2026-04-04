@@ -8,7 +8,9 @@
         "blog": "Blog",
         "projects": "Projects",
         "labs": "Labs",
-        "cv": "CV"
+        "cv": "CV",
+        "open_menu": "Open menu",
+        "close_menu": "Close menu"
     },
     "common": {
         "loading": "Loading...",
@@ -149,7 +151,8 @@
                 "studyType": "Bachelor's Degree in Engineering",
                 "area": "Computer Science, Communications and Support Services",
                 "startDate": "Feb 2022",
-                "endDate": "Feb 2026"
+                "endDate": "",
+                "note": "In progress · 140 credits completed"
             },
             {
                 "institution": "CIFP Villa de Agüimes",

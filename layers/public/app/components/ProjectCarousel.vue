@@ -10,9 +10,9 @@ interface Project {
 }
 
 function resolveProjects(): Project[] {
-  const raw = tm('cv_data.projects')
+  const raw = tm('cv_data.projects') as unknown
   if (!Array.isArray(raw)) return []
-  return raw.map((item: Record<string, unknown>) => {
+  return (raw as Record<string, unknown>[]).map((item) => {
     const resolved: Record<string, unknown> = {}
     for (const [k, v] of Object.entries(item)) {
       if (Array.isArray(v)) {
@@ -26,13 +26,13 @@ function resolveProjects(): Project[] {
         try { resolved[k] = rt(v as any) } catch { resolved[k] = String(v) }
       }
     }
-    return resolved as Project
+    return resolved as unknown as Project
   })
 }
 
 const projects = computed(() => resolveProjects())
 const selectedIndex = ref(0)
-const selected = computed(() => projects.value[selectedIndex.value])
+const selected = computed(() => projects.value[selectedIndex.value] as Project | undefined)
 
 const scrollContainer = ref<HTMLElement | null>(null)
 
@@ -60,7 +60,7 @@ function next() {
 </script>
 
 <template>
-  <div v-if="projects.length" class="space-y-5">
+  <div v-if="projects.length && selected" class="space-y-5">
     <!-- Focus area (top) -->
     <div class="relative overflow-hidden rounded-2xl border border-(--ui-border) bg-(--ui-bg-elevated) min-h-64">
       <Transition name="showcase" mode="out-in">
@@ -148,13 +148,13 @@ function next() {
     <div class="relative group/strip">
       <div
         ref="scrollContainer"
-        class="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory scrollbar-hide"
+        class="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory scrollbar-hide pb-1"
         style="-ms-overflow-style: none; scrollbar-width: none;"
       >
         <button
           v-for="(project, i) in projects"
           :key="project.name"
-          class="snap-start shrink-0 flex-1 min-w-32 max-w-48 rounded-xl px-4 py-3 text-left transition-all duration-300 cursor-pointer"
+          class="snap-start shrink-0 min-w-28 max-w-40 sm:min-w-32 sm:max-w-48 rounded-xl px-3 py-3 text-left transition-all duration-300 cursor-pointer"
           :class="[
             i === selectedIndex
               ? 'bg-(--ui-color-primary-500)/10 border border-(--ui-color-primary-500)/40 shadow-sm scale-[1.02]'

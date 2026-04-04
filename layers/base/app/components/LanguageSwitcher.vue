@@ -12,6 +12,7 @@ const availableLocales = computed(() =>
     :items="availableLocales.map((l) => ({ label: l.name ?? l.code, value: l.code }))"
     size="sm"
     class="w-24"
+    :ui="{ content: 'z-[60]' }"
     @update:model-value="setLocale($event)"
   />
 </template>

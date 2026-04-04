@@ -91,7 +91,7 @@ Convex functions and schema live in `convex/`, and Nuxt server routes in `server
 
 ```bash
 # Clone the repo
-git clone https://github.com/fsarmiento/fsarmiento.git
+git clone https://github.com/FcoJacob/fsarmiento.git
 cd fsarmiento
 
 # Install dependencies
@@ -167,6 +167,6 @@ npx tsx scripts/seed-cv.ts
 
 <div align="center">
 
-Made by **Jacob Sarmiento** — [fsarmiento.dev](https://fsarmiento.dev) · [LinkedIn](https://linkedin.com/in/fsarmiento) · [GitHub](https://github.com/fsarmiento)
+Made by **Jacob Sarmiento** — [fsarmiento.dev](https://fsarmiento.dev) · [LinkedIn](https://linkedin.com/in/fcojacob) · [GitHub](https://github.com/FcoJacob)
 
 </div>

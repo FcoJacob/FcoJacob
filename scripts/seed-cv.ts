@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { ConvexHttpClient } from 'convex/browser'
 import { api } from '../convex/_generated/api.js'
 
@@ -35,7 +36,7 @@ const cvData = {
       {
         network: 'GitHub',
         username: 'fsarmiento',
-        url: 'https://github.com/fsarmiento',
+        url: 'https://github.com/FcoJacob',
       },
     ],
   },
@@ -131,7 +132,7 @@ const cvData = {
       area: 'Informática, comunicaciones y servicios de asistencia',
       studyType: 'Grado en Ingeniería',
       startDate: '2022-02',
-      endDate: '2026-02',
+      endDate: '',
     },
     {
       institution: 'CIFP Villa de Agüimes',

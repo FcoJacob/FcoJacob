@@ -32,11 +32,10 @@ export default defineNuxtConfig({
 
   hooks: {
     'app:resolve'(app) {
-      const convexPlugin = app.plugins.find(p =>
-        typeof p === 'object' && 'src' in p
-          ? p.src.includes('convex-nuxt')
-          : typeof p === 'string' && p.includes('convex-nuxt'),
-      )
+      const convexPlugin = app.plugins.find((p) => {
+        const src = typeof p === 'object' && 'src' in p ? p.src : String(p)
+        return src.includes('convex-nuxt')
+      })
       if (convexPlugin && typeof convexPlugin === 'object') {
         convexPlugin.mode = 'client'
       }

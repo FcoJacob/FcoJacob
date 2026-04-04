@@ -63,12 +63,12 @@ function handleDownload() {
             <p class="flex items-center gap-2"><UIcon name="i-lucide-phone" class="size-4 shrink-0" /> +34 696124038</p>
           </div>
           <div class="flex gap-2 pt-1">
-            <UButton to="https://www.linkedin.com/in/fcojacob/" icon="i-lucide-linkedin" size="xs" variant="outline" target="_blank" external aria-label="LinkedIn" />
-            <UButton to="https://github.com/fsarmiento" icon="i-lucide-github" size="xs" variant="outline" target="_blank" external aria-label="GitHub" />
+            <UButton to="https://www.linkedin.com/in/fcojacob/" icon="i-lucide-linkedin" size="sm" variant="outline" target="_blank" external aria-label="LinkedIn" />
+            <UButton to="https://github.com/FcoJacob" icon="i-lucide-github" size="sm" variant="outline" target="_blank" external aria-label="GitHub" />
             <UButton
               :label="t('common.download_pdf')"
               icon="i-lucide-download"
-              size="xs"
+              size="sm"
               variant="outline"
               :loading="isGenerating"
               @click="handleDownload"
@@ -84,10 +84,10 @@ function handleDownload() {
           <div v-for="key in skillKeys" :key="key" class="space-y-1.5">
             <div class="flex items-center justify-between">
               <span class="text-sm font-semibold">{{ t(`cv_data.skills.${key}.name`) }}</span>
-              <UBadge :label="t(`cv_data.skills.${key}.level`)" :color="t(`cv_data.skills.${key}.level`) === 'Senior' ? 'success' : 'neutral'" variant="subtle" size="xs" />
+              <UBadge :label="t(`cv_data.skills.${key}.level`)" :color="t(`cv_data.skills.${key}.level`) === 'Senior' ? 'success' : 'neutral'" variant="subtle" size="sm" />
             </div>
-            <div class="flex flex-wrap gap-1">
-              <UBadge v-for="kw in resolveStringArray(`cv_data.skills.${key}.keywords`)" :key="kw" :label="kw" color="neutral" variant="outline" size="xs" />
+            <div class="flex flex-wrap gap-1.5">
+              <UBadge v-for="kw in resolveStringArray(`cv_data.skills.${key}.keywords`)" :key="kw" :label="kw" color="neutral" variant="outline" size="sm" />
             </div>
           </div>
         </div>
@@ -97,8 +97,8 @@ function handleDownload() {
         <!-- Soft Skills -->
         <div class="space-y-3">
           <h3 class="text-sm font-bold uppercase tracking-wider text-(--ui-text-muted)">{{ t('cv.soft_skills') }}</h3>
-          <div class="flex flex-wrap gap-1.5">
-            <UBadge v-for="skill in softSkills" :key="skill" :label="skill" color="neutral" variant="subtle" size="xs" />
+          <div class="flex flex-wrap gap-2">
+            <UBadge v-for="skill in softSkills" :key="skill" :label="skill" color="neutral" variant="subtle" size="sm" />
           </div>
         </div>
 
@@ -150,12 +150,12 @@ function handleDownload() {
           <div class="relative border-l-2 border-(--ui-border) pl-6 space-y-8">
             <div v-for="(job, i) in work" :key="i" class="relative">
               <span class="absolute -left-[calc(1.5rem+5px)] top-1.5 size-2.5 rounded-full bg-(--ui-color-primary-500)" />
-              <div class="flex items-start justify-between gap-4">
+              <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-4">
                 <div>
                   <h3 class="font-semibold">{{ job.position }}</h3>
                   <p class="text-sm text-(--ui-color-primary-500) font-medium">{{ job.name }}</p>
                 </div>
-                <span class="text-xs text-(--ui-text-muted) whitespace-nowrap bg-(--ui-bg-elevated) px-2 py-1 rounded-full">
+                <span class="text-xs text-(--ui-text-muted) bg-(--ui-bg-elevated) px-2.5 py-1 rounded-full shrink-0 whitespace-nowrap">
                   {{ job.startDate }} — {{ job.endDate || t('cv.present') }}
                 </span>
               </div>
@@ -178,7 +178,8 @@ function handleDownload() {
               <span class="absolute -left-[calc(1.5rem+5px)] top-1.5 size-2.5 rounded-full bg-(--ui-border)" />
               <h3 class="font-semibold">{{ edu.institution }}</h3>
               <p class="text-sm text-(--ui-color-primary-500)">{{ edu.studyType }} — {{ edu.area }}</p>
-              <p class="text-xs text-(--ui-text-muted)">{{ edu.startDate }} — {{ edu.endDate }}</p>
+              <p class="text-xs text-(--ui-text-muted)">{{ edu.startDate }} — {{ edu.endDate || t('cv.present') }}</p>
+              <p v-if="edu.note" class="text-xs text-(--ui-text-muted) italic">{{ edu.note }}</p>
             </div>
           </div>
         </section>
@@ -195,7 +196,7 @@ function handleDownload() {
                   v-if="project.url"
                   :to="project.url as string"
                   :label="t('common.visit')"
-                  size="xs"
+                  size="sm"
                   variant="outline"
                   icon="i-lucide-external-link"
                   target="_blank"

@@ -27,7 +27,7 @@ function resolveStringArray(key: string): string[] {
           <UBadge color="success" variant="subtle" size="md" icon="i-lucide-circle-check">
             {{ t('hero.available') }}
           </UBadge>
-          <h1 class="text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight">
+          <h1 class="text-3xl lg:text-5xl font-extrabold tracking-tight leading-tight">
             {{ t('cv_data.basics.name') }}
           </h1>
           <p class="text-xl lg:text-2xl text-(--ui-text-muted) font-medium">
@@ -93,7 +93,7 @@ function resolveStringArray(key: string): string[] {
                 :label="t(`cv_data.skills.${key}.level`)"
                 :color="t(`cv_data.skills.${key}.level`) === 'Senior' ? 'success' : 'neutral'"
                 variant="subtle"
-                size="xs"
+                size="sm"
               />
             </div>
             <div class="flex flex-wrap gap-1.5">
@@ -103,7 +103,7 @@ function resolveStringArray(key: string): string[] {
                 :label="kw"
                 color="neutral"
                 variant="outline"
-                size="xs"
+                size="sm"
               />
             </div>
           </div>
