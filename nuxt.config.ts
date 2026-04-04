@@ -9,7 +9,7 @@ export default defineNuxtConfig({
   modules: ['convex-nuxt'],
 
   convex: {
-    url: process.env.CONVEX_URL,
+    url: process.env.CONVEX_URL ?? '',
   },
 
   extends: [

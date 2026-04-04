@@ -63,71 +63,57 @@ function next() {
   <div v-if="projects.length" class="space-y-5">
     <!-- Focus area (top) -->
     <div class="relative overflow-hidden rounded-2xl border border-(--ui-border) bg-(--ui-bg-elevated) min-h-64">
-      <TransitionGroup name="showcase">
-        <div v-for="(project, i) in projects" v-show="i === selectedIndex" :key="project.name" class="p-6 sm:p-8 lg:p-10">
+      <Transition name="showcase" mode="out-in">
+        <div :key="selected.name" class="p-6 sm:p-8 lg:p-10">
           <div class="flex flex-col gap-6">
             <!-- Header row -->
             <div class="flex items-start justify-between gap-4">
               <div class="space-y-1">
-                <Transition name="slide-up" mode="out-in">
-                  <span :key="project.name" class="inline-flex items-center gap-2 text-xs font-medium text-(--ui-color-primary-500) uppercase tracking-widest">
-                    <span class="size-1.5 rounded-full bg-(--ui-color-primary-500) animate-pulse" />
-                    {{ project.tags?.[0] || 'Web' }}
-                  </span>
-                </Transition>
-                <Transition name="slide-up" mode="out-in">
-                  <h3 :key="project.name" class="text-2xl sm:text-3xl font-extrabold tracking-tight">
-                    {{ project.name }}
-                  </h3>
-                </Transition>
+                <span class="inline-flex items-center gap-2 text-xs font-medium text-(--ui-color-primary-500) uppercase tracking-widest">
+                  <span class="size-1.5 rounded-full bg-(--ui-color-primary-500) animate-pulse" />
+                  {{ selected.tags?.[0] || 'Web' }}
+                </span>
+                <h3 class="text-2xl sm:text-3xl font-extrabold tracking-tight">
+                  {{ selected.name }}
+                </h3>
               </div>
-              <Transition name="fade-scale" mode="out-in">
-                <div :key="project.url || project.name">
-                  <UButton
-                    v-if="project.url"
-                    :to="project.url"
-                    :label="t('common.visit')"
-                    icon="i-lucide-arrow-up-right"
-                    variant="subtle"
-                    size="md"
-                    target="_blank"
-                    external
-                    class="shrink-0"
-                  />
-                </div>
-              </Transition>
+              <UButton
+                v-if="selected.url"
+                :to="selected.url"
+                :label="t('common.visit')"
+                icon="i-lucide-arrow-up-right"
+                variant="subtle"
+                size="md"
+                target="_blank"
+                external
+                class="shrink-0"
+              />
             </div>
 
             <!-- Description -->
-            <Transition name="slide-up" mode="out-in">
-              <p :key="`desc-${project.name}`" class="text-base text-(--ui-text-muted) leading-relaxed max-w-2xl">
-                {{ project.description }}
-              </p>
-            </Transition>
+            <p class="text-base text-(--ui-text-muted) leading-relaxed max-w-2xl">
+              {{ selected.description }}
+            </p>
 
             <!-- Details -->
-            <Transition name="slide-up" mode="out-in">
-              <p :key="`detail-${project.name}`" class="text-sm text-(--ui-text-dimmed) leading-relaxed max-w-2xl">
-                {{ project.details }}
-              </p>
-            </Transition>
+            <p class="text-sm text-(--ui-text-dimmed) leading-relaxed max-w-2xl">
+              {{ selected.details }}
+            </p>
 
             <!-- Tags -->
-            <Transition name="slide-up" mode="out-in">
-              <div v-if="project.tags?.length" :key="`tags-${project.name}`" class="flex flex-wrap gap-2">
-                <UBadge
-                  v-for="tag in project.tags"
-                  :key="tag"
-                  :label="tag"
-                  color="neutral"
-                  variant="outline"
-                  size="sm"
-                />
-              </div>
-            </Transition>
+            <div v-if="selected.tags?.length" class="flex flex-wrap gap-2">
+              <UBadge
+                v-for="tag in selected.tags"
+                :key="tag"
+                :label="tag"
+                color="neutral"
+                variant="outline"
+                size="sm"
+              />
+            </div>
           </div>
         </div>
-      </TransitionGroup>
+      </Transition>
 
       <!-- Navigation arrows on focus area -->
       <div class="absolute bottom-6 right-6 sm:bottom-8 sm:right-8 lg:bottom-10 lg:right-10 flex gap-2">
@@ -208,36 +194,5 @@ function next() {
   opacity: 0;
   transform: scale(0.98) translateY(-8px);
 }
-/* Slide up for text elements */
-.slide-up-enter-active {
-  transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  transition-delay: 0.08s;
-}
-.slide-up-leave-active {
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-.slide-up-enter-from {
-  opacity: 0;
-  transform: translateY(12px);
-}
-.slide-up-leave-to {
-  opacity: 0;
-  transform: translateY(-6px);
-}
-/* Fade scale for button */
-.fade-scale-enter-active {
-  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  transition-delay: 0.15s;
-}
-.fade-scale-leave-active {
-  transition: opacity 0.15s ease, transform 0.15s ease;
-}
-.fade-scale-enter-from {
-  opacity: 0;
-  transform: scale(0.85);
-}
-.fade-scale-leave-to {
-  opacity: 0;
-  transform: scale(0.9);
-}
+
 </style>
