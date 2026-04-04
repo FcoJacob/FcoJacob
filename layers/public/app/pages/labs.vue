@@ -11,41 +11,30 @@ const { data: labs } = await useAsyncData('labs', () => $fetch('/api/public/labs
 
 <template>
   <div>
-    <h1 class="text-3xl font-bold mb-8">
-      {{ t('nav.labs') }}
-    </h1>
-
-    <div v-if="labs?.length" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <UCard v-for="lab in labs" :key="lab._id">
-        <template #header>
-          <h2 class="font-semibold">
-            {{ lab.name }}
-          </h2>
-        </template>
-
-        <p class="text-sm text-(--ui-text-muted)">
-          {{ lab.description }}
-        </p>
-
-        <div v-if="lab.tags.length" class="mt-3 flex flex-wrap gap-1">
-          <UBadge v-for="tag in lab.tags" :key="tag" :label="tag" color="neutral" size="xs" />
-        </div>
-
-        <template v-if="lab.url" #footer>
+    <div v-if="labs?.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <UCard v-for="lab in labs" :key="lab._id" variant="subtle" class="group">
+        <div class="space-y-3">
+          <h2 class="font-semibold group-hover:text-(--ui-color-primary-500) transition-colors">{{ lab.name }}</h2>
+          <p class="text-sm text-(--ui-text-muted) leading-relaxed">{{ lab.description }}</p>
+          <div v-if="lab.tags.length" class="flex flex-wrap gap-1.5">
+            <UBadge v-for="tag in lab.tags" :key="tag" :label="tag" color="neutral" variant="outline" size="xs" />
+          </div>
           <UButton
+            v-if="lab.url"
             :to="lab.url"
             :label="t('common.visit')"
             size="xs"
             variant="outline"
+            icon="i-lucide-external-link"
             target="_blank"
             external
           />
-        </template>
+        </div>
       </UCard>
     </div>
 
-    <p v-else class="text-(--ui-text-muted)">
-      {{ t('common.loading') }}
-    </p>
+    <div v-else class="text-center py-16">
+      <p class="text-(--ui-text-muted)">{{ t('common.no_items') }}</p>
+    </div>
   </div>
 </template>

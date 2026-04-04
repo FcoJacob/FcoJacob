@@ -24,7 +24,10 @@
         "back": "Volver",
         "visit": "Visitar",
         "read_more": "Leer más →",
-        "no_items": "No hay elementos todavía."
+        "no_items": "No hay elementos todavía.",
+        "projects_subtitle": "Proyectos profesionales y personales en los que he trabajado.",
+        "labs_subtitle": "Experimentos, prototipos y pruebas de concepto.",
+        "blog_subtitle": "Reflexiones y aprendizajes sobre desarrollo web."
     },
     "cv": {
         "work": "Experiencia Laboral",
@@ -47,7 +50,13 @@
         "cv": "CV"
     },
     "hero": {
-        "summary": "Me encanta la Informática y las tecnologías, la mayor parte de mi tiempo libre la dedico a investigar nuevos medios y formas de hacer las cosas, me encanta innovar, me considero una persona muy creativa, alegre y con muy buena actitud. Me afana trabajar en proyectos que mejoren la vida de los demás. Me encanta las dinámicas de grupos y el trabajo en equipo."
+        "summary": "Me encanta la Informática y las tecnologías, la mayor parte de mi tiempo libre la dedico a investigar nuevos medios y formas de hacer las cosas, me encanta innovar, me considero una persona muy creativa, alegre y con muy buena actitud. Me afana trabajar en proyectos que mejoren la vida de los demás. Me encanta las dinámicas de grupos y el trabajo en equipo.",
+        "cta": "Ver mi trayectoria",
+        "cta2": "Contactar",
+        "available": "Disponible para nuevos retos",
+        "stats_experience": "Años de experiencia",
+        "stats_projects": "Proyectos entregados",
+        "stats_stack": "Stack principal"
     },
     "cv_data": {
         "basics": {

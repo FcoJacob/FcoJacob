@@ -24,7 +24,10 @@
         "back": "Back",
         "visit": "Visit",
         "read_more": "Read more →",
-        "no_items": "No items yet."
+        "no_items": "No items yet.",
+        "projects_subtitle": "Professional and personal projects I've worked on.",
+        "labs_subtitle": "Experiments, prototypes, and proof of concepts.",
+        "blog_subtitle": "Thoughts and learnings on web development."
     },
     "cv": {
         "work": "Work Experience",
@@ -47,7 +50,13 @@
         "cv": "CV"
     },
     "hero": {
-        "summary": "I love IT and technology. I spend most of my free time researching new ways and means of doing things. I love to innovate. I consider myself a very creative, cheerful person with a great attitude. I strive to work on projects that improve people's lives. I love group dynamics and teamwork."
+        "summary": "I love IT and technology. I spend most of my free time researching new ways and means of doing things. I love to innovate. I consider myself a very creative, cheerful person with a great attitude. I strive to work on projects that improve people's lives. I love group dynamics and teamwork.",
+        "cta": "View my background",
+        "cta2": "Get in touch",
+        "available": "Available for new challenges",
+        "stats_experience": "Years of experience",
+        "stats_projects": "Projects delivered",
+        "stats_stack": "Main stack"
     },
     "cv_data": {
         "basics": {

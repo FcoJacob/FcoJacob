@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { t, tm } = useI18n()
+const { t, tm, rt } = useI18n()
 
 useSeoMeta({
   title: t('app.title'),
@@ -8,41 +8,127 @@ useSeoMeta({
 
 const { data: projects } = await useAsyncData('home-projects', () => $fetch('/api/public/projects'))
 const skillKeys = ['frontend', 'backend', 'design', 'tools', 'ai', 'principles'] as const
+
+function resolveStringArray(key: string): string[] {
+  const raw = tm(key)
+  if (!Array.isArray(raw)) return []
+  return raw.map((v: unknown) => {
+    if (typeof v === 'string') return v
+    try { return rt(v as any) } catch { return String(v) }
+  })
+}
 </script>
 
 <template>
-  <div class="space-y-16">
+  <div class="space-y-24">
     <!-- Hero -->
-    <section class="text-center py-12">
-      <h1 class="text-4xl font-bold mb-4">
-        {{ t('cv_data.basics.name') }}
-      </h1>
-      <p class="text-xl text-(--ui-text-muted) max-w-2xl mx-auto">
-        {{ t('cv_data.basics.label') }}
-      </p>
-      <p class="mt-4 text-(--ui-text-muted) max-w-3xl mx-auto">
-        {{ t('hero.summary') }}
-      </p>
+    <section class="relative py-16 lg:py-24">
+      <div class="flex flex-col lg:flex-row items-center gap-12">
+        <div class="flex-1 space-y-6">
+          <UBadge color="success" variant="subtle" size="md" icon="i-lucide-circle-check">
+            {{ t('hero.available') }}
+          </UBadge>
+          <h1 class="text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight">
+            {{ t('cv_data.basics.name') }}
+          </h1>
+          <p class="text-xl lg:text-2xl text-(--ui-text-muted) font-medium">
+            {{ t('cv_data.basics.label') }}
+          </p>
+          <p class="text-base text-(--ui-text-dimmed) max-w-xl leading-relaxed">
+            {{ t('hero.summary') }}
+          </p>
+          <div class="flex flex-wrap gap-3 pt-2">
+            <UButton
+              :label="t('hero.cta')"
+              to="/cv"
+              size="lg"
+              icon="i-lucide-arrow-right"
+              trailing
+            />
+            <UButton
+              :label="t('hero.cta2')"
+              to="mailto:fco.j.sarmientoperez@gmail.com"
+              size="lg"
+              variant="outline"
+              icon="i-lucide-mail"
+              external
+            />
+          </div>
+        </div>
+
+        <!-- Stats card -->
+        <div class="w-full lg:w-auto">
+          <UCard class="lg:min-w-80">
+            <div class="grid grid-cols-1 gap-6 p-2">
+              <div class="text-center">
+                <p class="text-3xl font-extrabold text-(--ui-color-primary-500)">+6</p>
+                <p class="text-sm text-(--ui-text-muted) mt-1">{{ t('hero.stats_experience') }}</p>
+              </div>
+              <USeparator />
+              <div class="text-center">
+                <p class="text-3xl font-extrabold text-(--ui-color-primary-500)">+10</p>
+                <p class="text-sm text-(--ui-text-muted) mt-1">{{ t('hero.stats_projects') }}</p>
+              </div>
+              <USeparator />
+              <div class="text-center">
+                <p class="text-3xl font-extrabold text-(--ui-color-primary-500)">Vue · Nuxt</p>
+                <p class="text-sm text-(--ui-text-muted) mt-1">{{ t('hero.stats_stack') }}</p>
+              </div>
+            </div>
+          </UCard>
+        </div>
+      </div>
+    </section>
+
+    <!-- Skills -->
+    <section>
+      <h2 class="text-2xl font-bold mb-8">
+        {{ t('cv.skills') }}
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <UCard v-for="key in skillKeys" :key="key" variant="subtle">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="font-semibold">{{ t(`cv_data.skills.${key}.name`) }}</h3>
+              <UBadge
+                :label="t(`cv_data.skills.${key}.level`)"
+                :color="t(`cv_data.skills.${key}.level`) === 'Senior' ? 'success' : 'neutral'"
+                variant="subtle"
+                size="xs"
+              />
+            </div>
+            <div class="flex flex-wrap gap-1.5">
+              <UBadge
+                v-for="kw in resolveStringArray(`cv_data.skills.${key}.keywords`)"
+                :key="kw"
+                :label="kw"
+                color="neutral"
+                variant="outline"
+                size="xs"
+              />
+            </div>
+          </div>
+        </UCard>
+      </div>
     </section>
 
     <!-- Featured Projects -->
     <section v-if="projects?.length">
-      <h2 class="text-2xl font-bold mb-6">
-        {{ t('nav.projects') }}
-      </h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div class="flex items-center justify-between mb-8">
+        <h2 class="text-2xl font-bold">
+          {{ t('nav.projects') }}
+        </h2>
+        <UButton :label="t('nav.projects')" to="/projects" variant="ghost" icon="i-lucide-arrow-right" trailing />
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         <UCard v-for="project in projects.slice(0, 6)" :key="project._id">
           <template #header>
             <div class="flex items-center justify-between">
-              <h3 class="font-semibold">
-                {{ project.name }}
-              </h3>
+              <h3 class="font-semibold">{{ project.name }}</h3>
               <UBadge v-if="project.isActive" color="success" :label="t('cv.active')" size="xs" />
             </div>
           </template>
-          <p class="text-sm text-(--ui-text-muted)">
-            {{ project.description }}
-          </p>
+          <p class="text-sm text-(--ui-text-muted) line-clamp-2">{{ project.description }}</p>
           <template #footer>
             <div class="flex gap-2">
               <UButton
@@ -51,41 +137,13 @@ const skillKeys = ['frontend', 'backend', 'design', 'tools', 'ai', 'principles']
                 :label="t('common.visit')"
                 size="xs"
                 variant="outline"
-                target="_blank"
-                external
-              />
-              <UButton
-                v-if="project.github"
-                :to="project.github"
-                label="GitHub"
-                size="xs"
-                variant="ghost"
-                icon="i-simple-icons-github"
+                icon="i-lucide-external-link"
                 target="_blank"
                 external
               />
             </div>
           </template>
         </UCard>
-      </div>
-      <div class="mt-6 text-center">
-        <UButton :label="t('nav.projects')" to="/projects" variant="outline" />
-      </div>
-    </section>
-
-    <!-- Skills -->
-    <section>
-      <h2 class="text-2xl font-bold mb-6">
-        {{ t('cv.skills') }}
-      </h2>
-      <div class="flex flex-wrap gap-2">
-        <UBadge
-          v-for="key in skillKeys"
-          :key="key"
-          :label="t(`cv_data.skills.${key}.name`)"
-          color="neutral"
-          size="lg"
-        />
       </div>
     </section>
   </div>

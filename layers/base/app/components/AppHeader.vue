@@ -11,16 +11,16 @@ const navItems = computed(() => [
 </script>
 
 <template>
-  <header class="border-b border-(--ui-border)">
+  <header class="sticky top-0 z-50 bg-(--ui-bg)/80 backdrop-blur-lg border-b border-(--ui-border)">
     <UContainer>
       <nav class="flex items-center justify-between h-16">
-        <NuxtLink to="/" class="text-lg font-bold">
-          {{ t('app.title') }}
+        <NuxtLink to="/" class="flex items-center gap-2 group">
+          <span class="flex items-center justify-center size-8 rounded-full bg-(--ui-color-secondary-500) text-white text-sm font-bold">JS</span>
         </NuxtLink>
 
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-1">
           <UNavigationMenu :items="navItems" />
-
+          <USeparator orientation="vertical" class="h-5 mx-1" />
           <LanguageSwitcher />
           <UColorModeButton />
         </div>

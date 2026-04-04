@@ -11,37 +11,25 @@ const { data: blogs } = await useAsyncData('blogs', () => $fetch('/api/public/bl
 
 <template>
   <div>
-    <h1 class="text-3xl font-bold mb-8">
-      {{ t('nav.blog') }}
-    </h1>
-
-    <div v-if="blogs?.length" class="space-y-6">
-      <UCard v-for="blog in blogs" :key="blog._id">
-        <template #header>
-          <NuxtLink :to="`/blog/${blog.slug}`" class="hover:underline">
-            <h2 class="text-xl font-semibold">
-              {{ blog.title }}
-            </h2>
-          </NuxtLink>
-        </template>
-        <p class="text-(--ui-text-muted)">
-          {{ blog.excerpt }}
-        </p>
-        <template #footer>
-          <div class="flex items-center justify-between text-sm text-(--ui-text-muted)">
-            <time :datetime="new Date(blog.createdAt).toISOString()">
-              {{ new Date(blog.createdAt).toLocaleDateString(locale) }}
-            </time>
-            <NuxtLink :to="`/blog/${blog.slug}`" class="text-(--ui-color-primary-500) hover:underline">
-              {{ t('common.read_more') }}
-            </NuxtLink>
+    <div v-if="blogs?.length" class="space-y-5">
+      <NuxtLink v-for="blog in blogs" :key="blog._id" :to="`/blog/${blog.slug}`" class="block group">
+        <UCard variant="subtle" class="transition-shadow hover:shadow-lg">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div class="space-y-1.5 flex-1">
+              <h2 class="text-lg font-semibold group-hover:text-(--ui-color-primary-500) transition-colors">{{ blog.title }}</h2>
+              <p class="text-sm text-(--ui-text-muted) line-clamp-2">{{ blog.excerpt }}</p>
+            </div>
+            <div class="flex items-center gap-3 text-sm text-(--ui-text-muted) shrink-0">
+              <time :datetime="new Date(blog.createdAt).toISOString()">{{ new Date(blog.createdAt).toLocaleDateString(locale) }}</time>
+              <UIcon name="i-lucide-arrow-right" class="size-4 group-hover:translate-x-1 transition-transform" />
+            </div>
           </div>
-        </template>
-      </UCard>
+        </UCard>
+      </NuxtLink>
     </div>
 
-    <p v-else class="text-(--ui-text-muted)">
-      {{ t('common.loading') }}
-    </p>
+    <div v-else class="text-center py-16">
+      <p class="text-(--ui-text-muted)">{{ t('common.no_items') }}</p>
+    </div>
   </div>
 </template>

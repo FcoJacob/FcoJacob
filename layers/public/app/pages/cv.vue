@@ -50,203 +50,162 @@ function handleDownload() {
 
 <template>
   <div>
-    <div class="flex items-center justify-between mb-8">
-      <h1 class="text-3xl font-bold">
-        {{ t('nav.cv') }}
-      </h1>
-      <UButton
-        :label="t('common.download_pdf')"
-        icon="i-lucide-download"
-        variant="outline"
-        :loading="isGenerating"
-        @click="handleDownload"
-      />
-    </div>
-
-    <div ref="cv-content" class="max-w-3xl mx-auto space-y-10">
-      <!-- Basics -->
-      <section>
-        <h2 class="text-2xl font-bold">
-          {{ t('cv_data.basics.name') }}
-        </h2>
-        <p class="text-lg text-(--ui-text-muted)">
-          {{ t('cv_data.basics.label') }}
-        </p>
-        <p class="mt-2">
-          {{ t('cv_data.basics.summary') }}
-        </p>
-        <div class="mt-3 flex flex-wrap gap-3 text-sm text-(--ui-text-muted)">
-          <span>fco.j.sarmientoperez@gmail.com</span>
-          <span>+34 696124038</span>
-          <span>{{ t('cv_data.basics.location') }}</span>
-        </div>
-        <div class="mt-3 flex gap-2">
-          <UButton
-            to="https://www.linkedin.com/in/fcojacob/"
-            label="LinkedIn"
-            size="xs"
-            variant="outline"
-            target="_blank"
-            external
-          />
-          <UButton
-            to="https://github.com/fsarmiento"
-            label="GitHub"
-            size="xs"
-            variant="outline"
-            target="_blank"
-            external
-          />
-        </div>
-      </section>
-
-      <!-- Work Experience -->
-      <section>
-        <h2 class="text-xl font-bold mb-4 border-b border-(--ui-border) pb-2">
-          {{ t('cv.work') }}
-        </h2>
-        <div class="space-y-6">
-          <div v-for="(job, i) in work" :key="i">
-            <div class="flex items-start justify-between">
-              <div>
-                <h3 class="font-semibold">
-                  {{ job.position }}
-                </h3>
-                <p class="text-sm text-(--ui-text-muted)">
-                  {{ job.name }}
-                </p>
-              </div>
-              <span class="text-sm text-(--ui-text-muted) whitespace-nowrap ml-4">
-                {{ job.startDate }} — {{ job.endDate || t('cv.present') }}
-              </span>
-            </div>
-            <p class="mt-2 text-sm">
-              {{ job.summary }}
-            </p>
-            <ul v-if="(job.highlights as string[])?.length" class="mt-1 list-disc list-inside text-sm text-(--ui-text-muted) space-y-0.5">
-              <li v-for="h in (job.highlights as string[])" :key="h">
-                {{ h }}
-              </li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <!-- Education -->
-      <section>
-        <h2 class="text-xl font-bold mb-4 border-b border-(--ui-border) pb-2">
-          {{ t('cv.education') }}
-        </h2>
-        <div class="space-y-4">
-          <div v-for="(edu, i) in education" :key="i">
-            <h3 class="font-semibold">
-              {{ edu.institution }}
-            </h3>
-            <p class="text-sm text-(--ui-text-muted)">
-              {{ edu.studyType }} — {{ edu.area }}
-            </p>
-            <p class="text-sm text-(--ui-text-muted)">
-              {{ edu.startDate }} — {{ edu.endDate }}
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Skills -->
-      <section>
-        <h2 class="text-xl font-bold mb-4 border-b border-(--ui-border) pb-2">
-          {{ t('cv.skills') }}
-        </h2>
+    <div ref="cv-content" class="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-10">
+      <!-- Sidebar -->
+      <aside class="space-y-8">
+        <!-- Contact -->
         <div class="space-y-3">
-          <div v-for="key in skillKeys" :key="key">
-            <h3 class="font-semibold text-sm">
-              {{ t(`cv_data.skills.${key}.name`) }}
-              <span class="text-(--ui-text-muted) font-normal">({{ t(`cv_data.skills.${key}.level`) }})</span>
-            </h3>
-            <div class="flex flex-wrap gap-1 mt-1">
-              <UBadge
-                v-for="kw in resolveStringArray(`cv_data.skills.${key}.keywords`)"
-                :key="kw"
-                :label="kw"
-                color="neutral"
-                size="xs"
-              />
-            </div>
+          <h2 class="text-2xl font-extrabold">{{ t('cv_data.basics.name') }}</h2>
+          <p class="text-sm font-medium text-(--ui-color-primary-500)">{{ t('cv_data.basics.label') }}</p>
+          <div class="text-sm text-(--ui-text-muted) space-y-1.5">
+            <p class="flex items-center gap-2"><UIcon name="i-lucide-map-pin" class="size-4 shrink-0" /> {{ t('cv_data.basics.location') }}</p>
+            <p class="flex items-center gap-2"><UIcon name="i-lucide-mail" class="size-4 shrink-0" /> fco.j.sarmientoperez@gmail.com</p>
+            <p class="flex items-center gap-2"><UIcon name="i-lucide-phone" class="size-4 shrink-0" /> +34 696124038</p>
           </div>
-        </div>
-      </section>
-
-      <!-- Soft Skills -->
-      <section>
-        <h2 class="text-xl font-bold mb-4 border-b border-(--ui-border) pb-2">
-          {{ t('cv.soft_skills') }}
-        </h2>
-        <div class="flex flex-wrap gap-2">
-          <UBadge v-for="skill in softSkills" :key="skill" :label="skill" color="neutral" />
-        </div>
-      </section>
-
-      <!-- Languages -->
-      <section>
-        <h2 class="text-xl font-bold mb-4 border-b border-(--ui-border) pb-2">
-          {{ t('cv.languages') }}
-        </h2>
-        <div class="flex flex-wrap gap-2">
-          <UBadge
-            v-for="lang in languages"
-            :key="lang.language"
-            :label="`${lang.language} — ${lang.fluency}`"
-            color="neutral"
-          />
-        </div>
-      </section>
-
-      <!-- Certifications -->
-      <section>
-        <h2 class="text-xl font-bold mb-4 border-b border-(--ui-border) pb-2">
-          {{ t('cv.certifications') }}
-        </h2>
-        <div class="flex flex-wrap gap-2">
-          <UBadge v-for="cert in certifications" :key="cert" :label="cert" color="neutral" size="xs" />
-        </div>
-      </section>
-
-      <!-- Driving -->
-      <section>
-        <h2 class="text-xl font-bold mb-4 border-b border-(--ui-border) pb-2">
-          {{ t('cv.driving') }}
-        </h2>
-        <p>{{ t('cv_data.driving') }}</p>
-      </section>
-
-      <!-- Projects -->
-      <section>
-        <h2 class="text-xl font-bold mb-4 border-b border-(--ui-border) pb-2">
-          {{ t('cv.projects') }}
-        </h2>
-        <div class="space-y-4">
-          <div v-for="(project, i) in projects" :key="i">
-            <div class="flex items-center gap-2">
-              <h3 class="font-semibold">
-                {{ project.name }}
-              </h3>
-            </div>
-            <p class="text-sm text-(--ui-text-muted) mt-1">
-              {{ project.description }}
-            </p>
+          <div class="flex gap-2 pt-1">
+            <UButton to="https://www.linkedin.com/in/fcojacob/" icon="i-lucide-linkedin" size="xs" variant="outline" target="_blank" external aria-label="LinkedIn" />
+            <UButton to="https://github.com/fsarmiento" icon="i-lucide-github" size="xs" variant="outline" target="_blank" external aria-label="GitHub" />
             <UButton
-              v-if="project.url"
-              :to="project.url"
-              :label="t('common.visit')"
+              :label="t('common.download_pdf')"
+              icon="i-lucide-download"
               size="xs"
               variant="outline"
-              class="mt-1"
-              target="_blank"
-              external
+              :loading="isGenerating"
+              @click="handleDownload"
             />
           </div>
         </div>
-      </section>
+
+        <USeparator />
+
+        <!-- Skills -->
+        <div class="space-y-4">
+          <h3 class="text-sm font-bold uppercase tracking-wider text-(--ui-text-muted)">{{ t('cv.skills') }}</h3>
+          <div v-for="key in skillKeys" :key="key" class="space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-semibold">{{ t(`cv_data.skills.${key}.name`) }}</span>
+              <UBadge :label="t(`cv_data.skills.${key}.level`)" :color="t(`cv_data.skills.${key}.level`) === 'Senior' ? 'success' : 'neutral'" variant="subtle" size="xs" />
+            </div>
+            <div class="flex flex-wrap gap-1">
+              <UBadge v-for="kw in resolveStringArray(`cv_data.skills.${key}.keywords`)" :key="kw" :label="kw" color="neutral" variant="outline" size="xs" />
+            </div>
+          </div>
+        </div>
+
+        <USeparator />
+
+        <!-- Soft Skills -->
+        <div class="space-y-3">
+          <h3 class="text-sm font-bold uppercase tracking-wider text-(--ui-text-muted)">{{ t('cv.soft_skills') }}</h3>
+          <div class="flex flex-wrap gap-1.5">
+            <UBadge v-for="skill in softSkills" :key="skill" :label="skill" color="neutral" variant="subtle" size="xs" />
+          </div>
+        </div>
+
+        <USeparator />
+
+        <!-- Languages -->
+        <div class="space-y-3">
+          <h3 class="text-sm font-bold uppercase tracking-wider text-(--ui-text-muted)">{{ t('cv.languages') }}</h3>
+          <div class="space-y-1">
+            <div v-for="lang in languages" :key="lang.language as string" class="flex items-center justify-between text-sm">
+              <span>{{ lang.language }}</span>
+              <span class="text-(--ui-text-muted)">{{ lang.fluency }}</span>
+            </div>
+          </div>
+        </div>
+
+        <USeparator />
+
+        <!-- Certifications -->
+        <div class="space-y-3">
+          <h3 class="text-sm font-bold uppercase tracking-wider text-(--ui-text-muted)">{{ t('cv.certifications') }}</h3>
+          <ul class="text-sm space-y-1 text-(--ui-text-muted)">
+            <li v-for="cert in certifications" :key="cert" class="flex items-start gap-2">
+              <UIcon name="i-lucide-check" class="size-3.5 mt-0.5 text-(--ui-color-primary-500) shrink-0" />
+              {{ cert }}
+            </li>
+          </ul>
+        </div>
+
+        <USeparator />
+
+        <!-- Driving -->
+        <div class="space-y-2">
+          <h3 class="text-sm font-bold uppercase tracking-wider text-(--ui-text-muted)">{{ t('cv.driving') }}</h3>
+          <p class="text-sm">{{ t('cv_data.driving') }}</p>
+        </div>
+      </aside>
+
+      <!-- Main content -->
+      <div class="space-y-10">
+        <!-- Summary -->
+        <section>
+          <p class="text-base leading-relaxed text-(--ui-text-dimmed)">{{ t('cv_data.basics.summary') }}</p>
+        </section>
+
+        <!-- Work Experience -->
+        <section>
+          <h2 class="text-lg font-bold uppercase tracking-wider text-(--ui-text-muted) mb-6">{{ t('cv.work') }}</h2>
+          <div class="relative border-l-2 border-(--ui-border) pl-6 space-y-8">
+            <div v-for="(job, i) in work" :key="i" class="relative">
+              <span class="absolute -left-[calc(1.5rem+5px)] top-1.5 size-2.5 rounded-full bg-(--ui-color-primary-500)" />
+              <div class="flex items-start justify-between gap-4">
+                <div>
+                  <h3 class="font-semibold">{{ job.position }}</h3>
+                  <p class="text-sm text-(--ui-color-primary-500) font-medium">{{ job.name }}</p>
+                </div>
+                <span class="text-xs text-(--ui-text-muted) whitespace-nowrap bg-(--ui-bg-elevated) px-2 py-1 rounded-full">
+                  {{ job.startDate }} — {{ job.endDate || t('cv.present') }}
+                </span>
+              </div>
+              <p class="mt-2 text-sm text-(--ui-text-muted)">{{ job.summary }}</p>
+              <ul v-if="(job.highlights as string[])?.length" class="mt-2 space-y-1">
+                <li v-for="h in (job.highlights as string[])" :key="h" class="flex items-start gap-2 text-sm text-(--ui-text-muted)">
+                  <UIcon name="i-lucide-chevron-right" class="size-3.5 mt-0.5 shrink-0 text-(--ui-color-primary-500)" />
+                  {{ h }}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- Education -->
+        <section>
+          <h2 class="text-lg font-bold uppercase tracking-wider text-(--ui-text-muted) mb-6">{{ t('cv.education') }}</h2>
+          <div class="relative border-l-2 border-(--ui-border) pl-6 space-y-6">
+            <div v-for="(edu, i) in education" :key="i" class="relative">
+              <span class="absolute -left-[calc(1.5rem+5px)] top-1.5 size-2.5 rounded-full bg-(--ui-border)" />
+              <h3 class="font-semibold">{{ edu.institution }}</h3>
+              <p class="text-sm text-(--ui-color-primary-500)">{{ edu.studyType }} — {{ edu.area }}</p>
+              <p class="text-xs text-(--ui-text-muted)">{{ edu.startDate }} — {{ edu.endDate }}</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Projects -->
+        <section>
+          <h2 class="text-lg font-bold uppercase tracking-wider text-(--ui-text-muted) mb-6">{{ t('cv.projects') }}</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <UCard v-for="(project, i) in projects" :key="i" variant="subtle">
+              <div class="space-y-2">
+                <h3 class="font-semibold text-sm">{{ project.name }}</h3>
+                <p class="text-xs text-(--ui-text-muted) line-clamp-2">{{ project.description }}</p>
+                <UButton
+                  v-if="project.url"
+                  :to="project.url as string"
+                  :label="t('common.visit')"
+                  size="xs"
+                  variant="outline"
+                  icon="i-lucide-external-link"
+                  target="_blank"
+                  external
+                />
+              </div>
+            </UCard>
+          </div>
+        </section>
+      </div>
     </div>
   </div>
 </template>
