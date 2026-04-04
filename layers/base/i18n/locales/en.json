@@ -1,0 +1,287 @@
+{
+    "app": {
+        "title": "Jacob Sarmiento",
+        "description": "Software Developer - UI/UX"
+    },
+    "nav": {
+        "home": "Home",
+        "blog": "Blog",
+        "projects": "Projects",
+        "labs": "Labs",
+        "cv": "CV"
+    },
+    "common": {
+        "loading": "Loading...",
+        "error": "An error occurred",
+        "download_pdf": "Download PDF",
+        "login": "Log in",
+        "logout": "Log out",
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "edit": "Edit",
+        "create": "Create",
+        "back": "Back",
+        "visit": "Visit",
+        "read_more": "Read more →",
+        "no_items": "No items yet."
+    },
+    "cv": {
+        "work": "Work Experience",
+        "education": "Education",
+        "skills": "Skills",
+        "languages": "Languages",
+        "projects": "Projects",
+        "present": "Present",
+        "active": "Active",
+        "certifications": "Certifications",
+        "soft_skills": "Soft Skills",
+        "driving": "Driving License"
+    },
+    "admin": {
+        "title": "Admin Panel",
+        "dashboard": "Dashboard",
+        "blogs": "Blog",
+        "projects": "Projects",
+        "labs": "Labs",
+        "cv": "CV"
+    },
+    "hero": {
+        "summary": "I love IT and technology. I spend most of my free time researching new ways and means of doing things. I love to innovate. I consider myself a very creative, cheerful person with a great attitude. I strive to work on projects that improve people's lives. I love group dynamics and teamwork."
+    },
+    "cv_data": {
+        "basics": {
+            "name": "Jacob Sarmiento",
+            "label": "Software Developer - UI/UX",
+            "summary": "I love IT and technology. I spend most of my free time researching new ways and means of doing things. I love to innovate. I consider myself a very creative, cheerful person with a great attitude. I strive to work on projects that improve people's lives. I love group dynamics and teamwork.",
+            "location": "Las Palmas, Canary Islands"
+        },
+        "work": [
+            {
+                "position": "Senior Frontend Developer",
+                "name": "AIDA",
+                "startDate": "Dec 2024",
+                "endDate": "",
+                "summary": "Frontend application development with modern technologies.",
+                "highlights": [
+                    "Promoted to Senior Frontend Developer"
+                ]
+            },
+            {
+                "position": "Frontend Developer",
+                "name": "AIDA",
+                "startDate": "Mar 2023",
+                "endDate": "Dec 2024",
+                "summary": "Front-end development with Vue, JavaScript, HTML and CSS.",
+                "highlights": [
+                    "User interface development",
+                    "API integration"
+                ]
+            },
+            {
+                "position": "Application Developer",
+                "name": "Progrentis",
+                "startDate": "Jul 2020",
+                "endDate": "Jan 2024",
+                "summary": "Frontend application development with Vue, JavaScript, HTML and CSS.",
+                "highlights": [
+                    "Frontend development",
+                    "International remote work"
+                ]
+            },
+            {
+                "position": "Freelance Web Developer",
+                "name": "Independent Professional",
+                "startDate": "Jun 2017",
+                "endDate": "",
+                "summary": "Freelance web development for multiple clients and projects.",
+                "highlights": [
+                    "Multiple web projects",
+                    "Diverse clients",
+                    "Business digitalization"
+                ]
+            },
+            {
+                "position": "Aircraft Maintenance Specialist",
+                "name": "Spanish Air Force",
+                "startDate": "Dec 2007",
+                "endDate": "",
+                "summary": "Various maintenance tasks on fighter jets.",
+                "highlights": [
+                    "Military aircraft maintenance"
+                ]
+            },
+            {
+                "position": "Sailor — Maneuvering and Navigation Specialist",
+                "name": "Spanish Navy",
+                "startDate": "Dec 2004",
+                "endDate": "Dec 2006",
+                "summary": "Over 260 hours at sea, fishing patrol campaigns, national waters defense and bridge sailor duties.",
+                "highlights": [
+                    "Fishing patrol",
+                    "National waters defense"
+                ]
+            },
+            {
+                "position": "Soldier",
+                "name": "Spanish Army",
+                "startDate": "Dec 2000",
+                "endDate": "Aug 2004",
+                "summary": "Transmission operations and office automation. Aeronautical merit medal.",
+                "highlights": [
+                    "Transmissions and office automation",
+                    "Aeronautical merit medal"
+                ]
+            }
+        ],
+        "education": [
+            {
+                "institution": "Universitat Oberta de Catalunya",
+                "studyType": "Bachelor's Degree in Engineering",
+                "area": "Computer Science, Communications and Support Services",
+                "startDate": "Feb 2022",
+                "endDate": "Feb 2026"
+            },
+            {
+                "institution": "CIFP Villa de Agüimes",
+                "studyType": "Technician",
+                "area": "Web Application Development",
+                "startDate": "2016",
+                "endDate": "2018"
+            },
+            {
+                "institution": "Académia Telde",
+                "studyType": "Course",
+                "area": "Computer Maintenance and Repair",
+                "startDate": "2005",
+                "endDate": "2006"
+            },
+            {
+                "institution": "Colegio El Batan",
+                "studyType": "Compulsory Secondary Education",
+                "area": "E.S.O.",
+                "startDate": "1987",
+                "endDate": "1998"
+            }
+        ],
+        "skills": {
+            "frontend": {
+                "name": "Frontend",
+                "level": "Senior",
+                "keywords": [
+                    "HTML",
+                    "CSS",
+                    "JavaScript",
+                    "TypeScript",
+                    "Vue.js",
+                    "Nuxt"
+                ]
+            },
+            "backend": {
+                "name": "Backend",
+                "level": "Intermediate",
+                "keywords": [
+                    "Node.js",
+                    "Firebase",
+                    "Convex"
+                ]
+            },
+            "design": {
+                "name": "Design",
+                "level": "Intermediate",
+                "keywords": [
+                    "Photoshop",
+                    "Illustrator",
+                    "UI/UX"
+                ]
+            },
+            "tools": {
+                "name": "Tools",
+                "level": "Advanced",
+                "keywords": [
+                    "Git",
+                    "GitHub",
+                    "ClickUp",
+                    "Jira",
+                    "Office"
+                ]
+            },
+            "ai": {
+                "name": "AI",
+                "level": "Intermediate",
+                "keywords": [
+                    "Copilot",
+                    "ChatGPT",
+                    "Prompt Engineering"
+                ]
+            },
+            "principles": {
+                "name": "Principles",
+                "level": "Advanced",
+                "keywords": [
+                    "SOLID",
+                    "Clean Code",
+                    "Responsive Design"
+                ]
+            }
+        },
+        "languages": [
+            {
+                "language": "Spanish",
+                "fluency": "Native"
+            },
+            {
+                "language": "English",
+                "fluency": "Elementary"
+            }
+        ],
+        "certifications": [
+            "CSS Grid Layout",
+            "Git & GitHub",
+            "TypeScript Fundamentals",
+            "Online Web Development",
+            "Introduction to Design"
+        ],
+        "soft_skills": [
+            "Creativity",
+            "Attention to detail",
+            "Teamwork",
+            "Problem-solving",
+            "Communication",
+            "Adaptability",
+            "Work ethic"
+        ],
+        "driving": "License B and C (Spanish)",
+        "projects": [
+            {
+                "name": "masquehuellas.es",
+                "description": "Web digitalization of the veterinary clinic +QHuellas.",
+                "url": "https://masquehuellas.es/"
+            },
+            {
+                "name": "foroebc.org",
+                "description": "Promoting new areas and professional competencies.",
+                "url": "https://foroebc.org/"
+            },
+            {
+                "name": "businessevolver.net",
+                "description": "Partnership project to lead companies towards a sustainable development (SDGs) and digitalization future.",
+                "url": "https://businessevolver.net/"
+            },
+            {
+                "name": "lajairadeana.com",
+                "description": "Website for the farm school La Jaira de Ana.",
+                "url": "https://lajairadeana.com/"
+            },
+            {
+                "name": "doelhierro.es",
+                "description": "Website for the Denomination of Origin of Vinos del Hierro.",
+                "url": "https://doelhierro.es/"
+            },
+            {
+                "name": "JamApp",
+                "description": "Project completed at the end of studies, awarded by the center, with business support from the EOI and Gran Canaria's Cabildo."
+            }
+        ]
+    }
+}

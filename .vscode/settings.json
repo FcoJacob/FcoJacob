@@ -1,0 +1,20 @@
+{
+    "files.associations": {
+        "*.css": "tailwindcss"
+    },
+    "editor.quickSuggestions": {
+        "strings": "on"
+    },
+    "tailwindCSS.classAttributes": [
+        "class",
+        "ui"
+    ],
+    "tailwindCSS.classFunctions": [
+        "defineAppConfig"
+    ],
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit"
+    },
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+}
