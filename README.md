@@ -12,7 +12,7 @@
 [![pnpm](https://img.shields.io/badge/pnpm-10.x-F69220?style=flat&logo=pnpm&logoColor=white)](https://pnpm.io)
 [![License](https://img.shields.io/badge/License-MIT-slate?style=flat)](LICENSE)
 
-[Live Site](https://fsarmiento.dev) · [CV](https://fsarmiento.dev/cv) · [Blog](https://fsarmiento.dev/blog)
+[Live Site](https://jsarmiento.dev) · [CV](https://jsarmiento.dev/cv) · [Blog](https://jsarmiento.dev/blog)
 
 </div>
 
@@ -167,6 +167,6 @@ npx tsx scripts/seed-cv.ts
 
 <div align="center">
 
-Made by **Jacob Sarmiento** — [fsarmiento.dev](https://fsarmiento.dev) · [LinkedIn](https://linkedin.com/in/fcojacob) · [GitHub](https://github.com/FcoJacob)
+Made by **Jacob Sarmiento** — [fsarmiento.dev](https://jsarmiento.dev) · [LinkedIn](https://linkedin.com/in/fcojacob) · [GitHub](https://github.com/FcoJacob)
 
 </div>
