@@ -1,5 +1,6 @@
 <template>
-  <div class="min-h-screen flex flex-col">
+  <div class="min-h-screen flex flex-col relative">
+    <SiteBackground />
     <AppHeader />
 
     <main class="flex-1">

@@ -1,336 +1,263 @@
 {
-    "app": {
-        "title": "Jacob Sarmiento",
-        "description": "Desarrollador de software - UI/UX"
+  "app": {
+    "title": "Jacob Sarmiento",
+    "description": "Desarrollador de software - UI/UX"
+  },
+  "nav": {
+    "home": "Inicio",
+    "blog": "Blog",
+    "projects": "Proyectos",
+    "labs": "Labs",
+    "cv": "CV",
+    "open_menu": "Abrir menú",
+    "close_menu": "Cerrar menú"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Ha ocurrido un error",
+    "download_pdf": "Descargar PDF",
+    "login": "Iniciar sesión",
+    "logout": "Cerrar sesión",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Crear",
+    "back": "Volver",
+    "visit": "Visitar",
+    "view_all": "Ver todos",
+    "read_more": "Leer más →",
+    "no_items": "No hay elementos todavía.",
+    "projects_subtitle": "Proyectos profesionales y personales en los que he trabajado.",
+    "labs_subtitle": "Experimentos, prototipos y pruebas de concepto.",
+    "blog_subtitle": "Reflexiones y aprendizajes sobre desarrollo web."
+  },
+  "cv": {
+    "work": "Experiencia Laboral",
+    "education": "Educación",
+    "skills": "Habilidades",
+    "languages": "Idiomas",
+    "projects": "Proyectos",
+    "present": "Actualmente",
+    "active": "Activo",
+    "certifications": "Certificaciones",
+    "soft_skills": "Habilidades Blandas",
+    "driving": "Carnet de Conducir"
+  },
+  "admin": {
+    "title": "Panel de administración",
+    "dashboard": "Dashboard",
+    "blogs": "Blog",
+    "projects": "Proyectos",
+    "labs": "Labs",
+    "cv": "CV"
+  },
+  "hero": {
+    "summary": "Me encanta la Informática y las tecnologías, la mayor parte de mi tiempo libre la dedico a investigar nuevos medios y formas de hacer las cosas, me encanta innovar, me considero una persona muy creativa, alegre y con muy buena actitud. Me afana trabajar en proyectos que mejoren la vida de los demás. Me encanta las dinámicas de grupos y el trabajo en equipo.",
+    "cta": "Ver mi trayectoria",
+    "cta2": "Contactar",
+    "available": "Disponible para nuevos retos",
+    "stats_experience": "Años de experiencia",
+    "stats_projects": "Proyectos entregados",
+    "stats_stack": "Stack principal"
+  },
+  "cv_data": {
+    "basics": {
+      "name": "Jacob Sarmiento",
+      "label": "Desarrollador de software - UI/UX",
+      "summary": "Me encanta la Informática y las tecnologías, la mayor parte de mi tiempo libre la dedico a investigar nuevos medios y formas de hacer las cosas, me encanta innovar, me considero una persona muy creativa, alegre y con muy buena actitud. Me afana trabajar en proyectos que mejoren la vida de los demás. Me encanta las dinámicas de grupos y el trabajo en equipo.",
+      "location": "Las Palmas, Canarias"
     },
-    "nav": {
-        "home": "Inicio",
-        "blog": "Blog",
-        "projects": "Proyectos",
-        "labs": "Labs",
-        "cv": "CV",
-        "open_menu": "Abrir menú",
-        "close_menu": "Cerrar menú"
+    "work": [
+      {
+        "position": "Senior Frontend Developer",
+        "name": "AIDA",
+        "startDate": "Dic 2024",
+        "endDate": "",
+        "summary": "Desarrollo de aplicaciones frontend con tecnologías modernas.",
+        "highlights": ["Promoción a Senior Frontend Developer"]
+      },
+      {
+        "position": "Frontend Developer",
+        "name": "AIDA",
+        "startDate": "Mar 2023",
+        "endDate": "Dic 2024",
+        "summary": "Desarrollo de actividades de front-end con Vue, JavaScript, HTML y CSS.",
+        "highlights": ["Desarrollo de interfaces de usuario", "Integración con APIs"]
+      },
+      {
+        "position": "Desarrollador de aplicaciones",
+        "name": "Progrentis",
+        "startDate": "Jul 2020",
+        "endDate": "Ene 2024",
+        "summary": "Desarrollo de aplicaciones frontend con Vue, JavaScript, HTML y CSS.",
+        "highlights": ["Desarrollo frontend", "Trabajo remoto internacional"]
+      },
+      {
+        "position": "Desarrollador de páginas web autónomo",
+        "name": "Profesional independiente",
+        "startDate": "Jun 2017",
+        "endDate": "",
+        "summary": "Desarrollo web freelance para múltiples clientes y proyectos.",
+        "highlights": ["Múltiples proyectos web", "Clientes variados", "Digitalización de negocios"]
+      },
+      {
+        "position": "Especialista en mantenimiento de aeronaves",
+        "name": "Ejército del Aire",
+        "startDate": "Dic 2007",
+        "endDate": "",
+        "summary": "Diversas tareas de mantenimiento en cazas de combate.",
+        "highlights": ["Mantenimiento de aeronaves militares"]
+      },
+      {
+        "position": "Marinero — Especialista Maniobra y Navegación",
+        "name": "Armada Española",
+        "startDate": "Dic 2004",
+        "endDate": "Dic 2006",
+        "summary": "Más de 260 horas de mar, campañas de control de pesca, defensa de aguas nacionales y servicios de marinero de puente.",
+        "highlights": ["Control de pesca", "Defensa de aguas nacionales"]
+      },
+      {
+        "position": "Militar",
+        "name": "Ejército de Tierra",
+        "startDate": "Dic 2000",
+        "endDate": "Ago 2004",
+        "summary": "Operaciones de transmisiones y ofimática. Medalla al mérito aeronáutico.",
+        "highlights": ["Transmisiones y ofimática", "Medalla al mérito aeronáutico"]
+      }
+    ],
+    "education": [
+      {
+        "institution": "Universitat Oberta de Catalunya",
+        "studyType": "Grado en Ingeniería",
+        "area": "Informática, comunicaciones y servicios de asistencia",
+        "startDate": "Feb 2022",
+        "endDate": "",
+        "note": "En curso · 140 créditos superados"
+      },
+      {
+        "institution": "CIFP Villa de Agüimes",
+        "studyType": "Técnico",
+        "area": "Desarrollo de aplicaciones Web",
+        "startDate": "2016",
+        "endDate": "2018"
+      },
+      {
+        "institution": "Académia Telde",
+        "studyType": "Curso",
+        "area": "Mantenimiento y Reparación de Ordenadores",
+        "startDate": "2005",
+        "endDate": "2006"
+      },
+      {
+        "institution": "Colegio El Batan",
+        "studyType": "Educación Secundaria Obligatoria",
+        "area": "E.S.O.",
+        "startDate": "1987",
+        "endDate": "1998"
+      }
+    ],
+    "skills": {
+      "frontend": {
+        "name": "Frontend",
+        "level": "Senior",
+        "keywords": ["HTML", "CSS", "JavaScript", "TypeScript", "Vue.js", "Nuxt"]
+      },
+      "backend": {
+        "name": "Backend",
+        "level": "Intermedio",
+        "keywords": ["Node.js", "Firebase", "Convex"]
+      },
+      "design": {
+        "name": "Diseño",
+        "level": "Intermedio",
+        "keywords": ["Photoshop", "Illustrator", "UI/UX"]
+      },
+      "tools": {
+        "name": "Herramientas",
+        "level": "Avanzado",
+        "keywords": ["Git", "GitHub", "ClickUp", "Jira", "Office"]
+      },
+      "ai": {
+        "name": "IA",
+        "level": "Intermedio",
+        "keywords": ["Copilot", "ChatGPT", "Prompt Engineering"]
+      },
+      "principles": {
+        "name": "Principios",
+        "level": "Avanzado",
+        "keywords": ["SOLID", "Clean Code", "Responsive Design"]
+      }
     },
-    "common": {
-        "loading": "Cargando...",
-        "error": "Ha ocurrido un error",
-        "download_pdf": "Descargar PDF",
-        "login": "Iniciar sesión",
-        "logout": "Cerrar sesión",
-        "save": "Guardar",
-        "cancel": "Cancelar",
-        "delete": "Eliminar",
-        "edit": "Editar",
-        "create": "Crear",
-        "back": "Volver",
-        "visit": "Visitar",
-        "read_more": "Leer más →",
-        "no_items": "No hay elementos todavía.",
-        "projects_subtitle": "Proyectos profesionales y personales en los que he trabajado.",
-        "labs_subtitle": "Experimentos, prototipos y pruebas de concepto.",
-        "blog_subtitle": "Reflexiones y aprendizajes sobre desarrollo web."
-    },
-    "cv": {
-        "work": "Experiencia Laboral",
-        "education": "Educación",
-        "skills": "Habilidades",
-        "languages": "Idiomas",
-        "projects": "Proyectos",
-        "present": "Actualmente",
-        "active": "Activo",
-        "certifications": "Certificaciones",
-        "soft_skills": "Habilidades Blandas",
-        "driving": "Carnet de Conducir"
-    },
-    "admin": {
-        "title": "Panel de administración",
-        "dashboard": "Dashboard",
-        "blogs": "Blog",
-        "projects": "Proyectos",
-        "labs": "Labs",
-        "cv": "CV"
-    },
-    "hero": {
-        "summary": "Me encanta la Informática y las tecnologías, la mayor parte de mi tiempo libre la dedico a investigar nuevos medios y formas de hacer las cosas, me encanta innovar, me considero una persona muy creativa, alegre y con muy buena actitud. Me afana trabajar en proyectos que mejoren la vida de los demás. Me encanta las dinámicas de grupos y el trabajo en equipo.",
-        "cta": "Ver mi trayectoria",
-        "cta2": "Contactar",
-        "available": "Disponible para nuevos retos",
-        "stats_experience": "Años de experiencia",
-        "stats_projects": "Proyectos entregados",
-        "stats_stack": "Stack principal"
-    },
-    "cv_data": {
-        "basics": {
-            "name": "Jacob Sarmiento",
-            "label": "Desarrollador de software - UI/UX",
-            "summary": "Me encanta la Informática y las tecnologías, la mayor parte de mi tiempo libre la dedico a investigar nuevos medios y formas de hacer las cosas, me encanta innovar, me considero una persona muy creativa, alegre y con muy buena actitud. Me afana trabajar en proyectos que mejoren la vida de los demás. Me encanta las dinámicas de grupos y el trabajo en equipo.",
-            "location": "Las Palmas, Canarias"
-        },
-        "work": [
-            {
-                "position": "Senior Frontend Developer",
-                "name": "AIDA",
-                "startDate": "Dic 2024",
-                "endDate": "",
-                "summary": "Desarrollo de aplicaciones frontend con tecnologías modernas.",
-                "highlights": [
-                    "Promoción a Senior Frontend Developer"
-                ]
-            },
-            {
-                "position": "Frontend Developer",
-                "name": "AIDA",
-                "startDate": "Mar 2023",
-                "endDate": "Dic 2024",
-                "summary": "Desarrollo de actividades de front-end con Vue, JavaScript, HTML y CSS.",
-                "highlights": [
-                    "Desarrollo de interfaces de usuario",
-                    "Integración con APIs"
-                ]
-            },
-            {
-                "position": "Desarrollador de aplicaciones",
-                "name": "Progrentis",
-                "startDate": "Jul 2020",
-                "endDate": "Ene 2024",
-                "summary": "Desarrollo de aplicaciones frontend con Vue, JavaScript, HTML y CSS.",
-                "highlights": [
-                    "Desarrollo frontend",
-                    "Trabajo remoto internacional"
-                ]
-            },
-            {
-                "position": "Desarrollador de páginas web autónomo",
-                "name": "Profesional independiente",
-                "startDate": "Jun 2017",
-                "endDate": "",
-                "summary": "Desarrollo web freelance para múltiples clientes y proyectos.",
-                "highlights": [
-                    "Múltiples proyectos web",
-                    "Clientes variados",
-                    "Digitalización de negocios"
-                ]
-            },
-            {
-                "position": "Especialista en mantenimiento de aeronaves",
-                "name": "Ejército del Aire",
-                "startDate": "Dic 2007",
-                "endDate": "",
-                "summary": "Diversas tareas de mantenimiento en cazas de combate.",
-                "highlights": [
-                    "Mantenimiento de aeronaves militares"
-                ]
-            },
-            {
-                "position": "Marinero — Especialista Maniobra y Navegación",
-                "name": "Armada Española",
-                "startDate": "Dic 2004",
-                "endDate": "Dic 2006",
-                "summary": "Más de 260 horas de mar, campañas de control de pesca, defensa de aguas nacionales y servicios de marinero de puente.",
-                "highlights": [
-                    "Control de pesca",
-                    "Defensa de aguas nacionales"
-                ]
-            },
-            {
-                "position": "Militar",
-                "name": "Ejército de Tierra",
-                "startDate": "Dic 2000",
-                "endDate": "Ago 2004",
-                "summary": "Operaciones de transmisiones y ofimática. Medalla al mérito aeronáutico.",
-                "highlights": [
-                    "Transmisiones y ofimática",
-                    "Medalla al mérito aeronáutico"
-                ]
-            }
-        ],
-        "education": [
-            {
-                "institution": "Universitat Oberta de Catalunya",
-                "studyType": "Grado en Ingeniería",
-                "area": "Informática, comunicaciones y servicios de asistencia",
-                "startDate": "Feb 2022",
-                "endDate": "",
-                "note": "En curso · 140 créditos superados"
-            },
-            {
-                "institution": "CIFP Villa de Agüimes",
-                "studyType": "Técnico",
-                "area": "Desarrollo de aplicaciones Web",
-                "startDate": "2016",
-                "endDate": "2018"
-            },
-            {
-                "institution": "Académia Telde",
-                "studyType": "Curso",
-                "area": "Mantenimiento y Reparación de Ordenadores",
-                "startDate": "2005",
-                "endDate": "2006"
-            },
-            {
-                "institution": "Colegio El Batan",
-                "studyType": "Educación Secundaria Obligatoria",
-                "area": "E.S.O.",
-                "startDate": "1987",
-                "endDate": "1998"
-            }
-        ],
-        "skills": {
-            "frontend": {
-                "name": "Frontend",
-                "level": "Senior",
-                "keywords": [
-                    "HTML",
-                    "CSS",
-                    "JavaScript",
-                    "TypeScript",
-                    "Vue.js",
-                    "Nuxt"
-                ]
-            },
-            "backend": {
-                "name": "Backend",
-                "level": "Intermedio",
-                "keywords": [
-                    "Node.js",
-                    "Firebase",
-                    "Convex"
-                ]
-            },
-            "design": {
-                "name": "Diseño",
-                "level": "Intermedio",
-                "keywords": [
-                    "Photoshop",
-                    "Illustrator",
-                    "UI/UX"
-                ]
-            },
-            "tools": {
-                "name": "Herramientas",
-                "level": "Avanzado",
-                "keywords": [
-                    "Git",
-                    "GitHub",
-                    "ClickUp",
-                    "Jira",
-                    "Office"
-                ]
-            },
-            "ai": {
-                "name": "IA",
-                "level": "Intermedio",
-                "keywords": [
-                    "Copilot",
-                    "ChatGPT",
-                    "Prompt Engineering"
-                ]
-            },
-            "principles": {
-                "name": "Principios",
-                "level": "Avanzado",
-                "keywords": [
-                    "SOLID",
-                    "Clean Code",
-                    "Responsive Design"
-                ]
-            }
-        },
-        "languages": [
-            {
-                "language": "Español",
-                "fluency": "Nativo"
-            },
-            {
-                "language": "Inglés",
-                "fluency": "Elemental"
-            }
-        ],
-        "certifications": [
-            "CSS Grid Layout",
-            "Git y GitHub",
-            "Fundamentos de TypeScript",
-            "Desarrollo web online",
-            "Introducción al diseño"
-        ],
-        "soft_skills": [
-            "Creatividad",
-            "Atención a los detalles",
-            "Trabajo en equipo",
-            "Resolución de problemas",
-            "Comunicación",
-            "Capacidad de adaptación",
-            "Ética de trabajo"
-        ],
-        "driving": "Permiso B y C",
-        "projects": [
-            {
-                "name": "masquehuellas.es",
-                "description": "Digitalización web de la clínica veterinaria +QHuellas.",
-                "details": "Proyecto freelance de diseño y desarrollo completo. Incluye catálogo de servicios, sistema de citas, y galería de pacientes. Diseño responsive optimizado para móviles.",
-                "tags": [
-                    "Nuxt",
-                    "Vue.js",
-                    "Responsive",
-                    "SEO"
-                ],
-                "url": "https://masquehuellas.es/"
-            },
-            {
-                "name": "foroebc.org",
-                "description": "Promover nuevos ámbitos y competencias profesionales.",
-                "details": "Portal web para el Foro de Economía Azul de Canarias. Gestión de eventos, noticias y recursos para profesionales del sector marítimo.",
-                "tags": [
-                    "Vue.js",
-                    "CMS",
-                    "UI/UX"
-                ],
-                "url": "https://foroebc.org/"
-            },
-            {
-                "name": "businessevolver.net",
-                "description": "Alianzas para un futuro en desarrollo sostenible (ODS) y digitalización.",
-                "details": "Plataforma de alianzas empresariales enfocada en los Objetivos de Desarrollo Sostenible. Dashboard interactivo, perfiles de empresa y matching de colaboraciones.",
-                "tags": [
-                    "Vue.js",
-                    "Node.js",
-                    "Dashboard"
-                ],
-                "url": "https://businessevolver.net/"
-            },
-            {
-                "name": "lajairadeana.com",
-                "description": "Web para la granja escuela La Jaira de Ana.",
-                "details": "Sitio web con galería de actividades, sistema de reservas y blog. Fotografía y diseño alineados con la identidad rural del negocio.",
-                "tags": [
-                    "HTML/CSS",
-                    "JavaScript",
-                    "Diseño"
-                ],
-                "url": "https://lajairadeana.com/"
-            },
-            {
-                "name": "doelhierro.es",
-                "description": "Web de la Denominación de Origen de Vinos del Hierro.",
-                "details": "Portal institucional con catálogo de bodegas, mapa interactivo de viñedos y sección de noticias. Enfoque en storytelling visual y SEO local.",
-                "tags": [
-                    "Vue.js",
-                    "SEO",
-                    "Maps"
-                ],
-                "url": "https://doelhierro.es/"
-            },
-            {
-                "name": "JamApp",
-                "description": "Proyecto fin de estudios premiado con apoyo de la EOI y el Cabildo de Gran Canaria.",
-                "details": "Aplicación para conectar músicos locales. Funcionalidades de chat, creación de bandas, calendario de ensayos y búsqueda por instrumento y estilo musical.",
-                "tags": [
-                    "Vue.js",
-                    "Firebase",
-                    "Mobile"
-                ]
-            }
-        ]
-    }
+    "languages": [
+      {
+        "language": "Español",
+        "fluency": "Nativo"
+      },
+      {
+        "language": "Inglés",
+        "fluency": "Elemental"
+      }
+    ],
+    "certifications": [
+      "CSS Grid Layout",
+      "Git y GitHub",
+      "Fundamentos de TypeScript",
+      "Desarrollo web online",
+      "Introducción al diseño"
+    ],
+    "soft_skills": [
+      "Creatividad",
+      "Atención a los detalles",
+      "Trabajo en equipo",
+      "Resolución de problemas",
+      "Comunicación",
+      "Capacidad de adaptación",
+      "Ética de trabajo"
+    ],
+    "driving": "Permiso B y C",
+    "projects": [
+      {
+        "name": "masquehuellas.es",
+        "description": "Digitalización web de la clínica veterinaria +QHuellas.",
+        "details": "Proyecto freelance de diseño y desarrollo completo. Incluye catálogo de servicios, sistema de citas, y galería de pacientes. Diseño responsive optimizado para móviles.",
+        "tags": ["Nuxt", "Vue.js", "Responsive", "SEO"],
+        "url": "https://masquehuellas.es/"
+      },
+      {
+        "name": "foroebc.org",
+        "description": "Promover nuevos ámbitos y competencias profesionales.",
+        "details": "Portal web para el Foro de Economía Azul de Canarias. Gestión de eventos, noticias y recursos para profesionales del sector marítimo.",
+        "tags": ["Vue.js", "CMS", "UI/UX"],
+        "url": "https://foroebc.org/"
+      },
+      {
+        "name": "businessevolver.net",
+        "description": "Alianzas para un futuro en desarrollo sostenible (ODS) y digitalización.",
+        "details": "Plataforma de alianzas empresariales enfocada en los Objetivos de Desarrollo Sostenible. Dashboard interactivo, perfiles de empresa y matching de colaboraciones.",
+        "tags": ["Vue.js", "Node.js", "Dashboard"],
+        "url": "https://businessevolver.net/"
+      },
+      {
+        "name": "lajairadeana.com",
+        "description": "Web para la granja escuela La Jaira de Ana.",
+        "details": "Sitio web con galería de actividades, sistema de reservas y blog. Fotografía y diseño alineados con la identidad rural del negocio.",
+        "tags": ["HTML/CSS", "JavaScript", "Diseño"],
+        "url": "https://lajairadeana.com/"
+      },
+      {
+        "name": "doelhierro.es",
+        "description": "Web de la Denominación de Origen de Vinos del Hierro.",
+        "details": "Portal institucional con catálogo de bodegas, mapa interactivo de viñedos y sección de noticias. Enfoque en storytelling visual y SEO local.",
+        "tags": ["Vue.js", "SEO", "Maps"],
+        "url": "https://doelhierro.es/"
+      },
+      {
+        "name": "JamApp",
+        "description": "Proyecto fin de estudios premiado con apoyo de la EOI y el Cabildo de Gran Canaria.",
+        "details": "Aplicación para conectar músicos locales. Funcionalidades de chat, creación de bandas, calendario de ensayos y búsqueda por instrumento y estilo musical.",
+        "tags": ["Vue.js", "Firebase", "Mobile"]
+      }
+    ]
+  }
 }
