@@ -12,18 +12,19 @@ export function useSafeConvexQuery<F extends FunctionReference<'query'>>(
   if (import.meta.server) {
     return ref(undefined) as Ref<FunctionReturnType<F> | undefined>
   }
-  return useConvexQuery(fn, args)
+  const { data } = useConvexQuery(fn, args)
+  return data as Ref<FunctionReturnType<F> | undefined>
 }
 
 /**
  * SSR-safe wrapper around useConvexMutation.
  */
-export function useSafeConvexMutation<F extends FunctionReference<'mutation'>>(
-  fn: F,
-) {
+export function useSafeConvexMutation<F extends FunctionReference<'mutation'>>(fn: F) {
   if (import.meta.server) {
     return {
-      mutate: (() => Promise.resolve()) as unknown as (args: FunctionArgs<F>) => Promise<FunctionReturnType<F>>,
+      mutate: (() => Promise.resolve()) as unknown as (
+        args: FunctionArgs<F>,
+      ) => Promise<FunctionReturnType<F>>,
       isLoading: ref(false),
     }
   }

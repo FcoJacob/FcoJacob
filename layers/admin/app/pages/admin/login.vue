@@ -1,5 +1,8 @@
 <script setup lang="ts">
 const { t } = useI18n()
+const route = useRoute()
+
+const unauthorized = computed(() => route.query.error === 'unauthorized')
 </script>
 
 <template>
@@ -11,21 +14,20 @@ const { t } = useI18n()
         </h1>
       </template>
 
+      <UAlert
+        v-if="unauthorized"
+        color="error"
+        icon="i-lucide-shield-x"
+        title="Acceso denegado"
+        description="Tu cuenta no tiene permisos de administrador."
+        class="mb-4"
+      />
+
       <div class="flex flex-col gap-3">
         <UButton
           to="/auth/google"
           icon="i-simple-icons-google"
           label="Google"
-          color="neutral"
-          variant="outline"
-          size="lg"
-          block
-          external
-        />
-        <UButton
-          to="/auth/linkedin"
-          icon="i-simple-icons-linkedin"
-          label="LinkedIn"
           color="neutral"
           variant="outline"
           size="lg"

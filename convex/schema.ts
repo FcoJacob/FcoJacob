@@ -79,7 +79,8 @@ export default defineSchema({
     locale: v.string(),
     createdAt: v.number(),
     updatedAt: v.number(),
-  }).index('by_slug', ['slug'])
+  })
+    .index('by_slug', ['slug'])
     .index('by_locale', ['locale'])
     .index('by_published', ['published']),
 
@@ -87,10 +88,9 @@ export default defineSchema({
     name: v.string(),
     description: v.string(),
     url: v.optional(v.string()),
-    github: v.optional(v.string()),
-    isActive: v.boolean(),
-    highlights: v.array(v.string()),
+    thumbnail: v.optional(v.string()),
     tags: v.array(v.string()),
+    isActive: v.boolean(),
     order: v.number(),
     createdAt: v.number(),
   }).index('by_order', ['order']),

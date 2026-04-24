@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { Id } from '~~/convex/_generated/dataModel'
 import { api } from '#convex/_generated/api'
 
 const { t } = useI18n()
@@ -12,9 +13,14 @@ definePageMeta({
   middleware: 'auth',
 })
 
-const isNew = computed(() => route.params.id === 'new')
+const { blogSchema } = useAdminSchemas()
 
-const existing = isNew.value ? ref(null) : useSafeConvexQuery(api.blogs.getBySlug, { slug: '' })
+const isNew = computed(() => route.params.id === 'new')
+const saving = ref(false)
+
+const existing = isNew.value
+  ? ref(null)
+  : useSafeConvexQuery(api.blogs.getById, { id: route.params.id as Id<'blogs'> })
 
 const form = reactive({
   title: '',
@@ -26,33 +32,41 @@ const form = reactive({
   locale: 'es',
 })
 
-watch(existing, (blog) => {
-  if (blog) {
-    Object.assign(form, {
-      title: blog.title,
-      slug: blog.slug,
-      content: blog.content,
-      excerpt: blog.excerpt,
-      coverImage: blog.coverImage ?? '',
-      published: blog.published,
-      locale: blog.locale,
-    })
-  }
-}, { immediate: true })
+watch(
+  existing,
+  (blog) => {
+    if (blog) {
+      Object.assign(form, {
+        title: blog.title,
+        slug: blog.slug,
+        content: blog.content,
+        excerpt: blog.excerpt,
+        coverImage: blog.coverImage ?? '',
+        published: blog.published,
+        locale: blog.locale,
+      })
+    }
+  },
+  { immediate: true },
+)
 
 async function handleSubmit() {
+  saving.value = true
   try {
     if (isNew.value) {
       await createBlog({ ...form, coverImage: form.coverImage || undefined })
-    }
-    else {
-      await updateBlog(route.params.id as string, { ...form, coverImage: form.coverImage || undefined })
+    } else {
+      await updateBlog(route.params.id as string, {
+        ...form,
+        coverImage: form.coverImage || undefined,
+      })
     }
     toast.add({ title: isNew.value ? 'Blog created' : 'Blog updated', color: 'success' })
     router.push('/admin/blogs')
-  }
-  catch {
+  } catch {
     toast.add({ title: 'Error saving blog', color: 'error' })
+  } finally {
+    saving.value = false
   }
 }
 </script>
@@ -60,13 +74,18 @@ async function handleSubmit() {
 <template>
   <div>
     <div class="flex items-center gap-4 mb-6">
-      <UButton :label="t('common.back')" icon="i-lucide-arrow-left" variant="ghost" to="/admin/blogs" />
+      <UButton
+        :label="t('common.back')"
+        icon="i-lucide-arrow-left"
+        variant="ghost"
+        to="/admin/blogs"
+      />
       <h2 class="text-2xl font-bold">
         {{ isNew ? t('common.create') : t('common.edit') }} {{ t('admin.blogs') }}
       </h2>
     </div>
 
-    <UForm :state="form" class="space-y-4 max-w-2xl" @submit="handleSubmit">
+    <UForm :schema="blogSchema" :state="form" class="space-y-4 max-w-2xl" @submit="handleSubmit">
       <UFormField label="Title" name="title">
         <UInput v-model="form.title" />
       </UFormField>
@@ -90,7 +109,10 @@ async function handleSubmit() {
       <UFormField label="Locale" name="locale">
         <USelect
           v-model="form.locale"
-          :items="[{ label: 'Español', value: 'es' }, { label: 'English', value: 'en' }]"
+          :items="[
+            { label: 'Español', value: 'es' },
+            { label: 'English', value: 'en' },
+          ]"
         />
       </UFormField>
 
@@ -99,7 +121,7 @@ async function handleSubmit() {
       </UFormField>
 
       <div class="flex gap-2 pt-4">
-        <UButton type="submit" :label="t('common.save')" />
+        <UButton type="submit" :label="t('common.save')" :loading="saving" />
         <UButton :label="t('common.cancel')" variant="outline" to="/admin/blogs" />
       </div>
     </UForm>

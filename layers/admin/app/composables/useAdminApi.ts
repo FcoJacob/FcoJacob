@@ -23,10 +23,9 @@ export function useAdminApi() {
     name: string
     description: string
     url?: string
-    github?: string
-    isActive: boolean
-    highlights: string[]
+    thumbnail?: string
     tags: string[]
+    isActive: boolean
     order: number
   }) {
     return await $fetch('/api/admin/projects', { method: 'POST', body: data })
@@ -40,24 +39,6 @@ export function useAdminApi() {
     return await $fetch(`/api/admin/projects/${id}`, { method: 'DELETE' })
   }
 
-  async function createLab(data: {
-    name: string
-    description: string
-    url?: string
-    tags: string[]
-    published: boolean
-  }) {
-    return await $fetch('/api/admin/labs', { method: 'POST', body: data })
-  }
-
-  async function updateLab(id: string, data: Record<string, unknown>) {
-    return await $fetch(`/api/admin/labs/${id}`, { method: 'PUT', body: data })
-  }
-
-  async function deleteLab(id: string) {
-    return await $fetch(`/api/admin/labs/${id}`, { method: 'DELETE' })
-  }
-
   async function upsertCv(data: Record<string, unknown>) {
     return await $fetch('/api/admin/cv', { method: 'PUT', body: data })
   }
@@ -69,9 +50,6 @@ export function useAdminApi() {
     createProject,
     updateProject,
     deleteProject,
-    createLab,
-    updateLab,
-    deleteLab,
     upsertCv,
   }
 }

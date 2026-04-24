@@ -3,11 +3,12 @@ const { t } = useI18n()
 const { user, clear } = useUserSession()
 
 const adminNavItems = computed(() => [
-  { label: t('admin.dashboard'), to: '/admin', icon: 'i-lucide-layout-dashboard' },
-  { label: t('admin.blogs'), to: '/admin/blogs', icon: 'i-lucide-file-text' },
-  { label: t('admin.projects'), to: '/admin/projects', icon: 'i-lucide-folder-kanban' },
-  { label: t('admin.labs'), to: '/admin/labs', icon: 'i-lucide-flask-conical' },
-  { label: t('admin.cv'), to: '/admin/cv', icon: 'i-lucide-user' },
+  [
+    { label: t('admin.dashboard'), to: '/admin', icon: 'i-lucide-layout-dashboard' },
+    { label: t('admin.blogs'), to: '/admin/blogs', icon: 'i-lucide-file-text' },
+    { label: t('admin.projects'), to: '/admin/projects', icon: 'i-lucide-folder-kanban' },
+    { label: t('admin.cv'), to: '/admin/cv', icon: 'i-lucide-user' },
+  ],
 ])
 
 async function handleLogout() {
@@ -24,7 +25,7 @@ async function handleLogout() {
         <span class="text-sm font-medium truncate">{{ user?.name }}</span>
       </div>
 
-      <UVerticalNavigation :links="adminNavItems" />
+      <UNavigationMenu :items="adminNavItems" orientation="vertical" />
 
       <div class="mt-auto">
         <UButton

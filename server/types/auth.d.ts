@@ -4,7 +4,7 @@ declare module '#auth-utils' {
     name: string
     email: string
     avatar?: string
-    provider: 'google' | 'linkedin'
+    provider: 'google'
   }
 
   interface UserSession {

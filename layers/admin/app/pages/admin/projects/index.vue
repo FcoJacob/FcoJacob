@@ -3,7 +3,6 @@ import { api } from '#convex/_generated/api'
 
 const { t } = useI18n()
 const { deleteProject } = useAdminApi()
-const toast = useToast()
 
 definePageMeta({
   layout: 'admin',
@@ -11,16 +10,7 @@ definePageMeta({
 })
 
 const projects = useSafeConvexQuery(api.projects.list, {})
-
-async function handleDelete(id: string) {
-  try {
-    await deleteProject(id)
-    toast.add({ title: 'Project deleted', color: 'success' })
-  }
-  catch {
-    toast.add({ title: 'Error deleting project', color: 'error' })
-  }
-}
+const { showModal, requestDelete, cancelDelete, confirmDelete } = useDeleteConfirm()
 </script>
 
 <template>
@@ -29,15 +19,16 @@ async function handleDelete(id: string) {
       <h2 class="text-2xl font-bold">
         {{ t('admin.projects') }}
       </h2>
-      <UButton
-        :label="t('common.create')"
-        icon="i-lucide-plus"
-        to="/admin/projects/new"
-      />
+      <UButton :label="t('common.create')" icon="i-lucide-plus" to="/admin/projects/new" />
+    </div>
+
+    <div v-if="!projects" class="flex justify-center py-12">
+      <UIcon name="i-lucide-loader-2" class="size-6 animate-spin text-(--ui-text-muted)" />
     </div>
 
     <UTable
-      :data="projects ?? []"
+      v-else
+      :data="projects"
       :columns="[
         { accessorKey: 'name', header: 'Name' },
         { accessorKey: 'isActive', header: 'Active' },
@@ -46,7 +37,10 @@ async function handleDelete(id: string) {
       ]"
     >
       <template #isActive-cell="{ row }">
-        <UBadge :color="row.original.isActive ? 'success' : 'neutral'" :label="row.original.isActive ? 'Yes' : 'No'" />
+        <UBadge
+          :color="row.original.isActive ? 'success' : 'neutral'"
+          :label="row.original.isActive ? 'Yes' : 'No'"
+        />
       </template>
       <template #actions-cell="{ row }">
         <div class="flex gap-2 justify-end">
@@ -61,10 +55,29 @@ async function handleDelete(id: string) {
             size="xs"
             variant="ghost"
             color="error"
-            @click="handleDelete(row.original._id)"
+            @click="requestDelete(row.original._id)"
           />
         </div>
       </template>
     </UTable>
+
+    <UModal v-model:open="showModal">
+      <template #content>
+        <div class="p-6">
+          <h3 class="text-lg font-semibold mb-2">Confirm delete</h3>
+          <p class="text-(--ui-text-muted) mb-4">
+            Are you sure you want to delete this project? This action cannot be undone.
+          </p>
+          <div class="flex gap-2 justify-end">
+            <UButton label="Cancel" variant="outline" @click="cancelDelete" />
+            <UButton
+              label="Delete"
+              color="error"
+              @click="confirmDelete(deleteProject, 'Project')"
+            />
+          </div>
+        </div>
+      </template>
+    </UModal>
   </div>
 </template>
