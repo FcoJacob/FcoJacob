@@ -18,12 +18,20 @@ function resolveProjects(): Project[] {
       if (Array.isArray(v)) {
         resolved[k] = v.map((el: unknown) => {
           if (typeof el === 'string') return el
-          try { return rt(el as any) } catch { return String(el) }
+          try {
+            return rt(el as any)
+          } catch {
+            return String(el)
+          }
         })
       } else if (typeof v === 'string') {
         resolved[k] = v
       } else {
-        try { resolved[k] = rt(v as any) } catch { resolved[k] = String(v) }
+        try {
+          resolved[k] = rt(v as any)
+        } catch {
+          resolved[k] = String(v)
+        }
       }
     }
     return resolved as unknown as Project
@@ -62,14 +70,18 @@ function next() {
 <template>
   <div v-if="projects.length && selected" class="space-y-5">
     <!-- Focus area (top) -->
-    <div class="relative overflow-hidden rounded-2xl border border-(--ui-border) bg-(--ui-bg-elevated) min-h-64">
+    <div
+      class="relative overflow-hidden rounded-2xl border border-(--ui-border) bg-(--ui-bg-elevated) min-h-64"
+    >
       <Transition name="showcase" mode="out-in">
         <div :key="selected.name" class="p-6 sm:p-8 lg:p-10">
           <div class="flex flex-col gap-6">
             <!-- Header row -->
             <div class="flex items-start justify-between gap-4">
               <div class="space-y-1">
-                <span class="inline-flex items-center gap-2 text-xs font-medium text-(--ui-color-primary-500) uppercase tracking-widest">
+                <span
+                  class="inline-flex items-center gap-2 text-base md:text-lg font-medium text-(--ui-color-primary-500) uppercase tracking-widest"
+                >
                   <span class="size-1.5 rounded-full bg-(--ui-color-primary-500) animate-pulse" />
                   {{ selected.tags?.[0] || 'Web' }}
                 </span>
@@ -96,7 +108,7 @@ function next() {
             </p>
 
             <!-- Details -->
-            <p class="text-sm text-(--ui-text-dimmed) leading-relaxed max-w-2xl">
+            <p class="text-base md:text-lg text-(--ui-text-dimmed) leading-relaxed max-w-2xl">
               {{ selected.details }}
             </p>
 
@@ -108,7 +120,7 @@ function next() {
                 :label="tag"
                 color="neutral"
                 variant="outline"
-                size="sm"
+                size="md"
               />
             </div>
           </div>
@@ -116,7 +128,9 @@ function next() {
       </Transition>
 
       <!-- Navigation arrows on focus area -->
-      <div class="absolute bottom-6 right-6 sm:bottom-8 sm:right-8 lg:bottom-10 lg:right-10 flex gap-2">
+      <div
+        class="absolute bottom-6 right-6 sm:bottom-8 sm:right-8 lg:bottom-10 lg:right-10 flex gap-2"
+      >
         <button
           :disabled="selectedIndex === 0"
           class="flex items-center justify-center size-9 rounded-full border border-(--ui-border) bg-(--ui-bg)/60 backdrop-blur-sm transition-all cursor-pointer disabled:opacity-30 disabled:cursor-default hover:bg-(--ui-bg-elevated) hover:border-(--ui-border-hover)"
@@ -149,12 +163,12 @@ function next() {
       <div
         ref="scrollContainer"
         class="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory scrollbar-hide pb-1"
-        style="-ms-overflow-style: none; scrollbar-width: none;"
+        style="-ms-overflow-style: none; scrollbar-width: none"
       >
         <button
           v-for="(project, i) in projects"
           :key="project.name"
-          class="snap-start shrink-0 min-w-28 max-w-40 sm:min-w-32 sm:max-w-48 rounded-xl px-3 py-3 text-left transition-all duration-300 cursor-pointer"
+          class="snap-start shrink-0 min-w-36 max-w-48 sm:min-w-40 sm:max-w-56 rounded-xl px-3 py-3 text-left transition-all duration-300 cursor-pointer"
           :class="[
             i === selectedIndex
               ? 'bg-(--ui-color-primary-500)/10 border border-(--ui-color-primary-500)/40 shadow-sm scale-[1.02]'
@@ -163,12 +177,12 @@ function next() {
           @click="select(i)"
         >
           <p
-            class="text-xs font-bold truncate transition-colors duration-300"
+            class="text-base md:text-lg font-bold truncate transition-colors duration-300"
             :class="i === selectedIndex ? 'text-(--ui-color-primary-500)' : 'text-(--ui-text)'"
           >
             {{ project.name }}
           </p>
-          <p class="text-[10px] text-(--ui-text-muted) mt-0.5 truncate">
+          <p class="text-base md:text-lg text-(--ui-text-muted) mt-0.5 truncate">
             {{ project.tags?.[0] }}
           </p>
         </button>
@@ -184,7 +198,9 @@ function next() {
 /* Showcase container */
 .showcase-enter-active,
 .showcase-leave-active {
-  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .showcase-enter-from {
   opacity: 0;
@@ -194,5 +210,4 @@ function next() {
   opacity: 0;
   transform: scale(0.98) translateY(-8px);
 }
-
 </style>

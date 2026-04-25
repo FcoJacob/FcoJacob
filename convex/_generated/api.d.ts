@@ -8,10 +8,13 @@
  * @module
  */
 
+import type * as blogFooters from "../blogFooters.js";
+import type * as blogValidators from "../blogValidators.js";
 import type * as blogs from "../blogs.js";
 import type * as cv from "../cv.js";
 import type * as labs from "../labs.js";
 import type * as projects from "../projects.js";
+import type * as researchDocuments from "../researchDocuments.js";
 
 import type {
   ApiFromModules,
@@ -20,10 +23,13 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  blogFooters: typeof blogFooters;
+  blogValidators: typeof blogValidators;
   blogs: typeof blogs;
   cv: typeof cv;
   labs: typeof labs;
   projects: typeof projects;
+  researchDocuments: typeof researchDocuments;
 }>;
 
 /**

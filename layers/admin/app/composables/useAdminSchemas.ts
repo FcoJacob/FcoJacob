@@ -10,6 +10,7 @@ export function useAdminSchemas() {
     content: z.string().min(1, 'Content is required'),
     excerpt: z.string().min(1, 'Excerpt is required'),
     coverImage: z.string().url('Must be a valid URL').or(z.literal('')).optional(),
+    tags: z.string().optional(),
     published: z.boolean(),
     locale: z.enum(['es', 'en']),
   })

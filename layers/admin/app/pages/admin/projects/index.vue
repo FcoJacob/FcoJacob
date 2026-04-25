@@ -30,16 +30,20 @@ const { showModal, requestDelete, cancelDelete, confirmDelete } = useDeleteConfi
       v-else
       :data="projects"
       :columns="[
-        { accessorKey: 'name', header: 'Name' },
-        { accessorKey: 'isActive', header: 'Active' },
-        { accessorKey: 'order', header: 'Order' },
+        { accessorKey: 'name', header: t('admin.project_editor.name') },
+        { accessorKey: 'isActive', header: t('admin.project_editor.status') },
+        { accessorKey: 'order', header: t('admin.project_editor.order') },
         { accessorKey: 'actions', header: '' },
       ]"
     >
       <template #isActive-cell="{ row }">
         <UBadge
           :color="row.original.isActive ? 'success' : 'neutral'"
-          :label="row.original.isActive ? 'Yes' : 'No'"
+          :label="
+            row.original.isActive
+              ? t('admin.project_editor.active')
+              : t('admin.project_editor.inactive')
+          "
         />
       </template>
       <template #actions-cell="{ row }">
@@ -64,14 +68,14 @@ const { showModal, requestDelete, cancelDelete, confirmDelete } = useDeleteConfi
     <UModal v-model:open="showModal">
       <template #content>
         <div class="p-6">
-          <h3 class="text-lg font-semibold mb-2">Confirm delete</h3>
+          <h3 class="text-lg font-semibold mb-2">{{ t('admin.confirm_delete_title') }}</h3>
           <p class="text-(--ui-text-muted) mb-4">
-            Are you sure you want to delete this project? This action cannot be undone.
+            {{ t('admin.confirm_delete_project') }}
           </p>
           <div class="flex gap-2 justify-end">
-            <UButton label="Cancel" variant="outline" @click="cancelDelete" />
+            <UButton :label="t('common.cancel')" variant="outline" @click="cancelDelete" />
             <UButton
-              label="Delete"
+              :label="t('common.delete')"
               color="error"
               @click="confirmDelete(deleteProject, 'Project')"
             />

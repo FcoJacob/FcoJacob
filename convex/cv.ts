@@ -2,13 +2,19 @@ import { v } from 'convex/values'
 import { query, mutation } from './_generated/server'
 
 export const get = query({
-  handler: async (ctx) => {
-    return await ctx.db.query('cv').first()
+  args: { locale: v.optional(v.string()) },
+  handler: async (ctx, args) => {
+    const locale = args.locale ?? 'es'
+    return await ctx.db
+      .query('cv')
+      .withIndex('by_locale', (q) => q.eq('locale', locale))
+      .first()
   },
 })
 
 export const upsert = mutation({
   args: {
+    locale: v.optional(v.string()),
     basics: v.object({
       name: v.string(),
       label: v.string(),
@@ -80,11 +86,17 @@ export const upsert = mutation({
     ),
   },
   handler: async (ctx, args) => {
-    const existing = await ctx.db.query('cv').first()
+    const locale = args.locale ?? 'es'
+    const { locale: _locale, ...data } = args
+    const docData = { ...data, locale }
+    const existing = await ctx.db
+      .query('cv')
+      .withIndex('by_locale', (q) => q.eq('locale', locale))
+      .first()
     if (existing) {
-      await ctx.db.replace(existing._id, args)
+      await ctx.db.replace(existing._id, docData)
       return existing._id
     }
-    return await ctx.db.insert('cv', args)
+    return await ctx.db.insert('cv', docData)
   },
 })

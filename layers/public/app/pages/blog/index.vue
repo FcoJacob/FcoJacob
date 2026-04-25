@@ -12,18 +12,14 @@ const { data: blogs } = await useAsyncData('blogs', () =>
 </script>
 
 <template>
-  <div class="space-y-10">
-    <header v-reveal class="space-y-3">
-      <p class="text-xs uppercase tracking-[0.25em] text-(--ui-color-primary-500)">Writing</p>
-      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">
-        {{ t('nav.blog') }}
-      </h1>
-    </header>
+  <div class="space-y-12">
+    <PageHeader eyebrow="Writing" :title="t('nav.blog')" />
 
-    <div v-if="blogs?.length" v-reveal.stagger class="space-y-5">
+    <div v-if="blogs?.length" class="space-y-4 md:space-y-5">
       <NuxtLink
-        v-for="blog in blogs"
+        v-for="(blog, i) in blogs"
         :key="blog._id"
+        v-reveal="{ delay: i * 0.08 }"
         :to="`/blog/${blog.slug}`"
         class="block group"
       >
@@ -32,15 +28,23 @@ const { data: blogs } = await useAsyncData('blogs', () =>
           class="transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:border-(--ui-color-primary-500)/30"
         >
           <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div class="space-y-1.5 flex-1">
-              <h2
-                class="text-lg font-semibold group-hover:text-(--ui-color-primary-500) transition-colors"
-              >
+            <div class="space-y-2 flex-1">
+              <h2 class="card-title group-hover:text-(--ui-color-primary-500) transition-colors">
                 {{ blog.title }}
               </h2>
-              <p class="text-sm text-(--ui-text-muted) line-clamp-2">{{ blog.excerpt }}</p>
+              <p class="card-body line-clamp-2">{{ blog.excerpt }}</p>
+              <div class="flex flex-wrap items-center gap-3 text-sm text-(--ui-text-muted)">
+                <div class="flex items-center gap-1.5">
+                  <UIcon name="i-lucide-thumbs-up" class="size-4" />
+                  <span>{{ blog.likeCount ?? 0 }}</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <UIcon name="i-lucide-thumbs-down" class="size-4" />
+                  <span>{{ blog.dislikeCount ?? 0 }}</span>
+                </div>
+              </div>
             </div>
-            <div class="flex items-center gap-3 text-sm text-(--ui-text-muted) shrink-0">
+            <div class="flex items-center gap-3 text-base text-(--ui-text-muted) shrink-0">
               <time :datetime="new Date(blog.createdAt).toISOString()">{{
                 new Date(blog.createdAt).toLocaleDateString(locale)
               }}</time>

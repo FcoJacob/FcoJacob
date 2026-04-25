@@ -10,91 +10,109 @@ const { data: projects } = await useAsyncData('projects', () => $fetch('/api/pub
 </script>
 
 <template>
-  <div class="space-y-10">
-    <header v-reveal class="space-y-3">
-      <p class="text-xs uppercase tracking-[0.25em] text-(--ui-color-primary-500)">Work</p>
-      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">
-        {{ t('nav.projects') }}
-      </h1>
-      <p class="text-base text-(--ui-text-muted) max-w-2xl leading-relaxed">
-        {{ t('common.projects_subtitle') }}
-      </p>
-    </header>
+  <div class="space-y-14">
+    <PageHeader
+      eyebrow="Work"
+      :title="t('nav.projects')"
+      :subtitle="t('common.projects_subtitle')"
+    />
 
-    <div v-if="projects?.length" v-reveal.stagger class="grid grid-cols-1 md:grid-cols-2 gap-5">
-      <UCard
-        v-for="project in projects"
+    <div v-if="projects?.length" class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+      <article
+        v-for="(project, i) in projects"
         :key="project._id"
-        variant="subtle"
-        class="group project-card transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-(--ui-color-primary-500)/40"
+        v-reveal="{ delay: i * 0.1 }"
+        class="project-card group relative rounded-2xl overflow-hidden border border-(--ui-border) bg-(--ui-bg-elevated) cursor-default"
       >
-        <div class="space-y-4">
-          <div class="flex items-start justify-between gap-3">
-            <h2
-              class="text-lg font-semibold group-hover:text-(--ui-color-primary-500) transition-colors"
-            >
-              {{ project.name }}
-            </h2>
-            <UBadge
-              v-if="project.isActive"
-              color="success"
-              variant="subtle"
-              :label="t('cv.active')"
-              size="xs"
+        <!-- Thumbnail con overlay -->
+        <div class="relative h-52 md:h-60 overflow-hidden">
+          <img
+            v-if="project.thumbnail"
+            :src="project.thumbnail"
+            :alt="project.name"
+            class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+          />
+          <div
+            v-else
+            class="w-full h-full bg-gradient-to-br from-(--ui-color-primary-900)/30 to-(--ui-bg) flex items-center justify-center"
+          >
+            <UIcon
+              name="i-lucide-layout-dashboard"
+              class="size-12 text-(--ui-color-primary-500)/30"
             />
           </div>
 
-          <p class="text-sm text-(--ui-text-muted) leading-relaxed">{{ project.description }}</p>
+          <!-- Gradient overlay siempre presente -->
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"
+          />
 
-          <ul v-if="project.highlights.length" class="space-y-1.5">
-            <li
-              v-for="highlight in project.highlights"
-              :key="highlight"
-              class="flex items-start gap-2 text-sm text-(--ui-text-muted)"
-            >
-              <UIcon
-                name="i-lucide-chevron-right"
-                class="size-3.5 mt-0.5 shrink-0 text-(--ui-color-primary-500)"
+          <!-- Nombre encima de la imagen en mobile/tablet -->
+          <div class="absolute bottom-0 left-0 right-0 p-5">
+            <div class="flex items-end justify-between gap-3">
+              <h2 class="text-lg md:text-xl font-bold text-white leading-tight drop-shadow-lg">
+                {{ project.name }}
+              </h2>
+              <UBadge
+                v-if="project.isActive"
+                color="success"
+                variant="solid"
+                :label="t('cv.active')"
+                size="md"
+                class="shrink-0 mb-0.5"
               />
-              {{ highlight }}
-            </li>
-          </ul>
+            </div>
+          </div>
 
-          <div v-if="project.tags.length" class="flex flex-wrap gap-1.5">
+          <!-- Shine effect on hover -->
+          <div
+            class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+            style="
+              background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, transparent 60%);
+            "
+          />
+        </div>
+
+        <!-- Contenido -->
+        <div class="p-5 md:p-6 space-y-4">
+          <p class="text-base md:text-base text-(--ui-text-muted) leading-relaxed line-clamp-3">
+            {{ project.description }}
+          </p>
+
+          <!-- Tags -->
+          <div v-if="project.tags?.length" class="flex flex-wrap gap-1.5 md:gap-2">
             <UBadge
               v-for="tag in project.tags"
               :key="tag"
               :label="tag"
               color="neutral"
-              variant="outline"
-              size="xs"
+              variant="subtle"
+              size="md"
             />
           </div>
 
-          <div class="flex gap-2 pt-1">
+          <!-- CTA -->
+          <div class="pt-1">
             <UButton
               v-if="project.url"
               :to="project.url"
               :label="t('common.visit')"
-              size="xs"
+              size="md"
               variant="outline"
               icon="i-lucide-external-link"
               target="_blank"
               external
-            />
-            <UButton
-              v-if="project.github"
-              :to="project.github"
-              label="GitHub"
-              size="xs"
-              variant="ghost"
-              icon="i-lucide-github"
-              target="_blank"
-              external
+              class="w-full justify-center transition-all duration-300 group-hover:border-(--ui-color-primary-500) group-hover:text-(--ui-color-primary-500)"
             />
           </div>
         </div>
-      </UCard>
+
+        <!-- Animated border glow on hover -->
+        <div
+          class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+          style="box-shadow: inset 0 0 0 1px rgba(var(--ui-color-primary-500-rgb, 99 102 241), 0.5)"
+        />
+      </article>
     </div>
 
     <div v-else class="text-center py-16">
@@ -102,3 +120,26 @@ const { data: projects } = await useAsyncData('projects', () => $fetch('/api/pub
     </div>
   </div>
 </template>
+
+<style scoped>
+.project-card {
+  transform-style: preserve-3d;
+  transition:
+    transform 0.4s cubic-bezier(0.23, 1, 0.32, 1),
+    box-shadow 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.project-card:hover {
+  transform: translateY(-6px);
+  box-shadow:
+    0 20px 40px -12px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(var(--ui-color-primary-500-rgb, 99 102 241) / 0.15);
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+</style>

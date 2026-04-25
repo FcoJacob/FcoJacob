@@ -1,5 +1,6 @@
 import { defineSchema, defineTable } from 'convex/server'
 import { v } from 'convex/values'
+import { blogFooterContentValidator, blogResearchLinkContentValidator } from './blogValidators'
 
 const profileValidator = v.object({
   network: v.string(),
@@ -75,6 +76,13 @@ export default defineSchema({
     content: v.string(),
     excerpt: v.string(),
     coverImage: v.optional(v.string()),
+    tags: v.optional(v.array(v.string())),
+    researchLinkContent: v.optional(blogResearchLinkContentValidator),
+    footerMode: v.optional(v.union(v.literal('preset'), v.literal('custom'))),
+    footerPresetId: v.optional(v.id('blogFooters')),
+    footerContent: v.optional(blogFooterContentValidator),
+    likeCount: v.optional(v.number()),
+    dislikeCount: v.optional(v.number()),
     published: v.boolean(),
     locale: v.string(),
     createdAt: v.number(),
@@ -83,6 +91,23 @@ export default defineSchema({
     .index('by_slug', ['slug'])
     .index('by_locale', ['locale'])
     .index('by_published', ['published']),
+
+  blogFooters: defineTable({
+    name: v.string(),
+    content: blogFooterContentValidator,
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  }),
+
+  researchDocuments: defineTable({
+    slug: v.string(),
+    title: v.string(),
+    fileName: v.string(),
+    mimeType: v.string(),
+    storageId: v.id('_storage'),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  }).index('by_slug', ['slug']),
 
   projects: defineTable({
     name: v.string(),
@@ -105,11 +130,12 @@ export default defineSchema({
   }).index('by_published', ['published']),
 
   cv: defineTable({
+    locale: v.string(),
     basics: basicsValidator,
     work: v.array(workValidator),
     education: v.array(educationValidator),
     skills: v.array(skillValidator),
     languages: v.array(languageValidator),
     projects: v.array(cvProjectValidator),
-  }),
+  }).index('by_locale', ['locale']),
 })

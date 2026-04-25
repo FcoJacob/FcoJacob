@@ -196,7 +196,9 @@ onMounted(async () => {
                 >
                   +6
                 </p>
-                <p class="text-sm text-(--ui-text-muted) mt-1">{{ t('hero.stats_experience') }}</p>
+                <p class="text-base md:text-lg text-(--ui-text-muted) mt-1">
+                  {{ t('hero.stats_experience') }}
+                </p>
               </div>
               <USeparator />
               <div class="text-center">
@@ -206,12 +208,16 @@ onMounted(async () => {
                 >
                   +10
                 </p>
-                <p class="text-sm text-(--ui-text-muted) mt-1">{{ t('hero.stats_projects') }}</p>
+                <p class="text-base md:text-lg text-(--ui-text-muted) mt-1">
+                  {{ t('hero.stats_projects') }}
+                </p>
               </div>
               <USeparator />
               <div class="text-center">
                 <p class="text-2xl font-extrabold">Vue · Nuxt</p>
-                <p class="text-sm text-(--ui-text-muted) mt-1">{{ t('hero.stats_stack') }}</p>
+                <p class="text-base md:text-lg text-(--ui-text-muted) mt-1">
+                  {{ t('hero.stats_stack') }}
+                </p>
               </div>
             </div>
           </UCard>
@@ -221,7 +227,7 @@ onMounted(async () => {
       <!-- Scroll hint -->
       <div
         ref="scrollHint"
-        class="hidden lg:flex absolute -bottom-4 left-1/2 -translate-x-1/2 flex-col items-center gap-2 text-xs uppercase tracking-[0.25em] text-(--ui-text-muted)"
+        class="hidden lg:flex absolute -bottom-4 left-1/2 -translate-x-1/2 flex-col items-center gap-2 text-base md:text-lg uppercase tracking-[0.25em] text-(--ui-text-muted)"
       >
         <span>scroll</span>
         <span class="scroll-hint-rail relative block w-px h-10 bg-(--ui-border) overflow-hidden">
@@ -252,9 +258,7 @@ onMounted(async () => {
     <section v-reveal>
       <div class="flex items-end justify-between mb-10">
         <div>
-          <p class="text-xs uppercase tracking-[0.25em] text-(--ui-color-primary-500) mb-2">
-            {{ t('cv.skills') }}
-          </p>
+          <p class="eyebrow mb-2">{{ t('cv.skills') }}</p>
           <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">
             {{ t('cv_data.basics.label') }}
           </h2>
@@ -269,12 +273,12 @@ onMounted(async () => {
         >
           <div class="space-y-3">
             <div class="flex items-center justify-between">
-              <h3 class="font-semibold">{{ t(`cv_data.skills.${key}.name`) }}</h3>
+              <h3 class="card-title">{{ t(`cv_data.skills.${key}.name`) }}</h3>
               <UBadge
                 :label="t(`cv_data.skills.${key}.level`)"
                 :color="t(`cv_data.skills.${key}.level`) === 'Senior' ? 'success' : 'neutral'"
                 variant="subtle"
-                size="sm"
+                size="md"
               />
             </div>
             <div class="flex flex-wrap gap-1.5">
@@ -284,7 +288,7 @@ onMounted(async () => {
                 :label="kw"
                 color="neutral"
                 variant="outline"
-                size="sm"
+                size="md"
               />
             </div>
           </div>
@@ -296,16 +300,14 @@ onMounted(async () => {
     <section v-reveal>
       <div class="flex items-end justify-between mb-10">
         <div>
-          <p class="text-xs uppercase tracking-[0.25em] text-(--ui-color-primary-500) mb-2">
-            Selected work
-          </p>
+          <p class="eyebrow mb-2">Selected work</p>
           <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">
             {{ t('nav.projects') }}
           </h2>
         </div>
         <NuxtLink
           to="/projects"
-          class="group hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-(--ui-text-muted) hover:text-(--ui-color-primary-500) transition-colors"
+          class="group hidden sm:inline-flex items-center gap-1.5 text-base md:text-lg font-medium text-(--ui-text-muted) hover:text-(--ui-color-primary-500) transition-colors"
         >
           {{ t('common.view_all') }}
           <UIcon

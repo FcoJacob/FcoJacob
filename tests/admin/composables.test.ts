@@ -5,6 +5,9 @@ describe('useAdminApi composable', () => {
     const mod = await import('~~/layers/admin/app/composables/useAdminApi')
     const api = mod.useAdminApi()
 
+    expect(api.createBlogFooter).toBeTypeOf('function')
+    expect(api.updateBlogFooter).toBeTypeOf('function')
+    expect(api.deleteBlogFooter).toBeTypeOf('function')
     expect(api.createBlog).toBeTypeOf('function')
     expect(api.updateBlog).toBeTypeOf('function')
     expect(api.deleteBlog).toBeTypeOf('function')

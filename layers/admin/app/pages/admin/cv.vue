@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { api } from '#convex/_generated/api'
-
 const { t } = useI18n()
 const { upsertCv } = useAdminApi()
 const toast = useToast()
@@ -10,28 +8,43 @@ definePageMeta({
   middleware: 'auth',
 })
 
-const cvData = useSafeConvexQuery(api.cv.get, {})
+const selectedLocale = ref('es')
+const localeOptions = [
+  { label: 'Español', value: 'es' },
+  { label: 'English', value: 'en' },
+]
 
 const jsonInput = ref('')
 const editorRef = ref<HTMLDivElement>()
 let editorView: any = null
 
-watch(
-  cvData,
-  (data) => {
+async function loadCvData(locale: string) {
+  try {
+    const data = await $fetch('/api/public/cv', { query: { locale } })
     if (data) {
-      const { _id, _creationTime, ...rest } = data
+      const { _id, _creationTime, locale: _loc, ...rest } = data as Record<string, unknown>
       const newVal = JSON.stringify(rest, null, 2)
       jsonInput.value = newVal
-      if (editorView && editorView.state.doc.toString() !== newVal) {
-        editorView.dispatch({
-          changes: { from: 0, to: editorView.state.doc.length, insert: newVal },
-        })
-      }
+      updateEditor(newVal)
+    } else {
+      jsonInput.value = ''
+      updateEditor('')
     }
-  },
-  { immediate: true },
-)
+  } catch {
+    jsonInput.value = ''
+    updateEditor('')
+  }
+}
+
+function updateEditor(content: string) {
+  if (editorView && editorView.state.doc.toString() !== content) {
+    editorView.dispatch({
+      changes: { from: 0, to: editorView.state.doc.length, insert: content },
+    })
+  }
+}
+
+watch(selectedLocale, (locale) => loadCvData(locale))
 
 onMounted(async () => {
   if (!editorRef.value) return
@@ -77,6 +90,8 @@ onMounted(async () => {
     }),
     parent: editorRef.value,
   })
+
+  await loadCvData(selectedLocale.value)
 })
 
 onBeforeUnmount(() => {
@@ -87,8 +102,8 @@ onBeforeUnmount(() => {
 async function handleSubmit() {
   try {
     const parsed = JSON.parse(jsonInput.value)
-    await upsertCv(parsed)
-    toast.add({ title: 'CV updated', color: 'success' })
+    await upsertCv(parsed, selectedLocale.value)
+    toast.add({ title: `CV (${selectedLocale.value}) updated`, color: 'success' })
   } catch (e) {
     const message = e instanceof SyntaxError ? 'Invalid JSON' : 'Error saving CV'
     toast.add({ title: message, color: 'error' })
@@ -100,11 +115,7 @@ function formatJson() {
     const parsed = JSON.parse(jsonInput.value)
     const formatted = JSON.stringify(parsed, null, 2)
     jsonInput.value = formatted
-    if (editorView) {
-      editorView.dispatch({
-        changes: { from: 0, to: editorView.state.doc.length, insert: formatted },
-      })
-    }
+    updateEditor(formatted)
   } catch {
     toast.add({ title: 'Invalid JSON — cannot format', color: 'error' })
   }
@@ -123,17 +134,32 @@ function formatJson() {
       </div>
     </div>
 
-    <p class="text-sm text-(--ui-text-muted) mb-4">
-      Edit the CV JSON following the
-      <a
-        href="https://github.com/midudev/minimalist-portfolio-json/blob/main/cv.json"
-        target="_blank"
-        rel="noopener"
-        class="underline"
-        >minimalist-portfolio-json</a
-      >
-      schema.
-    </p>
+    <div class="flex items-center gap-4 mb-4">
+      <div class="flex items-center gap-2">
+        <span class="text-sm font-medium">{{ t('common.language') || 'Idioma' }}:</span>
+        <div class="flex gap-1">
+          <UButton
+            v-for="opt in localeOptions"
+            :key="opt.value"
+            :label="opt.label"
+            :variant="selectedLocale === opt.value ? 'solid' : 'outline'"
+            size="sm"
+            @click="selectedLocale = opt.value"
+          />
+        </div>
+      </div>
+      <p class="text-sm text-(--ui-text-muted)">
+        Edit the CV JSON following the
+        <a
+          href="https://github.com/midudev/minimalist-portfolio-json/blob/main/cv.json"
+          target="_blank"
+          rel="noopener"
+          class="underline"
+          >minimalist-portfolio-json</a
+        >
+        schema.
+      </p>
+    </div>
 
     <div
       ref="editorRef"

@@ -11,6 +11,7 @@ describe('convex schema', () => {
         content: v.string(),
         excerpt: v.string(),
         coverImage: v.optional(v.string()),
+        tags: v.optional(v.array(v.string())),
         published: v.boolean(),
         locale: v.string(),
         createdAt: v.number(),
@@ -41,33 +42,43 @@ describe('convex schema', () => {
             }),
           ),
         }),
-        work: v.array(v.object({
-          name: v.string(),
-          position: v.string(),
-          startDate: v.string(),
-          summary: v.string(),
-          highlights: v.array(v.string()),
-        })),
-        education: v.array(v.object({
-          institution: v.string(),
-          area: v.string(),
-          studyType: v.string(),
-          startDate: v.string(),
-        })),
-        skills: v.array(v.object({
-          name: v.string(),
-          level: v.string(),
-          keywords: v.array(v.string()),
-        })),
-        languages: v.array(v.object({
-          language: v.string(),
-          fluency: v.string(),
-        })),
-        projects: v.array(v.object({
-          name: v.string(),
-          description: v.string(),
-          highlights: v.array(v.string()),
-        })),
+        work: v.array(
+          v.object({
+            name: v.string(),
+            position: v.string(),
+            startDate: v.string(),
+            summary: v.string(),
+            highlights: v.array(v.string()),
+          }),
+        ),
+        education: v.array(
+          v.object({
+            institution: v.string(),
+            area: v.string(),
+            studyType: v.string(),
+            startDate: v.string(),
+          }),
+        ),
+        skills: v.array(
+          v.object({
+            name: v.string(),
+            level: v.string(),
+            keywords: v.array(v.string()),
+          }),
+        ),
+        languages: v.array(
+          v.object({
+            language: v.string(),
+            fluency: v.string(),
+          }),
+        ),
+        projects: v.array(
+          v.object({
+            name: v.string(),
+            description: v.string(),
+            highlights: v.array(v.string()),
+          }),
+        ),
       }),
     })
     expect(schema).toBeDefined()

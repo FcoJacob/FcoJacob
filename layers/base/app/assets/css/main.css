@@ -1,6 +1,123 @@
 @import 'tailwindcss';
 @import '@nuxt/ui';
 
+/* =============================================================
+   DESIGN TOKENS — Typography & spacing scale
+   -------------------------------------------------------------
+   Source of truth for all text sizes across the site.
+   Based on Linear (body 18px/1.60) + Vercel (display 48px/-2.4px) DS.
+   
+   Breakpoints (Tailwind defaults):
+     sm  ≥ 640px   — tablets portrait
+     md  ≥ 768px   — tablets landscape
+     lg  ≥ 1024px  — desktop
+   ============================================================= */
+
+@layer utilities {
+  /* ------------------------------------------------------------------
+     Eyebrow: overline label above section headings
+     "Work" / "Writing" / "Experiments"
+     12px mobile → 13px sm
+     ------------------------------------------------------------------ */
+  .eyebrow {
+    font-size: 0.75rem; /* 12px */
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--ui-color-primary-500);
+  }
+  @media (min-width: 640px) {
+    .eyebrow {
+      font-size: 0.8125rem;
+    } /* 13px */
+  }
+
+  /* ------------------------------------------------------------------
+     Page title — main h1 of every section page
+     30px mobile → 36px sm → 48px lg
+     (Tailwind: text-3xl → text-4xl → text-5xl but via tokens)
+     ------------------------------------------------------------------ */
+  .page-title {
+    font-size: 1.875rem; /* 30px */
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+  }
+  @media (min-width: 640px) {
+    .page-title {
+      font-size: 2.25rem;
+    } /* 36px */
+  }
+  @media (min-width: 1024px) {
+    .page-title {
+      font-size: 3rem;
+    } /* 48px */
+  }
+
+  /* ------------------------------------------------------------------
+     Page subtitle — lead paragraph below the h1
+     16px mobile → 18px sm  (Linear Body Large = 18px/1.60)
+     ------------------------------------------------------------------ */
+  .page-subtitle {
+    font-size: 1rem; /* 16px */
+    line-height: 1.7;
+    color: var(--ui-text-muted);
+    max-width: 42rem;
+  }
+  @media (min-width: 640px) {
+    .page-subtitle {
+      font-size: 1.125rem;
+    } /* 18px */
+  }
+
+  /* ------------------------------------------------------------------
+     Card title — heading inside a card or list item
+     16px mobile → 18px sm  (Vercel Card Title = 24px on full layout)
+     ------------------------------------------------------------------ */
+  .card-title {
+    font-size: 1rem; /* 16px */
+    font-weight: 600;
+    line-height: 1.4;
+  }
+  @media (min-width: 640px) {
+    .card-title {
+      font-size: 1.125rem;
+    } /* 18px */
+  }
+
+  /* ------------------------------------------------------------------
+     Card body — description text inside cards
+     14px mobile → 16px sm  (Linear Small = 15px / Vercel Body = 16px)
+     ------------------------------------------------------------------ */
+  .card-body {
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.7;
+    color: var(--ui-text-muted);
+  }
+  @media (min-width: 640px) {
+    .card-body {
+      font-size: 1rem;
+    } /* 16px */
+  }
+
+  /* ------------------------------------------------------------------
+     Section label — sidebar or subsection headings (e.g., in CV)
+     13px mobile → 14px md+  (original text-sm = 14px, uppercase)
+     ------------------------------------------------------------------ */
+  .section-label {
+    font-size: 0.8125rem; /* 13px */
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ui-text-muted);
+  }
+  @media (min-width: 768px) {
+    .section-label {
+      font-size: 0.875rem;
+    } /* 14px */
+  }
+}
+
 /* -------------------------------------------------------------
    Global polish
    ------------------------------------------------------------- */

@@ -1,91 +1,98 @@
 <script setup lang="ts">
-const { t, tm, rt } = useI18n()
+const { t, tm, rt, locale } = useI18n()
 
 useSeoMeta({
   title: `${t('nav.cv')} - ${t('app.title')}`,
-  description: t('cv_data.basics.summary'),
+  description: t('app.description'),
 })
 
-function resolveArray(key: string): Array<Record<string, unknown>> {
-  const raw = tm(key)
-  if (!Array.isArray(raw)) return []
-  return raw.map((item: Record<string, unknown>) => {
-    const resolved: Record<string, unknown> = {}
-    for (const [k, v] of Object.entries(item)) {
-      if (Array.isArray(v)) {
-        resolved[k] = v.map((el: unknown) => rt(el as string))
-      } else if (typeof v === 'object' && v !== null) {
-        resolved[k] = rt(v as string)
-      } else {
-        resolved[k] = rt(v as string)
-      }
-    }
-    return resolved
-  })
-}
+// ── Primary data source: Convex (what the admin edits) ──────────
+const { data: cv } = await useAsyncData(
+  `cv-${locale.value}`,
+  () => $fetch('/api/public/cv', { query: { locale: locale.value } }),
+  { watch: [locale] },
+)
 
+const basics = computed(() => cv.value?.basics)
+const work = computed(() => cv.value?.work ?? [])
+const education = computed(() => cv.value?.education ?? [])
+const skills = computed(() => cv.value?.skills ?? [])
+const languages = computed(() => cv.value?.languages ?? [])
+const cvProjects = computed(() => cv.value?.projects ?? [])
+
+// ── i18n fallback for fields NOT in Convex schema ───────────────
 function resolveStringArray(key: string): string[] {
   const raw = tm(key)
   if (!Array.isArray(raw)) return []
-  return raw.map((v: unknown) => rt(v as string))
+  return raw.map((v: unknown) => {
+    if (typeof v === 'string') return v
+    try {
+      return rt(v as any)
+    } catch {
+      return String(v)
+    }
+  })
 }
-
-const work = computed(() => resolveArray('cv_data.work'))
-const education = computed(() => resolveArray('cv_data.education'))
-const languages = computed(() => resolveArray('cv_data.languages'))
-const projects = computed(() => resolveArray('cv_data.projects'))
 const certifications = computed(() => resolveStringArray('cv_data.certifications'))
 const softSkills = computed(() => resolveStringArray('cv_data.soft_skills'))
-const skillKeys = ['frontend', 'backend', 'design', 'tools', 'ai', 'principles'] as const
 
+// ── Profiles from Convex basics ─────────────────────────────────
+const linkedinUrl = computed(
+  () => basics.value?.profiles?.find((p: any) => p.network === 'LinkedIn')?.url ?? '#',
+)
+const githubUrl = computed(
+  () => basics.value?.profiles?.find((p: any) => p.network === 'GitHub')?.url ?? '#',
+)
+
+// ── PDF generation ──────────────────────────────────────────────
 const cvContent = useTemplateRef<HTMLElement>('cv-content')
 const { generate, isGenerating } = useGeneratePdf()
 
 function handleDownload() {
-  const skillKeysArr = [...skillKeys]
+  if (!basics.value) return
   generate(
     {
-      name: t('cv_data.basics.name'),
-      label: t('cv_data.basics.label'),
-      summary: t('cv_data.basics.summary'),
-      location: t('cv_data.basics.location'),
-      email: 'fco.j.sarmientoperez@gmail.com',
-      phone: '+34 696124038',
-      linkedinUrl: 'https://www.linkedin.com/in/fcojacob/',
-      githubUrl: 'https://github.com/FcoJacob',
-      websiteUrl: 'https://jsarmiento.dev',
-      skills: skillKeysArr.map((key) => ({
-        name: t(`cv_data.skills.${key}.name`),
-        level: t(`cv_data.skills.${key}.level`),
-        keywords: resolveStringArray(`cv_data.skills.${key}.keywords`),
+      name: basics.value.name,
+      label: basics.value.label,
+      summary: basics.value.summary,
+      location: `${basics.value.location.city}, ${basics.value.location.region}`,
+      email: basics.value.email,
+      phone: basics.value.phone ?? '',
+      linkedinUrl: linkedinUrl.value,
+      githubUrl: githubUrl.value,
+      websiteUrl: basics.value.url ?? 'https://jsarmiento.dev',
+      skills: skills.value.map((s: any) => ({
+        name: s.name,
+        level: s.level,
+        keywords: s.keywords,
       })),
       softSkills: softSkills.value,
-      languages: languages.value.map((l) => ({
-        language: l.language as string,
-        fluency: l.fluency as string,
+      languages: languages.value.map((l: any) => ({
+        language: l.language,
+        fluency: l.fluency,
       })),
       certifications: certifications.value,
       driving: t('cv_data.driving'),
-      work: work.value.map((j) => ({
-        position: j.position as string,
-        name: j.name as string,
-        startDate: j.startDate as string,
-        endDate: j.endDate as string,
-        summary: j.summary as string,
-        highlights: (j.highlights as string[]) || [],
+      work: work.value.map((j: any) => ({
+        position: j.position,
+        name: j.name,
+        startDate: j.startDate,
+        endDate: j.endDate ?? '',
+        summary: j.summary,
+        highlights: j.highlights ?? [],
       })),
-      education: education.value.map((e) => ({
-        institution: e.institution as string,
-        studyType: e.studyType as string,
-        area: e.area as string,
-        startDate: e.startDate as string,
-        endDate: e.endDate as string,
-        note: e.note as string | undefined,
+      education: education.value.map((e: any) => ({
+        institution: e.institution,
+        studyType: e.studyType,
+        area: e.area,
+        startDate: e.startDate,
+        endDate: e.endDate ?? '',
+        note: e.score,
       })),
-      projects: projects.value.map((p) => ({
-        name: p.name as string,
-        description: p.description as string,
-        url: p.url as string | undefined,
+      projects: cvProjects.value.map((p: any) => ({
+        name: p.name,
+        description: p.description,
+        url: p.url,
       })),
       labels: {
         skills: t('cv.skills'),
@@ -99,48 +106,48 @@ function handleDownload() {
         present: t('cv.present'),
       },
     },
-    `${t('cv_data.basics.name')}.pdf`,
+    `${basics.value.name}.pdf`,
   )
 }
 </script>
 
 <template>
   <div>
-    <div ref="cv-content" class="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-10">
+    <div v-if="cv" ref="cv-content" class="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-10">
       <!-- Sidebar -->
       <aside class="space-y-8">
         <!-- Contact -->
         <div class="space-y-3">
-          <h2 class="text-2xl font-extrabold">{{ t('cv_data.basics.name') }}</h2>
-          <p class="text-sm font-medium text-(--ui-color-primary-500)">
-            {{ t('cv_data.basics.label') }}
+          <h2 class="text-2xl font-extrabold">{{ basics?.name }}</h2>
+          <p class="text-base font-medium text-(--ui-color-primary-500)">
+            {{ basics?.label }}
           </p>
-          <div class="text-sm text-(--ui-text-muted) space-y-1.5">
+          <div class="text-sm md:text-base text-(--ui-text-muted) space-y-1.5">
             <p class="flex items-center gap-2">
               <UIcon name="i-lucide-map-pin" class="size-4 shrink-0" />
-              {{ t('cv_data.basics.location') }}
+              {{ basics?.location?.city }}, {{ basics?.location?.region }}
             </p>
             <p class="flex items-center gap-2">
-              <UIcon name="i-lucide-mail" class="size-4 shrink-0" /> fco.j.sarmientoperez@gmail.com
+              <UIcon name="i-lucide-mail" class="size-4 shrink-0" /> {{ basics?.email }}
             </p>
-            <p class="flex items-center gap-2">
-              <UIcon name="i-lucide-phone" class="size-4 shrink-0" /> +34 696124038
+            <p v-if="basics?.phone" class="flex items-center gap-2">
+              <UIcon name="i-lucide-phone" class="size-4 shrink-0" /> {{ basics?.phone }}
             </p>
           </div>
           <div class="flex gap-2 pt-1">
             <UButton
-              to="https://www.linkedin.com/in/fcojacob/"
+              :to="linkedinUrl"
               icon="i-lucide-linkedin"
-              size="sm"
+              size="md"
               variant="outline"
               target="_blank"
               external
               aria-label="LinkedIn"
             />
             <UButton
-              to="https://github.com/FcoJacob"
+              :to="githubUrl"
               icon="i-lucide-github"
-              size="sm"
+              size="md"
               variant="outline"
               target="_blank"
               external
@@ -149,7 +156,7 @@ function handleDownload() {
             <UButton
               :label="t('common.download_pdf')"
               icon="i-lucide-download"
-              size="sm"
+              size="md"
               variant="outline"
               :loading="isGenerating"
               @click="handleDownload"
@@ -161,27 +168,27 @@ function handleDownload() {
 
         <!-- Skills -->
         <div class="space-y-4">
-          <h3 class="text-sm font-bold uppercase tracking-wider text-(--ui-text-muted)">
+          <h3 class="section-label">
             {{ t('cv.skills') }}
           </h3>
-          <div v-for="key in skillKeys" :key="key" class="space-y-1.5">
+          <div v-for="skill in skills" :key="skill.name" class="space-y-1.5">
             <div class="flex items-center justify-between">
-              <span class="text-sm font-semibold">{{ t(`cv_data.skills.${key}.name`) }}</span>
+              <span class="text-sm md:text-base font-semibold">{{ skill.name }}</span>
               <UBadge
-                :label="t(`cv_data.skills.${key}.level`)"
-                :color="t(`cv_data.skills.${key}.level`) === 'Senior' ? 'success' : 'neutral'"
+                :label="skill.level"
+                :color="skill.level === 'Senior' ? 'success' : 'neutral'"
                 variant="subtle"
-                size="sm"
+                size="md"
               />
             </div>
             <div class="flex flex-wrap gap-1.5">
               <UBadge
-                v-for="kw in resolveStringArray(`cv_data.skills.${key}.keywords`)"
+                v-for="kw in skill.keywords"
                 :key="kw"
                 :label="kw"
                 color="neutral"
                 variant="outline"
-                size="sm"
+                size="md"
               />
             </div>
           </div>
@@ -189,9 +196,9 @@ function handleDownload() {
 
         <USeparator />
 
-        <!-- Soft Skills -->
+        <!-- Soft Skills (i18n — not in Convex) -->
         <div class="space-y-3">
-          <h3 class="text-sm font-bold uppercase tracking-wider text-(--ui-text-muted)">
+          <h3 class="section-label">
             {{ t('cv.soft_skills') }}
           </h3>
           <div class="flex flex-wrap gap-2">
@@ -201,7 +208,7 @@ function handleDownload() {
               :label="skill"
               color="neutral"
               variant="subtle"
-              size="sm"
+              size="md"
             />
           </div>
         </div>
@@ -210,13 +217,13 @@ function handleDownload() {
 
         <!-- Languages -->
         <div class="space-y-3">
-          <h3 class="text-sm font-bold uppercase tracking-wider text-(--ui-text-muted)">
+          <h3 class="section-label">
             {{ t('cv.languages') }}
           </h3>
           <div class="space-y-1">
             <div
               v-for="lang in languages"
-              :key="lang.language as string"
+              :key="lang.language"
               class="flex items-center justify-between text-sm"
             >
               <span>{{ lang.language }}</span>
@@ -227,9 +234,9 @@ function handleDownload() {
 
         <USeparator />
 
-        <!-- Certifications -->
-        <div class="space-y-3">
-          <h3 class="text-sm font-bold uppercase tracking-wider text-(--ui-text-muted)">
+        <!-- Certifications (i18n — not in Convex) -->
+        <div v-if="certifications.length" class="space-y-3">
+          <h3 class="section-label">
             {{ t('cv.certifications') }}
           </h3>
           <ul class="text-sm space-y-1 text-(--ui-text-muted)">
@@ -245,9 +252,9 @@ function handleDownload() {
 
         <USeparator />
 
-        <!-- Driving -->
+        <!-- Driving (i18n) -->
         <div class="space-y-2">
-          <h3 class="text-sm font-bold uppercase tracking-wider text-(--ui-text-muted)">
+          <h3 class="section-label">
             {{ t('cv.driving') }}
           </h3>
           <p class="text-sm">{{ t('cv_data.driving') }}</p>
@@ -259,13 +266,13 @@ function handleDownload() {
         <!-- Summary -->
         <section>
           <p class="text-base leading-relaxed text-(--ui-text-dimmed)">
-            {{ t('cv_data.basics.summary') }}
+            {{ basics?.summary }}
           </p>
         </section>
 
         <!-- Work Experience -->
         <section>
-          <h2 class="text-lg font-bold uppercase tracking-wider text-(--ui-text-muted) mb-6">
+          <h2 class="section-label mb-6">
             {{ t('cv.work') }}
           </h2>
           <div class="relative border-l-2 border-(--ui-border) pl-6 space-y-8">
@@ -277,22 +284,20 @@ function handleDownload() {
                 class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-4"
               >
                 <div>
-                  <h3 class="font-semibold">{{ job.position }}</h3>
-                  <p class="text-sm text-(--ui-color-primary-500) font-medium">{{ job.name }}</p>
+                  <h3 class="font-semibold text-base md:text-lg">{{ job.position }}</h3>
+                  <p class="text-sm md:text-base text-(--ui-color-primary-500) font-medium">
+                    {{ job.name }}
+                  </p>
                 </div>
                 <span
-                  class="text-xs text-(--ui-text-muted) bg-(--ui-bg-elevated) px-2.5 py-1 rounded-full shrink-0 whitespace-nowrap"
+                  class="text-xs md:text-sm text-(--ui-text-muted) bg-(--ui-bg-elevated) px-2.5 py-1 rounded-full shrink-0 whitespace-nowrap"
                 >
                   {{ job.startDate }} — {{ job.endDate || t('cv.present') }}
                 </span>
               </div>
-              <p class="mt-2 text-sm text-(--ui-text-muted)">{{ job.summary }}</p>
-              <ul v-if="(job.highlights as string[])?.length" class="mt-2 space-y-1">
-                <li
-                  v-for="h in job.highlights as string[]"
-                  :key="h"
-                  class="flex items-start gap-2 text-sm text-(--ui-text-muted)"
-                >
+              <p class="mt-2 card-body">{{ job.summary }}</p>
+              <ul v-if="job.highlights?.length" class="mt-2 space-y-1">
+                <li v-for="h in job.highlights" :key="h" class="flex items-start gap-2 card-body">
                   <UIcon
                     name="i-lucide-chevron-right"
                     class="size-3.5 mt-0.5 shrink-0 text-(--ui-color-primary-500)"
@@ -306,7 +311,7 @@ function handleDownload() {
 
         <!-- Education -->
         <section>
-          <h2 class="text-lg font-bold uppercase tracking-wider text-(--ui-text-muted) mb-6">
+          <h2 class="section-label mb-6">
             {{ t('cv.education') }}
           </h2>
           <div class="relative border-l-2 border-(--ui-border) pl-6 space-y-6">
@@ -314,33 +319,45 @@ function handleDownload() {
               <span
                 class="absolute -left-[calc(1.5rem+5px)] top-1.5 size-2.5 rounded-full bg-(--ui-border)"
               />
-              <h3 class="font-semibold">{{ edu.institution }}</h3>
-              <p class="text-sm text-(--ui-color-primary-500)">
-                {{ edu.studyType }} — {{ edu.area }}
+              <div
+                class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-4"
+              >
+                <div>
+                  <h3 class="font-semibold text-base md:text-lg">{{ edu.institution }}</h3>
+                  <p class="text-sm md:text-base text-(--ui-color-primary-500)">
+                    {{ edu.studyType }} — {{ edu.area }}
+                  </p>
+                </div>
+                <span
+                  class="text-xs md:text-sm text-(--ui-text-muted) bg-(--ui-bg-elevated) px-2.5 py-1 rounded-full shrink-0 whitespace-nowrap"
+                >
+                  {{ edu.startDate }} — {{ edu.endDate || t('cv.present') }}
+                </span>
+              </div>
+              <p v-if="edu.score" class="mt-2 text-sm text-(--ui-text-muted) italic">
+                {{ edu.score }}
               </p>
-              <p class="text-xs text-(--ui-text-muted)">
-                {{ edu.startDate }} — {{ edu.endDate || t('cv.present') }}
-              </p>
-              <p v-if="edu.note" class="text-xs text-(--ui-text-muted) italic">{{ edu.note }}</p>
             </div>
           </div>
         </section>
 
         <!-- Projects -->
         <section>
-          <h2 class="text-lg font-bold uppercase tracking-wider text-(--ui-text-muted) mb-6">
+          <h2 class="section-label mb-6">
             {{ t('cv.projects') }}
           </h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <UCard v-for="(project, i) in projects" :key="i" variant="subtle">
+            <UCard v-for="(project, i) in cvProjects" :key="i" variant="subtle">
               <div class="space-y-2">
-                <h3 class="font-semibold text-sm">{{ project.name }}</h3>
-                <p class="text-xs text-(--ui-text-muted) line-clamp-2">{{ project.description }}</p>
+                <h3 class="font-semibold text-base md:text-lg">{{ project.name }}</h3>
+                <p class="text-sm md:text-base text-(--ui-text-muted) line-clamp-2">
+                  {{ project.description }}
+                </p>
                 <UButton
                   v-if="project.url"
-                  :to="project.url as string"
+                  :to="project.url"
                   :label="t('common.visit')"
-                  size="sm"
+                  size="md"
                   variant="outline"
                   icon="i-lucide-external-link"
                   target="_blank"

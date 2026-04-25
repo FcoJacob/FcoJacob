@@ -6,6 +6,7 @@ const adminNavItems = computed(() => [
   [
     { label: t('admin.dashboard'), to: '/admin', icon: 'i-lucide-layout-dashboard' },
     { label: t('admin.blogs'), to: '/admin/blogs', icon: 'i-lucide-file-text' },
+    { label: 'Pies de blog', to: '/admin/blog-footers', icon: 'i-lucide-panel-bottom' },
     { label: t('admin.projects'), to: '/admin/projects', icon: 'i-lucide-folder-kanban' },
     { label: t('admin.cv'), to: '/admin/cv', icon: 'i-lucide-user' },
   ],
@@ -19,8 +20,8 @@ async function handleLogout() {
 
 <template>
   <div class="min-h-screen flex">
-    <aside class="w-64 border-r border-(--ui-border) p-4 flex flex-col gap-4">
-      <div class="flex items-center gap-2 pb-4 border-b border-(--ui-border)">
+    <aside class="w-64 border-r border-default p-4 flex flex-col gap-4">
+      <div class="flex items-center gap-2 pb-4 border-b border-default">
         <UAvatar v-if="user?.avatar" :src="user.avatar" size="sm" />
         <span class="text-sm font-medium truncate">{{ user?.name }}</span>
       </div>
@@ -40,7 +41,7 @@ async function handleLogout() {
     </aside>
 
     <div class="flex-1 flex flex-col">
-      <header class="border-b border-(--ui-border) h-16 flex items-center px-6 justify-between">
+      <header class="border-b border-default h-16 flex items-center px-6 justify-between">
         <h1 class="text-lg font-semibold">
           {{ t('admin.title') }}
         </h1>
