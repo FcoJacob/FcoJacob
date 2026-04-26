@@ -33,6 +33,7 @@ const cameraVelocity = shallowRef(0)
 const cameraInputProfile = shallowRef<ShowroomWheelInputProfile>('wheel')
 const reviewMode = shallowRef(false)
 const debugSwitchVisible = import.meta.dev
+const timeOfDay = shallowRef<'day' | 'night'>('night')
 const debugPanelEnabled = computed(() => {
   if (!import.meta.dev) {
     return false
@@ -475,18 +476,30 @@ onBeforeUnmount(() => {
       </div>
     </div>
 
-    <label v-if="debugSwitchVisible" class="showroom-debug-switch">
-      <input
-        :checked="debugPanelEnabled"
-        type="checkbox"
-        @change="setDebugPanelEnabled(($event.target as HTMLInputElement).checked)"
-      />
-      <span>{{ debugPanelEnabled ? 'Debug on' : 'Debug off' }}</span>
-    </label>
+    <div class="showroom-switches">
+      <label class="showroom-switch">
+        <input
+          :checked="timeOfDay === 'day'"
+          type="checkbox"
+          @change="timeOfDay = ($event.target as HTMLInputElement).checked ? 'day' : 'night'"
+        />
+        <span>{{ timeOfDay === 'day' ? '☀️ Día' : '🌙 Noche' }}</span>
+      </label>
+
+      <label v-if="debugSwitchVisible" class="showroom-switch">
+        <input
+          :checked="debugPanelEnabled"
+          type="checkbox"
+          @change="setDebugPanelEnabled(($event.target as HTMLInputElement).checked)"
+        />
+        <span>{{ debugPanelEnabled ? 'Debug on' : 'Debug off' }}</span>
+      </label>
+    </div>
 
     <ClientOnly>
       <ShowroomCanvas
         immersive
+        :time-of-day="timeOfDay"
         :active-step-index="cameraStepIndex"
         :debug-tuning="debugTuning"
         :hdr-path="manifest.environment.hdr"
@@ -568,11 +581,17 @@ onBeforeUnmount(() => {
   isolation: isolate;
 }
 
-.showroom-debug-switch {
+.showroom-switches {
   position: absolute;
   top: 1rem;
   right: 1rem;
   z-index: 7;
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+}
+
+.showroom-switch {
   display: inline-flex;
   gap: 0.55rem;
   align-items: center;
@@ -584,6 +603,7 @@ onBeforeUnmount(() => {
   backdrop-filter: blur(10px);
   color: rgba(255, 255, 255, 0.9);
   pointer-events: auto;
+  cursor: pointer;
 }
 
 .showroom-progress-rail {
@@ -609,7 +629,7 @@ onBeforeUnmount(() => {
   background: linear-gradient(90deg, rgba(207, 157, 94, 0.9), rgba(240, 208, 168, 1));
 }
 
-.showroom-debug-switch span {
+.showroom-switch span {
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.12em;

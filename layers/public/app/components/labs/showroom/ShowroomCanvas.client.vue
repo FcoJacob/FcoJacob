@@ -2,7 +2,7 @@
 import * as THREE from 'three'
 import { HDRLoader } from 'three/examples/jsm/loaders/HDRLoader.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import { useTemplateRef } from 'vue'
+import { useTemplateRef, watch } from 'vue'
 import type {
   ShowroomDebugTuning,
   ShowroomWheelInputProfile,
@@ -14,6 +14,7 @@ const props = withDefaults(
   defineProps<{
     activeStepIndex: number
     debugTuning: ShowroomDebugTuning
+    timeOfDay?: 'day' | 'night'
     hdrPath: string
     immersive?: boolean
     modelPath: string
@@ -21,6 +22,7 @@ const props = withDefaults(
   }>(),
   {
     immersive: false,
+    timeOfDay: 'night',
   },
 )
 
@@ -60,6 +62,12 @@ let loadingManager: THREE.LoadingManager | null = null
 let renderer: THREE.WebGLRenderer | null = null
 let scene: THREE.Scene | null = null
 let camera: THREE.PerspectiveCamera | null = null
+let ambientLight: THREE.AmbientLight | null = null
+let keyLight: THREE.DirectionalLight | null = null
+let rimLight: THREE.PointLight | null = null
+let celestialSphere: THREE.Mesh<THREE.SphereGeometry, THREE.MeshBasicMaterial> | null = null
+let floor: THREE.Mesh<THREE.CircleGeometry, THREE.MeshStandardMaterial> | null = null
+let pedestal: THREE.Mesh<THREE.CylinderGeometry, THREE.MeshStandardMaterial> | null = null
 let frameId = 0
 let mountAborted = false
 let heroRoot: THREE.Group | null = null
@@ -69,6 +77,7 @@ let heroBaseMinY = 0
 // Mesh collections — arrays so every mesh of a given type gets the same material update
 let bodyMeshes: RuntimeMesh[] = []
 let glassMeshes: RuntimeMesh[] = []
+let windowMirrorMeshes: RuntimeMesh[] = []
 let trimMeshes: RuntimeMesh[] = []
 let wireframe: THREE.LineSegments<THREE.EdgesGeometry, THREE.LineBasicMaterial> | null = null
 // Separate arrays for rims vs tires so material updates stay correct
@@ -327,6 +336,20 @@ function createGlassMaterial() {
   })
 }
 
+function createWindowMirrorMaterial() {
+  return new THREE.MeshPhysicalMaterial({
+    color: new THREE.Color('#0a0a0c'),
+    roughness: 0.05,
+    metalness: 1.0,
+    clearcoat: 1.0,
+    clearcoatRoughness: 0.0,
+    transmission: 0.0,
+    transparent: false,
+    opacity: 1.0,
+    ior: 2.0,
+  })
+}
+
 function createTrimMaterial(isShadow: boolean) {
   return new THREE.MeshStandardMaterial({
     color: new THREE.Color(isShadow ? '#3f4751' : '#c8b089'),
@@ -553,6 +576,62 @@ function resolveRuntimeQuality() {
   return 'cinematic' as const
 }
 
+function applyTimeOfDay() {
+  if (!scene || !ambientLight || !keyLight || !celestialSphere || !rimLight || !floor || !pedestal)
+    return
+
+  const isDay = props.timeOfDay === 'day'
+
+  if (isDay) {
+    scene.background = new THREE.Color(0xb5d8eb)
+    scene.fog = new THREE.FogExp2(0xb5d8eb, 0.04)
+
+    ambientLight.color.setHex(0xc0d0e0)
+    ambientLight.intensity = runtimeQuality.value === 'efficient' ? 1.5 : 2.0
+
+    keyLight.color.setHex(0xffea99) // Soft yellow sun
+    keyLight.intensity = runtimeQuality.value === 'efficient' ? 2.5 : 3.5
+    keyLight.position.set(-16, 12, -26)
+
+    rimLight.intensity = runtimeQuality.value === 'efficient' ? 1.5 : 2.5
+    rimLight.color.setHex(0xffa502) // Warm accent
+
+    celestialSphere.scale.setScalar(1.6)
+    celestialSphere.position.copy(keyLight.position)
+    celestialSphere.material.color.copy(keyLight.color)
+
+    floor.material.color.setHex(0x5a6572)
+    pedestal.material.color.setHex(0x738090)
+  } else {
+    scene.background = null
+    scene.fog = new THREE.Fog(0x090c11, 7, 16)
+
+    ambientLight.color.setHex(0x9ca3af) // Cool gray ambient
+    ambientLight.intensity = runtimeQuality.value === 'efficient' ? 1.0 : 1.2
+
+    keyLight.color.setHex(0xe2e8f0) // Whitish-gray moon
+    keyLight.intensity = runtimeQuality.value === 'efficient' ? 1.0 : 1.5
+    keyLight.position.set(16, 14, -20)
+
+    rimLight.intensity = runtimeQuality.value === 'efficient' ? 6 : 8
+    rimLight.color.setHex(0x94a3b8) // Cool rim light
+
+    celestialSphere.scale.setScalar(1.2)
+    celestialSphere.position.copy(keyLight.position)
+    celestialSphere.material.color.copy(keyLight.color)
+
+    floor.material.color.setHex(0x11161d)
+    pedestal.material.color.setHex(0x171e27)
+  }
+}
+
+watch(
+  () => props.timeOfDay,
+  () => {
+    applyTimeOfDay()
+  },
+)
+
 function applyRuntimeQuality() {
   if (!renderer) {
     return
@@ -687,7 +766,8 @@ const AUDI_HIDE_NODES = new Set([
 ])
 // Materials from the GLB that belong to each visual layer:
 const AUDI_BODY_MAT = new Set(['Car Paint'])
-const AUDI_GLASS_MATS = new Set(['Glass', 'Black TInt Glass', 'Matte Glass'])
+const AUDI_GLASS_MATS = new Set(['Glass', 'Matte Glass'])
+const AUDI_WINDOW_MAT = new Set(['Black TInt Glass'])
 const AUDI_TIRE_MAT = new Set(['Tires'])
 // Rim node names — children of these Groups are the actual rim Meshes
 const AUDI_RIM_NODES = new Set([
@@ -697,7 +777,7 @@ const AUDI_RIM_NODES = new Set([
   'Rim_Back_Right',
 ])
 // Single-primitive trim nodes (node names work here)
-const AUDI_TRIM_NODES = new Set(['Grill', 'Mirrors', 'Headlights Exterior', 'Rear Bumper'])
+const AUDI_TRIM_NODES = new Set(['Grill', 'Mirrors', 'Rear Bumper'])
 
 function captureHeroNodes(root: THREE.Group) {
   body = null
@@ -705,6 +785,7 @@ function captureHeroNodes(root: THREE.Group) {
   trim = null
   bodyMeshes = []
   glassMeshes = []
+  windowMirrorMeshes = []
   trimMeshes = []
   rimMeshes = []
   wheelMeshes = []
@@ -743,17 +824,25 @@ function captureHeroNodes(root: THREE.Group) {
     // ── Body paint: match by material name ───────────────────────────────
     // "Car Body" Group → unnamed Mesh children, each with their own mat.
     // We only replace the "Car Paint" primitive so headlights/seals keep their look.
-    if (AUDI_BODY_MAT.has(matName) || n === 'Car Body') {
+    if (AUDI_BODY_MAT.has(matName)) {
       replaceMaterial(object, createBodyMaterial(new THREE.Color('#b08c63')))
       bodyMeshes.push(object)
       if (!body) body = object
       return
     }
 
-    // ── Glass: by material name ───────────────────────────────────────────
+    // ── Glass: headlights & other clear glass ────────────────────────────
     if (AUDI_GLASS_MATS.has(matName)) {
       replaceMaterial(object, createGlassMaterial())
       glassMeshes.push(object)
+      if (!canopy) canopy = object
+      return
+    }
+
+    // ── Mirrors/Window Glass: by material name ────────────────────────────
+    if (AUDI_WINDOW_MAT.has(matName)) {
+      replaceMaterial(object, createWindowMirrorMaterial())
+      windowMirrorMeshes.push(object)
       if (!canopy) canopy = object
       return
     }
@@ -1282,6 +1371,21 @@ function updateSceneState(now: number, isReducedMotion: boolean) {
     }
   }
 
+  // ── Windows (all window mirror lenses) ────────────────────────────────────
+  for (const mesh of windowMirrorMeshes) {
+    if (!heroRoot) mesh.rotation.y = baseVehicleRotation
+    if (!heroRoot) mesh.position.y = 0.64 + oscillation
+    const mat = Array.isArray(mesh.material) ? mesh.material[0] : mesh.material
+    if (mat instanceof THREE.MeshStandardMaterial || mat instanceof THREE.MeshPhysicalMaterial) {
+      mat.color.lerp(
+        parseColor(trimShadow ? '#030303' : '#08080a', '#08080a'),
+        isReducedMotion ? 1 : 0.08,
+      )
+      mat.metalness = trimShadow ? 0.95 : 0.9
+      mat.roughness = trimShadow ? 0.02 : 0.05
+    }
+  }
+
   // ── Trim (all trim meshes) ────────────────────────────────────────────────
   for (const mesh of trimMeshes) {
     if (!heroRoot) mesh.rotation.y = baseVehicleRotation
@@ -1442,29 +1546,24 @@ onMounted(async () => {
     return
   }
 
-  const ambientLight = new THREE.AmbientLight(
-    0xffffff,
-    runtimeQuality.value === 'efficient' ? 1.25 : 1.5,
-  )
+  ambientLight = new THREE.AmbientLight(0xffffff, 1.5)
   scene.add(ambientLight)
 
-  const keyLight = new THREE.DirectionalLight(
-    0xf7f1e8,
-    runtimeQuality.value === 'efficient' ? 1.8 : 2.4,
-  )
+  keyLight = new THREE.DirectionalLight(0xf7f1e8, 2.4)
   keyLight.position.set(3.5, 5, 4.5)
   scene.add(keyLight)
 
-  const rimLight = new THREE.PointLight(
-    0xc49757,
-    runtimeQuality.value === 'efficient' ? 12 : 18,
-    18,
-    2,
-  )
+  rimLight = new THREE.PointLight(0xc49757, 18, 18, 2)
   rimLight.position.set(-3, 1.8, -2.2)
   scene.add(rimLight)
 
-  const floor = new THREE.Mesh(
+  celestialSphere = new THREE.Mesh(
+    new THREE.SphereGeometry(1, 32, 32),
+    new THREE.MeshBasicMaterial({ color: 0xffffff, fog: false }),
+  )
+  scene.add(celestialSphere)
+
+  floor = new THREE.Mesh(
     new THREE.CircleGeometry(4.6, runtimeQuality.value === 'efficient' ? 40 : 80),
     new THREE.MeshStandardMaterial({
       color: 0x11161d,
@@ -1476,7 +1575,7 @@ onMounted(async () => {
   floor.position.y = -1.1
   scene.add(floor)
 
-  const pedestal = new THREE.Mesh(
+  pedestal = new THREE.Mesh(
     new THREE.CylinderGeometry(1.9, 2.15, 0.45, runtimeQuality.value === 'efficient' ? 24 : 48),
     new THREE.MeshStandardMaterial({
       color: 0x171e27,
@@ -1486,6 +1585,9 @@ onMounted(async () => {
   )
   pedestal.position.y = -0.85
   scene.add(pedestal)
+
+  // Initialize day/night mode
+  applyTimeOfDay()
 
   // Wireframe bounding-box is only used as a visual aid in procedural fallback mode.
   // Do NOT add it here — mountProceduralFallback adds it if the GLB fails to load.
