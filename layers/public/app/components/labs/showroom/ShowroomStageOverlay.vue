@@ -212,6 +212,9 @@ defineExpose({
   display: grid;
   gap: 1rem;
   max-width: min(42rem, 100%);
+  max-height: 90dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: clamp(1.25rem, 2.4vw, 2rem);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 1.75rem;
@@ -417,6 +420,9 @@ defineExpose({
   display: grid;
   gap: 0.9rem;
   width: min(34rem, calc(100% - 2rem));
+  max-height: 90dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 1.2rem 1.2rem 1rem;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 1.5rem;

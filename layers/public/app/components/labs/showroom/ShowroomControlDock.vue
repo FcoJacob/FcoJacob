@@ -199,14 +199,14 @@ function getLocalizedOptionLabel(groupId: string, option: ShowroomOption) {
 /* Minimalist, Sales-Focused Auto Configurator Dock */
 .showroom-dock-sleek {
   position: absolute;
-  top: calc(1rem + var(--dock-offset, 0px));
+  top: max(calc(1rem + var(--dock-offset, 0px)), 5dvh);
   right: clamp(1rem, 2.4vw, 2rem);
   bottom: clamp(1rem, 2.4vw, 2rem);
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
   z-index: 4;
   width: min(22rem, calc(100% - 2rem));
-  min-height: 0;
+  max-height: calc(100vh - 2rem - var(--dock-offset, 0px));
 }
 
 .showroom-dock-sleek.is-preconfig {
@@ -219,7 +219,8 @@ function getLocalizedOptionLabel(groupId: string, option: ShowroomOption) {
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
   max-height: 100%;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.08);
