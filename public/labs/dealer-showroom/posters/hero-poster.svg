@@ -1,0 +1,35 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="900" fill="#06080C"/>
+  <rect width="1600" height="900" fill="url(#paint0_radial)" fill-opacity="0.9"/>
+  <path d="M226 94H1374V450H226V94Z" fill="url(#paint1_linear)" fill-opacity="0.36"/>
+  <path d="M311 154H1289V435H311V154Z" stroke="rgba(255,255,255,0.28)" stroke-width="2"/>
+  <path d="M0 738H1600" stroke="#9D7847" stroke-opacity="0.24" stroke-width="2"/>
+  <path d="M0 780H1600" stroke="#9D7847" stroke-opacity="0.16" stroke-width="2"/>
+  <path d="M0 822H1600" stroke="#9D7847" stroke-opacity="0.1" stroke-width="2"/>
+  <g opacity="0.95">
+    <path d="M426 604C471 573 542 543 637 526C715 511 818 507 922 516C1029 526 1110 551 1164 589C1192 608 1210 633 1218 662H387C394 640 408 618 426 604Z" fill="#131A22"/>
+    <path d="M475 603C508 553 582 519 699 503C779 492 864 494 953 505C1053 518 1129 550 1181 605L1139 608C1091 574 1028 553 948 543C852 530 760 529 682 540C590 553 531 576 493 611L475 603Z" fill="#C49757" fill-opacity="0.42"/>
+    <path d="M534 608C578 575 652 554 756 548C859 542 954 553 1040 581C1081 594 1118 611 1149 632H456C475 621 501 612 534 608Z" fill="#202A34"/>
+    <path d="M626 539L704 490H925L1017 528L1106 541L1166 589L1074 593L1020 555H648L602 592H511L566 555L626 539Z" fill="#ECE7E1" fill-opacity="0.72"/>
+    <circle cx="643" cy="646" r="72" fill="#0D1116"/>
+    <circle cx="643" cy="646" r="41" fill="#57606B"/>
+    <circle cx="1013" cy="646" r="72" fill="#0D1116"/>
+    <circle cx="1013" cy="646" r="41" fill="#57606B"/>
+  </g>
+  <g opacity="0.8">
+    <path d="M520 242H1080" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="4"/>
+    <path d="M520 286H1080" stroke="#FFFFFF" stroke-opacity="0.1" stroke-width="2"/>
+    <path d="M520 330H1080" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="2"/>
+  </g>
+  <defs>
+    <radialGradient id="paint0_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(800 162) rotate(90) scale(634 924)">
+      <stop stop-color="#6F5A39" stop-opacity="0.54"/>
+      <stop offset="0.42" stop-color="#18202A" stop-opacity="0.24"/>
+      <stop offset="1" stop-color="#06080C" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="paint1_linear" x1="800" y1="94" x2="800" y2="450" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ECE7E1" stop-opacity="0.14"/>
+      <stop offset="1" stop-color="#ECE7E1" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+</svg>
