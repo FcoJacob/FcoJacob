@@ -198,7 +198,9 @@
       "spec_wheels": "Wheels",
       "spec_trim": "Trim",
       "story_copy": "Scroll is not just navigation here: it works like a sales approach, moving from impact, to focus, to personalization.",
-      "summary_pitch": "Ready for presentation"
+      "summary_pitch": "Ready for presentation",
+      "nav_prev": "Previous step",
+      "nav_next": "Next step"
     },
     "manifest_label": "Featured model",
     "manifest_environment": "Environment",

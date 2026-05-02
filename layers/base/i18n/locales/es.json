@@ -198,7 +198,9 @@
       "spec_wheels": "Llantas",
       "spec_trim": "Acabado",
       "story_copy": "El scroll no solo navega: actúa como aproximación comercial para pasar de impacto, a foco, a personalización.",
-      "summary_pitch": "Resumen listo para presentación"
+      "summary_pitch": "Resumen listo para presentación",
+      "nav_prev": "Paso anterior",
+      "nav_next": "Siguiente paso"
     },
     "manifest_label": "Modelo destacado",
     "manifest_environment": "Entorno",

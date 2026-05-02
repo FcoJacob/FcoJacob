@@ -17,6 +17,7 @@ type ShowroomOptionGroup = {
 const props = defineProps<{
   activeConfigGroup: ShowroomOptionGroup | null
   activeConfigDisplayLabel: string | null
+  activeStepIndex: number
   activeStepLabel: string
   environmentLabel: string
   hasDebugSwitch: boolean
@@ -28,10 +29,12 @@ const props = defineProps<{
   selectedOptionIds: Record<string, string | undefined>
   selectedTrimLabel: string
   selectedWheelsLabel: string
+  totalSteps: number
 }>()
 
 const emit = defineEmits<{
   selectOption: [groupId: string, optionId: string]
+  navigateStep: [direction: 'prev' | 'next' | 'back-to-labs']
 }>()
 
 const { t } = useI18n()
@@ -68,6 +71,21 @@ function getLocalizedOptionLabel(groupId: string, option: ShowroomOption) {
       :class="{ 'is-preconfig': preConfigStage }"
       :style="{ '--dock-offset': hasDebugSwitch ? '3.75rem' : '0px' }"
     >
+      <!-- Back button sits OUTSIDE the panel so overflow:hidden doesn't clip it -->
+      <button class="dock-sleek-mobile-back-btn" @click="emit('navigateStep', 'back-to-labs')">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+      </button>
       <div class="dock-sleek-panel">
         <!-- TOP: Main Identity & Car Info -->
         <header class="dock-sleek-header">
@@ -186,6 +204,49 @@ function getLocalizedOptionLabel(groupId: string, option: ShowroomOption) {
           <div class="dock-sleek-status">
             <span class="active-stage-label">{{ activeStepLabel }}</span>
           </div>
+
+          <!-- Mobile step navigation -->
+          <div class="dock-sleek-mobile-nav" aria-label="Navigate steps">
+            <button
+              type="button"
+              class="dock-sleek-nav-btn"
+              :disabled="activeStepIndex <= 0"
+              :aria-label="t('labs_showroom.dock.nav_prev')"
+              @click="emit('navigateStep', 'prev')"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path
+                  d="M10 12L6 8l4-4"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+            <span class="dock-sleek-step-counter">
+              {{ String(activeStepIndex + 1).padStart(2, '0') }} /
+              {{ String(totalSteps).padStart(2, '0') }}
+            </span>
+            <button
+              type="button"
+              class="dock-sleek-nav-btn"
+              :disabled="activeStepIndex >= totalSteps - 1"
+              :aria-label="t('labs_showroom.dock.nav_next')"
+              @click="emit('navigateStep', 'next')"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path
+                  d="M6 4l4 4-4 4"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+          </div>
+
           <NuxtLink to="/labs" class="dock-sleek-btn-primary">
             {{ t('labs_showroom.back_to_labs') }}
           </NuxtLink>
@@ -587,6 +648,15 @@ function getLocalizedOptionLabel(groupId: string, option: ShowroomOption) {
   color: black;
 }
 
+/* Mobile step navigation (hidden on desktop) */
+.dock-sleek-mobile-nav {
+  display: none;
+}
+
+.dock-sleek-mobile-back-btn {
+  display: none;
+}
+
 /* Transitions */
 .showroom-dock-fade-enter-active,
 .showroom-dock-fade-leave-active {
@@ -613,5 +683,282 @@ function getLocalizedOptionLabel(groupId: string, option: ShowroomOption) {
 .showroom-dock-content-swap-leave-to {
   opacity: 0;
   transform: translateY(-0.5rem);
+}
+
+/* ─── Mobile: bottom sheet ───────────────────────────────────────────── */
+@media (max-width: 767px) {
+  /* ── Wrapper ── */
+  .showroom-dock-sleek {
+    position: absolute;
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    max-height: none;
+    border-radius: 0;
+    /* MUST be visible so the back-btn absolute child floats above */
+    overflow: visible;
+    z-index: 6;
+  }
+
+  .showroom-dock-sleek.is-preconfig {
+    bottom: 0;
+  }
+
+  /* ── Floating back button — child of <aside>, not the panel ── */
+  .dock-sleek-mobile-back-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    bottom: 100%;
+    left: 1rem;
+    margin-bottom: 0.5rem;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    background: rgba(8, 12, 17, 0.65);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: rgba(255, 255, 255, 0.95);
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    pointer-events: auto;
+    z-index: 1;
+  }
+
+  .dock-sleek-mobile-back-btn:active {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(0.93);
+  }
+
+  /* ── Panel — overflow:visible so it never clips body content ── */
+  .dock-sleek-panel {
+    overflow: visible;
+    border-radius: 1.5rem 1.5rem 0 0;
+    padding: 0.75rem 1.25rem 1.25rem;
+    gap: 0.85rem;
+    box-shadow: 0 -12px 48px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(160deg, rgba(8, 12, 17, 0.97), rgba(3, 5, 8, 0.99));
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    max-height: none;
+  }
+
+  /* Drag-handle pill */
+  .dock-sleek-panel::before {
+    content: '';
+    display: block;
+    width: 2.5rem;
+    height: 0.22rem;
+    margin: 0 auto 0.25rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+    flex-shrink: 0;
+  }
+
+  /* ── Hide verbose sections ── */
+  .dock-sleek-header,
+  .dock-sleek-preview,
+  .dock-sleek-status {
+    display: none;
+  }
+
+  /* ── Body: transparent so the grid scroll container works ── */
+  .dock-sleek-body {
+    overflow: visible;
+    flex: 0 0 auto;
+    padding-bottom: 0;
+  }
+
+  /* ── Config section ── */
+  .dock-sleek-config {
+    gap: 0.6rem;
+  }
+
+  .dock-sleek-config-head {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  .dock-config-group-title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .dock-config-group-subtitle {
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: rgba(207, 157, 94, 0.9);
+    text-align: right;
+  }
+
+  /* ── Options: self-contained scroll container ── */
+  .dock-sleek-options-grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+    gap: 0.75rem;
+    padding-bottom: 0.75rem;
+    padding-right: 1.5rem;
+    margin-right: -1.25rem;
+    scrollbar-width: none;
+    scroll-snap-type: x mandatory;
+  }
+
+  .dock-sleek-options-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .dock-sleek-options-grid.grid-color {
+    display: flex;
+  }
+
+  /* ── Option card ── */
+  .dock-sleek-option {
+    flex: 0 0 auto;
+    width: 5.5rem;
+    height: auto;
+    padding: 0.65rem 0.5rem;
+    gap: 0.5rem;
+    border-radius: 1rem;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    scroll-snap-align: start;
+    touch-action: manipulation;
+  }
+
+  .dock-sleek-options-grid:not(.grid-color) .dock-sleek-option {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 6rem;
+    padding: 0.75rem 0.5rem;
+    gap: 0.5rem;
+  }
+
+  /* ── Swatches ── */
+  .dock-sleek-color-block {
+    width: 100%;
+    height: 2.75rem;
+    border-radius: 0.6rem;
+    margin-bottom: 0.1rem;
+  }
+
+  .dock-sleek-abstract-block {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  /* ── Labels ── */
+  .dock-sleek-option-label {
+    font-size: 0.75rem;
+    text-align: center;
+    white-space: normal;
+    line-height: 1.25;
+    overflow: visible;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .dock-sleek-option-label.with-visual {
+    text-align: center;
+  }
+
+  .dock-sleek-option.is-active .dock-sleek-option-label {
+    color: #fff;
+    font-weight: 600;
+  }
+
+  /* ── Footer ── */
+  .dock-sleek-footer {
+    gap: 0;
+    padding-top: 0.5rem;
+    border-top: none;
+    margin-top: 0;
+    flex-direction: column;
+  }
+
+  /* Desktop back-to-labs link hidden; floating back-btn replaces it */
+  .dock-sleek-btn-primary {
+    display: none;
+  }
+
+  /* ── Mobile nav row ── */
+  .dock-sleek-mobile-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    pointer-events: auto;
+  }
+
+  /* ── Prev / Next buttons ── */
+  .dock-sleek-nav-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    flex-shrink: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.07);
+    color: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    pointer-events: auto;
+    transition:
+      background 0.15s ease,
+      transform 0.1s ease;
+  }
+
+  .dock-sleek-nav-btn svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .dock-sleek-nav-btn:active {
+    background: rgba(255, 255, 255, 0.18);
+    transform: scale(0.94);
+  }
+
+  .dock-sleek-nav-btn:disabled {
+    opacity: 0.28;
+    pointer-events: none;
+    border-color: rgba(255, 255, 255, 0.08);
+    background: transparent;
+  }
+
+  /* ── Step counter ── */
+  .dock-sleek-step-counter {
+    flex: 1;
+    text-align: center;
+    font-size: 0.9rem;
+    letter-spacing: 0.2em;
+    font-variant-numeric: tabular-nums;
+    color: rgba(255, 255, 255, 0.6);
+  }
 }
 </style>

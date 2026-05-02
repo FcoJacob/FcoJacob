@@ -32,6 +32,7 @@ const cameraProgress = shallowRef(0)
 const cameraVelocity = shallowRef(0)
 const cameraInputProfile = shallowRef<ShowroomWheelInputProfile>('wheel')
 const reviewMode = shallowRef(false)
+const isProgrammaticNav = shallowRef(false)
 const debugSwitchVisible = import.meta.dev
 const timeOfDay = shallowRef<'day' | 'night'>('night')
 const debugPanelEnabled = computed(() => {
@@ -150,7 +151,15 @@ function scrollToStep(index: number) {
     return
   }
 
-  cameraStepIndex.value = Math.min(Math.max(index, 0), storySteps.value.length - 1)
+  const clampedIndex = Math.min(Math.max(index, 0), storySteps.value.length - 1)
+  if (clampedIndex === cameraStepIndex.value) {
+    return
+  }
+
+  // Raise the flag so handleCameraState does not overwrite while the canvas
+  // is still lerping orbitDistance toward the new target step.
+  isProgrammaticNav.value = true
+  cameraStepIndex.value = clampedIndex
   nextTick(() => {
     stageOverlayRef.value?.focusActiveCard()
   })
@@ -165,6 +174,18 @@ function handleCameraState(payload: {
   cameraInputProfile.value = payload.inputProfile
   cameraProgress.value = payload.progress
   cameraVelocity.value = payload.scrollVelocity
+
+  if (isProgrammaticNav.value) {
+    // The canvas is still animating toward the programmatically-set step.
+    // Once orbitDistance reaches the target, canvas will emit the correct stepIndex.
+    if (payload.stepIndex === cameraStepIndex.value) {
+      isProgrammaticNav.value = false
+    }
+    // Do NOT overwrite cameraStepIndex — that would cancel the animation.
+    return
+  }
+
+  // Desktop wheel/trackpad: let the canvas drive the step index normally.
   cameraStepIndex.value = payload.stepIndex
 }
 
@@ -400,6 +421,14 @@ function resolveStepTiming(stepId: string) {
     enter: Math.round(stepTimingMap.config.enter * motionScale),
   }
 }
+function handleNavigateStep(direction: 'prev' | 'next' | 'back-to-labs') {
+  if (direction === 'back-to-labs') {
+    router.push('/labs')
+    return
+  }
+  scrollToStep(direction === 'next' ? cameraStepIndex.value + 1 : cameraStepIndex.value - 1)
+}
+
 onMounted(() => {
   if (!import.meta.client) {
     return
@@ -538,6 +567,7 @@ onBeforeUnmount(() => {
     <ShowroomControlDock
       :active-config-group="activeConfigGroup"
       :active-config-display-label="activeConfigDisplayLabel"
+      :active-step-index="cameraStepIndex"
       :active-step-label="activeStep.title"
       :environment-label="manifest.environment.label"
       :has-debug-switch="debugSwitchVisible"
@@ -549,6 +579,8 @@ onBeforeUnmount(() => {
       :selected-option-ids="selectedOptionIds"
       :selected-trim-label="selectedTrimLabel"
       :selected-wheels-label="selectedWheelsLabel"
+      :total-steps="storySteps.length"
+      @navigate-step="handleNavigateStep"
       @select-option="selectOption"
     />
 
@@ -674,8 +706,28 @@ onBeforeUnmount(() => {
     min-height: 100svh;
   }
 
+  /* Move day/night switches to top right in mobile to be completely out of the way */
+  .showroom-switches {
+    top: 1rem;
+    right: 1rem;
+    bottom: auto;
+    left: auto;
+    transform: scale(0.9);
+    transform-origin: top right;
+  }
+
   :deep(.showroom-canvas-content) {
     padding: 0.9rem;
+  }
+
+  /*
+   * Constrain the Three.js host to only the area above the bottom dock (~9rem tall).
+   * resizeScene() reads hostRef.clientHeight, so the renderer renders into this
+   * smaller rect and the camera naturally centers the car in the visible viewport.
+   */
+  :deep(.showroom-canvas-placeholder) {
+    height: calc(100svh - 9rem);
+    min-height: unset;
   }
 }
 </style>

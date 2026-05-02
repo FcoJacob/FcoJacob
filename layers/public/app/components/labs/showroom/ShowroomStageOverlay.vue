@@ -486,19 +486,53 @@ defineExpose({
 
   .showroom-editorial-panel,
   .showroom-step-overlay {
-    width: 100%;
     max-width: none;
   }
 
-  .showroom-step-overlay {
-    top: 1.4rem;
-    left: 1rem;
-    width: calc(100% - 2rem);
+  /* Editorial intro panel: full scroll on small screens */
+  .showroom-editorial-panel {
+    max-height: 78dvh;
+    padding: clamp(1rem, 3vw, 1.5rem);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    /* Ensure buttons inside are tappable */
+    pointer-events: auto;
   }
 
-  .showroom-editorial-title,
+  .showroom-step-overlay {
+    /* Position below the top switches bar (min-height 2.5rem × scale(0.9) + 1rem top) */
+    top: 3.75rem;
+    left: 1rem;
+    right: 1rem;
+    width: auto;
+    /* Very compact to avoid covering the 3D car */
+    padding: 0.75rem 1rem;
+    gap: 0.3rem;
+    border-radius: 1.25rem;
+    background: rgba(8, 12, 17, 0.45);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    /* Allow tapping through to the canvas only for this element */
+    pointer-events: none;
+  }
+
+  /* Hide verbose copy on mobile to keep the 3D canvas readable */
+  .showroom-step-overlay-copy,
+  .showroom-step-overlay-support {
+    display: none;
+  }
+
+  .showroom-step-overlay-eyebrow {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
   .showroom-step-overlay-title {
-    font-size: clamp(1.9rem, 9vw, 3.2rem);
+    font-size: 1.4rem;
+    font-weight: 500;
   }
 }
 </style>
