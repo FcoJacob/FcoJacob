@@ -115,9 +115,9 @@ function handleDownload() {
   <div>
     <div v-if="cv" ref="cv-content" class="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-10">
       <!-- Sidebar -->
-      <aside class="space-y-8">
+      <aside class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-x-8 gap-y-6 lg:gap-y-0 lg:space-y-8 lg:h-fit print:grid-cols-1 print:space-y-6 print:gap-y-0">
         <!-- Contact -->
-        <div class="space-y-3">
+        <div class="space-y-3 break-inside-avoid">
           <h2 class="text-2xl font-extrabold">{{ basics?.name }}</h2>
           <p class="text-base font-medium text-(--ui-color-primary-500)">
             {{ basics?.label }}
@@ -164,10 +164,10 @@ function handleDownload() {
           </div>
         </div>
 
-        <USeparator />
+        <USeparator class="sm:hidden lg:block print:block" />
 
         <!-- Skills -->
-        <div class="space-y-4">
+        <div class="space-y-4 break-inside-avoid">
           <h3 class="section-label">
             {{ t('cv.skills') }}
           </h3>
@@ -194,10 +194,10 @@ function handleDownload() {
           </div>
         </div>
 
-        <USeparator />
+        <USeparator class="sm:hidden lg:block print:block" />
 
         <!-- Soft Skills (i18n — not in Convex) -->
-        <div class="space-y-3">
+        <div class="space-y-3 break-inside-avoid">
           <h3 class="section-label">
             {{ t('cv.soft_skills') }}
           </h3>
@@ -213,10 +213,10 @@ function handleDownload() {
           </div>
         </div>
 
-        <USeparator />
+        <USeparator class="sm:hidden lg:block print:block" />
 
         <!-- Languages -->
-        <div class="space-y-3">
+        <div class="space-y-3 break-inside-avoid">
           <h3 class="section-label">
             {{ t('cv.languages') }}
           </h3>
@@ -232,10 +232,10 @@ function handleDownload() {
           </div>
         </div>
 
-        <USeparator />
+        <USeparator class="sm:hidden lg:block print:block" />
 
         <!-- Certifications (i18n — not in Convex) -->
-        <div v-if="certifications.length" class="space-y-3">
+        <div v-if="certifications.length" class="space-y-3 break-inside-avoid">
           <h3 class="section-label">
             {{ t('cv.certifications') }}
           </h3>
@@ -250,10 +250,10 @@ function handleDownload() {
           </ul>
         </div>
 
-        <USeparator />
+        <USeparator class="sm:hidden lg:block print:block" />
 
         <!-- Driving (i18n) -->
-        <div class="space-y-2">
+        <div class="space-y-2 break-inside-avoid">
           <h3 class="section-label">
             {{ t('cv.driving') }}
           </h3>
@@ -276,7 +276,7 @@ function handleDownload() {
             {{ t('cv.work') }}
           </h2>
           <div class="relative border-l-2 border-(--ui-border) pl-6 space-y-8">
-            <div v-for="(job, i) in work" :key="i" class="relative">
+            <div v-for="(job, i) in work" :key="i" class="relative break-inside-avoid">
               <span
                 class="absolute -left-[calc(1.5rem+5px)] top-1.5 size-2.5 rounded-full bg-(--ui-color-primary-500)"
               />
@@ -315,7 +315,7 @@ function handleDownload() {
             {{ t('cv.education') }}
           </h2>
           <div class="relative border-l-2 border-(--ui-border) pl-6 space-y-6">
-            <div v-for="(edu, i) in education" :key="i" class="relative">
+            <div v-for="(edu, i) in education" :key="i" class="relative break-inside-avoid">
               <span
                 class="absolute -left-[calc(1.5rem+5px)] top-1.5 size-2.5 rounded-full bg-(--ui-border)"
               />
@@ -347,7 +347,7 @@ function handleDownload() {
             {{ t('cv.projects') }}
           </h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <UCard v-for="(project, i) in cvProjects" :key="i" variant="subtle">
+            <UCard v-for="(project, i) in cvProjects" :key="i" variant="subtle" class="break-inside-avoid">
               <div class="space-y-2">
                 <h3 class="font-semibold text-base md:text-lg">{{ project.name }}</h3>
                 <p class="text-sm md:text-base text-(--ui-text-muted) line-clamp-2">

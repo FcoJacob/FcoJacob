@@ -27,7 +27,6 @@ class NodeFileReader {
 
 globalThis.FileReader = NodeFileReader
 
-const rootDir = new URL('../', import.meta.url)
 const modelsDir = new URL('../public/labs/dealer-showroom/models/', import.meta.url)
 const hdrDir = new URL('../public/labs/dealer-showroom/hdr/', import.meta.url)
 

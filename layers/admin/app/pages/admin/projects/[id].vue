@@ -77,8 +77,10 @@ async function handleSubmit() {
       color: 'success',
     })
     router.push('/admin/projects')
-  } catch {
-    toast.add({ title: t('admin.project_editor.save_error'), color: 'error' })
+  } catch (e: unknown) {
+    const err = e as { data?: { message?: string }; message?: string }
+    const message = err.data?.message || err.message || t('admin.project_editor.save_error')
+    toast.add({ title: message, color: 'error' })
   } finally {
     saving.value = false
   }
@@ -205,7 +207,7 @@ async function handleSubmit() {
                 :src="form.thumbnail"
                 alt="Thumbnail preview"
                 class="w-full aspect-video object-cover"
-              />
+              >
             </div>
             <div
               v-else

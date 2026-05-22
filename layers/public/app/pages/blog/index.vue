@@ -25,7 +25,7 @@ const { data: blogs } = await useAsyncData('blogs', () =>
       >
         <UCard
           variant="subtle"
-          class="transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:border-(--ui-color-primary-500)/30"
+          class="!overflow-visible transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:border-(--ui-color-primary-500)/30"
         >
           <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div class="space-y-2 flex-1">

@@ -49,6 +49,7 @@ onMounted(async () => {
     <div ref="orb3" class="orb orb-tertiary" />
     <div class="grid-overlay" />
   </div>
+  <div aria-hidden="true" class="noise-overlay" />
 </template>
 
 <style scoped>

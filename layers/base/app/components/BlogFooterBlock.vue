@@ -32,7 +32,7 @@ const hasAuthorNote = computed(() => props.authorNote.trim().length > 0)
 
     <section class="author-signature">
       <div class="author-signature__media">
-        <img :src="image" :alt="name" class="author-signature__photo" />
+        <img :src="image" :alt="name" class="author-signature__photo">
       </div>
 
       <div class="author-signature__body">

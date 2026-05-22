@@ -1,5 +1,4 @@
 export function useDeleteConfirm() {
-  const overlay = useOverlay()
   const toast = useToast()
 
   const pendingId = ref<string | null>(null)

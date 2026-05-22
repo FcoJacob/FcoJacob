@@ -74,7 +74,7 @@ function next() {
       class="relative overflow-hidden rounded-2xl border border-(--ui-border) bg-(--ui-bg-elevated) min-h-64"
     >
       <Transition name="showcase" mode="out-in">
-        <div :key="selected.name" class="p-6 sm:p-8 lg:p-10">
+        <div :key="selected.name" class="p-6 pb-20 sm:p-8 sm:pb-24 lg:p-10">
           <div class="flex flex-col gap-6">
             <!-- Header row -->
             <div class="flex items-start justify-between gap-4">

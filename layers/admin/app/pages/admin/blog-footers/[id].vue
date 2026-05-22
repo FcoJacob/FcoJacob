@@ -133,8 +133,10 @@ async function handleSubmit() {
 
     toast.add({ title: 'Bloque de pie guardado.', color: 'success' })
     await router.push('/admin/blog-footers')
-  } catch {
-    toast.add({ title: 'No se pudo guardar el bloque.', color: 'error' })
+  } catch (e: unknown) {
+    const err = e as { data?: { message?: string }; message?: string }
+    const message = err.data?.message || err.message || 'No se pudo guardar el bloque.'
+    toast.add({ title: message, color: 'error' })
   } finally {
     saving.value = false
   }

@@ -8,7 +8,7 @@ export default defineOAuthGoogleEventHandler({
       .split(',')
       .map((e) => e.trim().toLowerCase())
       .filter(Boolean)
-    if (allowedEmails.length > 0 && !allowedEmails.includes(user.email?.toLowerCase())) {
+    if (allowedEmails.length === 0 || !user.email || !allowedEmails.includes(user.email.toLowerCase())) {
       console.warn(`Unauthorized admin login attempt: ${user.email}`)
       return sendRedirect(event, '/admin/login?error=unauthorized')
     }

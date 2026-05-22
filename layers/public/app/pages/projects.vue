@@ -21,11 +21,12 @@ const { data: projects } = await useAsyncData('projects', () => $fetch('/api/pub
       <article
         v-for="(project, i) in projects"
         :key="project._id"
+        v-tilt
         v-reveal="{ delay: i * 0.1 }"
-        class="project-card group relative rounded-2xl overflow-hidden border border-(--ui-border) bg-(--ui-bg-elevated) cursor-default"
+        class="project-card group relative rounded-2xl border border-(--ui-border) bg-(--ui-bg-elevated) cursor-default"
       >
         <!-- Thumbnail con overlay -->
-        <div class="relative h-52 md:h-60 overflow-hidden">
+        <div class="relative h-52 md:h-60 rounded-t-2xl overflow-hidden">
           <img
             v-if="project.thumbnail"
             :src="project.thumbnail"
@@ -125,12 +126,10 @@ const { data: projects } = await useAsyncData('projects', () => $fetch('/api/pub
 .project-card {
   transform-style: preserve-3d;
   transition:
-    transform 0.4s cubic-bezier(0.23, 1, 0.32, 1),
     box-shadow 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .project-card:hover {
-  transform: translateY(-6px);
   box-shadow:
     0 20px 40px -12px rgba(0, 0, 0, 0.25),
     0 0 0 1px rgba(var(--ui-color-primary-500-rgb, 99 102 241) / 0.15);

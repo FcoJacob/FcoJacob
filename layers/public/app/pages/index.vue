@@ -147,7 +147,7 @@ onMounted(async () => {
 
           <h1
             ref="heroTitle"
-            class="hero-title text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold tracking-tight leading-[1.05]"
+            class="hero-title text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold tracking-tight leading-[1.15]"
           >
             {{ t('cv_data.basics.name') }}
           </h1>
@@ -187,35 +187,35 @@ onMounted(async () => {
 
         <!-- Stats card -->
         <div ref="statsCard" class="w-full lg:w-auto will-change-transform">
-          <UCard class="stats-card lg:min-w-80 backdrop-blur-sm">
-            <div class="grid grid-cols-1 gap-6 p-2">
-              <div class="text-center">
+          <UCard class="stats-card lg:min-w-80 backdrop-blur-sm !overflow-visible">
+            <div class="flex flex-row lg:flex-col justify-between items-stretch gap-4 lg:gap-6 p-1 lg:p-2">
+              <div class="flex-1 text-center">
                 <p
                   ref="statExperience"
-                  class="text-4xl font-extrabold bg-gradient-to-br from-(--ui-color-primary-500) to-(--ui-color-primary-700) bg-clip-text text-transparent"
+                  class="text-2xl sm:text-4xl font-extrabold bg-gradient-to-br from-(--ui-color-primary-500) to-(--ui-color-primary-700) bg-clip-text text-transparent"
                 >
                   +6
                 </p>
-                <p class="text-base md:text-lg text-(--ui-text-muted) mt-1">
+                <p class="text-xs sm:text-sm lg:text-base text-(--ui-text-muted) mt-1">
                   {{ t('hero.stats_experience') }}
                 </p>
               </div>
-              <USeparator />
-              <div class="text-center">
+              <div class="border-r lg:border-r-0 lg:border-b border-(--ui-border)" />
+              <div class="flex-1 text-center">
                 <p
                   ref="statProjects"
-                  class="text-4xl font-extrabold bg-gradient-to-br from-(--ui-color-primary-500) to-(--ui-color-primary-700) bg-clip-text text-transparent"
+                  class="text-2xl sm:text-4xl font-extrabold bg-gradient-to-br from-(--ui-color-primary-500) to-(--ui-color-primary-700) bg-clip-text text-transparent"
                 >
                   +10
                 </p>
-                <p class="text-base md:text-lg text-(--ui-text-muted) mt-1">
+                <p class="text-xs sm:text-sm lg:text-base text-(--ui-text-muted) mt-1">
                   {{ t('hero.stats_projects') }}
                 </p>
               </div>
-              <USeparator />
-              <div class="text-center">
-                <p class="text-2xl font-extrabold">Vue · Nuxt</p>
-                <p class="text-base md:text-lg text-(--ui-text-muted) mt-1">
+              <div class="border-r lg:border-r-0 lg:border-b border-(--ui-border)" />
+              <div class="flex-1 text-center flex flex-col justify-center">
+                <p class="text-base sm:text-2xl font-extrabold">Vue · Nuxt</p>
+                <p class="text-xs sm:text-sm lg:text-base text-(--ui-text-muted) mt-1">
                   {{ t('hero.stats_stack') }}
                 </p>
               </div>
@@ -245,7 +245,7 @@ onMounted(async () => {
           <span
             v-for="item in stack"
             :key="`${n}-${item}`"
-            class="text-2xl sm:text-3xl font-extrabold tracking-tight text-(--ui-text-muted) hover:text-(--ui-text) transition-colors duration-300 flex items-center gap-10"
+            class="text-2xl sm:text-3xl font-extrabold tracking-tight text-(--ui-text-muted) hover:text-(--ui-text) transition-colors duration-300 flex items-center gap-10 whitespace-nowrap flex-shrink-0"
           >
             {{ item }}
             <span class="size-1.5 rounded-full bg-(--ui-color-primary-500)/60" />
@@ -268,8 +268,9 @@ onMounted(async () => {
         <UCard
           v-for="key in skillKeys"
           :key="key"
+          v-tilt
           variant="subtle"
-          class="skill-card transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-(--ui-color-primary-500)/30"
+          class="skill-card !overflow-visible transition-[border-color,box-shadow] duration-300 hover:shadow-lg hover:border-(--ui-color-primary-500)/30"
         >
           <div class="space-y-3">
             <div class="flex items-center justify-between">
@@ -325,8 +326,9 @@ onMounted(async () => {
 .hero-title :deep(.hero-word) {
   display: inline-block;
   overflow: hidden;
-  padding-bottom: 0.08em;
-  line-height: 1.05;
+  padding-bottom: 0.15em;
+  margin-bottom: -0.07em;
+  line-height: 1.15;
 }
 .hero-title :deep(.hero-word-inner) {
   display: inline-block;

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { EditorView, ViewUpdate } from '@codemirror/view'
+
 const { t } = useI18n()
 const { upsertCv } = useAdminApi()
 const toast = useToast()
@@ -16,7 +18,7 @@ const localeOptions = [
 
 const jsonInput = ref('')
 const editorRef = ref<HTMLDivElement>()
-let editorView: any = null
+let editorView: EditorView | null = null
 
 async function loadCvData(locale: string) {
   try {
@@ -72,7 +74,7 @@ onMounted(async () => {
     json(),
     keymap.of([indentWithTab]),
     EditorView.lineWrapping,
-    EditorView.updateListener.of((update: any) => {
+    EditorView.updateListener.of((update: ViewUpdate) => {
       if (update.docChanged) {
         jsonInput.value = update.state.doc.toString()
       }
@@ -104,8 +106,16 @@ async function handleSubmit() {
     const parsed = JSON.parse(jsonInput.value)
     await upsertCv(parsed, selectedLocale.value)
     toast.add({ title: `CV (${selectedLocale.value}) updated`, color: 'success' })
-  } catch (e) {
-    const message = e instanceof SyntaxError ? 'Invalid JSON' : 'Error saving CV'
+  } catch (e: unknown) {
+    const err = e as { data?: { message?: string }; message?: string }
+    let message = 'Error saving CV'
+    if (e instanceof SyntaxError) {
+      message = 'Invalid JSON'
+    } else if (err.data?.message) {
+      message = err.data.message
+    } else if (err.message) {
+      message = err.message
+    }
     toast.add({ title: message, color: 'error' })
   }
 }

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { Editor } from '@tiptap/core'
 import type { Id } from '~~/convex/_generated/dataModel'
 import { api } from '#convex/_generated/api'
 import BlogFooterBlock from '../../../../../base/app/components/BlogFooterBlock.vue'
@@ -25,6 +26,34 @@ type BlogFooterPreset = {
     gratitudeNote: { es: string; en: string }
     authorImage: string
   }
+}
+
+type ExtendedBlog = {
+  title: string
+  slug: string
+  content: string
+  excerpt: string
+  coverImage?: string
+  tags?: string[]
+  researchLinkContent?: {
+    linkLabel?: { es?: string; en?: string }
+    lead?: { es?: string; en?: string }
+    ctaLabel?: { es?: string; en?: string }
+    hint?: { es?: string; en?: string }
+    externalUrl?: string
+  }
+  footerMode?: string
+  footerPresetId?: string
+  footerContent?: {
+    authorEyebrow?: { es?: string; en?: string }
+    authorName?: string
+    authorRole?: { es?: string; en?: string }
+    authorNote?: { es?: string; en?: string }
+    gratitudeNote?: { es?: string; en?: string }
+    authorImage?: string
+  }
+  published: boolean
+  locale: string
 }
 
 const DEFAULT_RESEARCH_LINK = {
@@ -169,7 +198,7 @@ watch(
 
 /** TipTap editor */
 const editorEl = ref<HTMLDivElement>()
-let editor: any = null
+let editor: Editor | null = null
 const editorReady = ref(false)
 
 const activeMarks = reactive({
@@ -209,18 +238,19 @@ watch(
   existing,
   async (blog) => {
     if (blog) {
+      const b = blog as unknown as ExtendedBlog
       autoSlug.value = false
-      previousSlug.value = blog.slug
-      const researchLinkContent = (blog as any).researchLinkContent ?? DEFAULT_RESEARCH_LINK
-      const footerContent = (blog as any).footerContent ?? DEFAULT_FOOTER
+      previousSlug.value = b.slug
+      const researchLinkContent = b.researchLinkContent ?? DEFAULT_RESEARCH_LINK
+      const footerContent = b.footerContent ?? DEFAULT_FOOTER
 
       Object.assign(form, {
-        title: blog.title,
-        slug: blog.slug,
-        content: blog.content,
-        excerpt: blog.excerpt,
-        coverImage: blog.coverImage ?? '',
-        tags: (blog as any).tags?.join(', ') ?? '',
+        title: b.title,
+        slug: b.slug,
+        content: b.content,
+        excerpt: b.excerpt,
+        coverImage: b.coverImage ?? '',
+        tags: b.tags?.join(', ') ?? '',
         researchLinkLabelEs:
           researchLinkContent.linkLabel?.es ?? DEFAULT_RESEARCH_LINK.linkLabel.es,
         researchLinkLabelEn:
@@ -232,8 +262,8 @@ watch(
         researchHintEs: researchLinkContent.hint?.es ?? DEFAULT_RESEARCH_LINK.hint.es,
         researchHintEn: researchLinkContent.hint?.en ?? DEFAULT_RESEARCH_LINK.hint.en,
         researchExternalUrl: researchLinkContent.externalUrl ?? DEFAULT_RESEARCH_LINK.externalUrl,
-        footerMode: (blog as any).footerMode ?? 'preset',
-        footerPresetId: (blog as any).footerPresetId ?? '',
+        footerMode: b.footerMode ?? 'preset',
+        footerPresetId: b.footerPresetId ?? '',
         footerAuthorEyebrowEs: footerContent.authorEyebrow?.es ?? DEFAULT_FOOTER.authorEyebrow.es,
         footerAuthorEyebrowEn: footerContent.authorEyebrow?.en ?? DEFAULT_FOOTER.authorEyebrow.en,
         footerAuthorName: footerContent.authorName ?? DEFAULT_FOOTER.authorName,
@@ -244,14 +274,14 @@ watch(
         footerGratitudeEs: footerContent.gratitudeNote?.es ?? DEFAULT_FOOTER.gratitudeNote.es,
         footerGratitudeEn: footerContent.gratitudeNote?.en ?? DEFAULT_FOOTER.gratitudeNote.en,
         footerAuthorImage: footerContent.authorImage ?? DEFAULT_FOOTER.authorImage,
-        published: blog.published,
-        locale: blog.locale,
+        published: b.published,
+        locale: b.locale,
       })
       if (editor) {
-        editor.commands.setContent(blog.content)
+        editor.commands.setContent(b.content)
       }
 
-      await loadResearchDocument(blog.slug)
+      await loadResearchDocument(b.slug)
     }
   },
   { immediate: true },
@@ -495,7 +525,7 @@ async function handleSubmit() {
       researchLinkContent: buildResearchLinkContent(),
       footerMode: form.footerMode,
       footerPresetId:
-        form.footerMode === 'preset' && form.footerPresetId ? form.footerPresetId : undefined,
+          form.footerMode === 'preset' && form.footerPresetId ? form.footerPresetId : undefined,
       footerContent: buildFooterContent(),
       published: form.published,
       locale: form.locale,
@@ -524,8 +554,10 @@ async function handleSubmit() {
       color: 'success',
     })
     router.push('/admin/blogs')
-  } catch {
-    toast.add({ title: t('admin.blog_editor.save_error'), color: 'error' })
+  } catch (e: unknown) {
+    const err = e as { data?: { message?: string }; message?: string }
+    const message = err.data?.message || err.message || t('admin.blog_editor.save_error')
+    toast.add({ title: message, color: 'error' })
   } finally {
     saving.value = false
   }
@@ -717,7 +749,7 @@ function isSep(item: ToolbarItem): item is ToolbarSep {
                 :src="form.coverImage"
                 alt="Cover preview"
                 class="w-full aspect-video object-cover"
-              />
+              >
             </div>
             <div
               v-else
@@ -763,7 +795,7 @@ function isSep(item: ToolbarItem): item is ToolbarSep {
               accept="application/pdf"
               class="hidden"
               @change="handleResearchFileChange"
-            />
+            >
 
             <UButton
               :label="researchDocument ? 'Reemplazar PDF en Convex' : 'Subir PDF a Convex'"

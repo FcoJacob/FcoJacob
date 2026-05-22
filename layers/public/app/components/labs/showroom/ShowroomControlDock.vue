@@ -71,8 +71,11 @@ function getLocalizedOptionLabel(groupId: string, option: ShowroomOption) {
       :class="{ 'is-preconfig': preConfigStage }"
       :style="{ '--dock-offset': hasDebugSwitch ? '3.75rem' : '0px' }"
     >
-      <!-- Back button sits OUTSIDE the panel so overflow:hidden doesn't clip it -->
-      <button class="dock-sleek-mobile-back-btn" @click="emit('navigateStep', 'back-to-labs')">
+      <button
+        class="dock-sleek-mobile-back-btn"
+        :aria-label="t('labs_showroom.back_to_labs')"
+        @click="emit('navigateStep', 'back-to-labs')"
+      >
         <svg
           width="20"
           height="20"
