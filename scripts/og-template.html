@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    font-family: -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: radial-gradient(1200px 800px at 85% -10%, #14532d 0%, transparent 55%),
+                radial-gradient(900px 700px at -10% 110%, #1e3a8a33 0%, transparent 60%),
+                #0a0f1a;
+    color: #e2e8f0;
+    display: flex;
+    align-items: center;
+    padding: 0 80px;
+    position: relative;
+  }
+  .grid-overlay {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(#ffffff08 1px, transparent 1px),
+                      linear-gradient(90deg, #ffffff08 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+  .content { position: relative; flex: 1; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 10px;
+    border: 1px solid #22c55e55; background: #22c55e14; color: #4ade80;
+    font-size: 22px; font-weight: 600; border-radius: 999px; padding: 10px 22px;
+    margin-bottom: 36px;
+  }
+  .dot { width: 10px; height: 10px; border-radius: 999px; background: #22c55e; }
+  h1 { font-size: 92px; font-weight: 800; letter-spacing: -2px; color: #f8fafc; line-height: 1.05; }
+  .role { font-size: 40px; font-weight: 600; margin-top: 18px;
+    background: linear-gradient(90deg, #4ade80, #60a5fa);
+    -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .chips { display: flex; gap: 14px; margin-top: 44px; }
+  .chip {
+    border: 1px solid #334155; background: #1e293b99; color: #cbd5e1;
+    font-size: 24px; font-weight: 600; border-radius: 12px; padding: 12px 24px;
+  }
+  .url { position: absolute; bottom: 54px; left: 80px; font-size: 26px; color: #64748b; font-weight: 600; letter-spacing: 0.5px; }
+  .photo-wrap { position: relative; width: 340px; height: 340px; flex-shrink: 0; }
+  .photo-ring { position: absolute; inset: -14px; border-radius: 999px;
+    background: conic-gradient(from 140deg, #22c55e, #3b82f6, #22c55e); opacity: 0.9; }
+  .photo { position: absolute; inset: 0; border-radius: 999px; object-fit: cover;
+    width: 100%; height: 100%; border: 8px solid #0a0f1a; }
+</style>
+</head>
+<body>
+  <div class="grid-overlay"></div>
+  <div class="content">
+    <div class="badge"><span class="dot"></span>Disponible para nuevos retos · Open to work</div>
+    <h1>Jacob Sarmiento</h1>
+    <div class="role">Frontend Developer · UI/UX</div>
+    <div class="chips">
+      <span class="chip">Vue 3</span>
+      <span class="chip">Nuxt 4</span>
+      <span class="chip">TypeScript</span>
+      <span class="chip">Node.js</span>
+    </div>
+  </div>
+  <div class="photo-wrap">
+    <div class="photo-ring"></div>
+    <img class="photo" src="../public/authors/jacob-sarmiento.jpeg" alt="Jacob Sarmiento" />
+  </div>
+  <div class="url">jsarmiento.dev</div>
+</body>
+</html>

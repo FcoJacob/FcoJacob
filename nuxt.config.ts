@@ -6,7 +6,21 @@ export default defineNuxtConfig({
     compatibilityVersion: 5,
   },
 
-  modules: ['convex-nuxt'],
+  modules: ['convex-nuxt', '@nuxtjs/sitemap', '@nuxtjs/robots'],
+
+  site: {
+    url: 'https://jsarmiento.dev',
+    name: 'Jacob Sarmiento',
+  },
+
+  sitemap: {
+    sources: ['/api/__sitemap__/urls'],
+    exclude: ['/admin/**', '/en/admin/**'],
+  },
+
+  robots: {
+    disallow: ['/admin'],
+  },
 
   convex: {
     url: (process.env.CONVEX_URL ?? '').replace(/\/$/, ''),

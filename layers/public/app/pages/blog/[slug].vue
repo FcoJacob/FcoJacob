@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import BlogFooterBlock from '../../../../base/app/components/BlogFooterBlock.vue'
-import authorPortrait from '../../../../../assets/B92E7B57-48CB-4316-81F2-8EE982B602D9_1_201_a.jpeg'
+
+const authorPortrait = '/authors/jacob-sarmiento.jpeg'
 
 type BlogReaction = 'like' | 'dislike'
 
@@ -282,13 +283,48 @@ async function submitReaction(reaction: BlogReaction) {
   }
 }
 
+const SITE_URL = 'https://jsarmiento.dev'
+
+const absoluteCoverImage = computed(() =>
+  resolvedCoverImage.value?.startsWith('/')
+    ? `${SITE_URL}${resolvedCoverImage.value}`
+    : resolvedCoverImage.value,
+)
+
 useSeoMeta({
   title: () => blog.value?.title ?? t('nav.blog'),
   description: () => blog.value?.excerpt ?? '',
   ogTitle: () => blog.value?.title ?? t('nav.blog'),
   ogDescription: () => blog.value?.excerpt ?? '',
-  ogImage: () => resolvedCoverImage.value,
+  ogType: 'article',
+  ogImage: () => absoluteCoverImage.value || `${SITE_URL}/og.png`,
 })
+
+// Structured data: BlogPosting for search engines
+useHead(() => ({
+  script: blog.value
+    ? [
+        {
+          type: 'application/ld+json',
+          innerHTML: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BlogPosting',
+            headline: blog.value.title,
+            description: blog.value.excerpt,
+            image: absoluteCoverImage.value || `${SITE_URL}/og.png`,
+            datePublished: createdAtIso.value,
+            inLanguage: blog.value.locale ?? locale.value,
+            url: `${SITE_URL}${locale.value === 'en' ? '/en' : ''}/blog/${blog.value.slug}`,
+            author: {
+              '@type': 'Person',
+              name: 'Jacob Sarmiento',
+              url: SITE_URL,
+            },
+          }),
+        },
+      ]
+    : [],
+}))
 </script>
 
 <template>

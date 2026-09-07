@@ -3,6 +3,14 @@
     "title": "Jacob Sarmiento",
     "description": "Desarrollador de software - UI/UX"
   },
+  "seo": {
+    "home_title": "Jacob Sarmiento — Desarrollador Frontend Vue · Nuxt · TypeScript",
+    "home_description": "Portfolio de Jacob Sarmiento, desarrollador de software y UI/UX en Las Palmas (Canarias) con más de 6 años de experiencia en Vue 3, Nuxt y TypeScript. Proyectos, blog técnico y CV descargable en PDF.",
+    "projects_description": "Proyectos web profesionales y freelance de Jacob Sarmiento: desarrollo con Vue.js, Nuxt y diseño UI/UX para clientes reales.",
+    "labs_description": "Laboratorio de experimentos de Jacob Sarmiento: prototipos 3D con Three.js, WebGL y pruebas de concepto interactivas.",
+    "blog_description": "Blog de Jacob Sarmiento sobre desarrollo web, frontend con Vue y Nuxt, IA y carrera profesional.",
+    "cv_description": "CV de Jacob Sarmiento, Senior Frontend Developer (Vue, Nuxt, TypeScript) en Las Palmas. Experiencia, formación, habilidades y descarga en PDF."
+  },
   "nav": {
     "home": "Inicio",
     "blog": "Blog",

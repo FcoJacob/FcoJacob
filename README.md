@@ -29,9 +29,10 @@ Full-stack personal portfolio with blog, project showcase, labs section, and an 
 - **Labs** — Experimental projects section
 - **Admin Panel** — Protected CRUD for all content (blogs, projects, labs, CV)
 - **i18n** — Full Spanish / English support
+- **SEO** — Sitemap, robots.txt, Open Graph, hreflang, and JSON-LD structured data
 - **Dark mode** — System-aware with manual toggle
-- **PDF export** — CV generated client-side via `html2pdf.js`
-- **OAuth login** — Google & LinkedIn via `nuxt-auth-utils`
+- **PDF export** — ATS-friendly, text-based CV generated with `jsPDF`, served at [`/cv.pdf`](https://jsarmiento.dev/cv.pdf)
+- **OAuth login** — Google via `nuxt-auth-utils`
 
 ## Tech Stack
 
@@ -40,8 +41,9 @@ Full-stack personal portfolio with blog, project showcase, labs section, and an 
 | Framework | [Nuxt 4](https://nuxt.com) + [Vue 3](https://vuejs.org) |
 | UI | [Nuxt UI 4](https://ui.nuxt.com) + [Tailwind CSS 4](https://tailwindcss.com) |
 | Backend | [Convex](https://convex.dev) (real-time database + serverless functions) |
-| Auth | [nuxt-auth-utils](https://github.com/atinux/nuxt-auth-utils) (Google, LinkedIn) |
+| Auth | [nuxt-auth-utils](https://github.com/atinux/nuxt-auth-utils) (Google) |
 | i18n | [@nuxtjs/i18n](https://i18n.nuxtjs.org) |
+| SEO | [@nuxtjs/sitemap](https://nuxtseo.com/docs/sitemap) + [@nuxtjs/robots](https://nuxtseo.com/docs/robots) |
 | Testing | [Vitest](https://vitest.dev) + [@nuxt/test-utils](https://nuxt.com/docs/getting-started/testing) |
 | Linting | ESLint + Prettier |
 | Package manager | [pnpm 10](https://pnpm.io) |
@@ -74,7 +76,9 @@ Convex functions and schema live in `convex/`, and Nuxt server routes in `server
 │   └── admin/             # Admin pages, middleware, composables
 ├── server/                # Nuxt server routes & API handlers
 │   ├── api/
-│   └── routes/auth/       # OAuth callbacks (Google, LinkedIn)
+│   ├── routes/auth/       # OAuth callback (Google)
+│   └── routes/cv.pdf.get.ts  # ATS-friendly PDF CV endpoint
+├── shared/                # Code shared between app and server (CV PDF renderer)
 ├── tests/                 # Vitest unit tests
 └── scripts/               # Seed scripts (e.g. CV data)
 ```
@@ -114,9 +118,8 @@ NUXT_PUBLIC_CONVEX_URL=https://<your-deployment>.convex.cloud
 NUXT_OAUTH_GOOGLE_CLIENT_ID=
 NUXT_OAUTH_GOOGLE_CLIENT_SECRET=
 
-# OAuth — LinkedIn
-NUXT_OAUTH_LINKEDIN_CLIENT_ID=
-NUXT_OAUTH_LINKEDIN_CLIENT_SECRET=
+# Comma-separated list of emails allowed to access the admin panel
+NUXT_ADMIN_EMAILS=
 
 # Session secret (min 32 chars)
 NUXT_SESSION_PASSWORD=

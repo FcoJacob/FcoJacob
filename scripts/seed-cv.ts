@@ -35,7 +35,7 @@ const cvData = {
       },
       {
         network: 'GitHub',
-        username: 'fsarmiento',
+        username: 'FcoJacob',
         url: 'https://github.com/FcoJacob',
       },
     ],

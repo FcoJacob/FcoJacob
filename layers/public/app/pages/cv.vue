@@ -3,7 +3,9 @@ const { t, tm, rt, locale } = useI18n()
 
 useSeoMeta({
   title: `${t('nav.cv')} - ${t('app.title')}`,
-  description: t('app.description'),
+  description: t('seo.cv_description'),
+  ogTitle: `${t('nav.cv')} - ${t('app.title')}`,
+  ogDescription: t('seo.cv_description'),
 })
 
 // ── Primary data source: Convex (what the admin edits) ──────────
@@ -44,81 +46,48 @@ const githubUrl = computed(
   () => basics.value?.profiles?.find((p: any) => p.network === 'GitHub')?.url ?? '#',
 )
 
-// ── PDF generation ──────────────────────────────────────────────
-const cvContent = useTemplateRef<HTMLElement>('cv-content')
-const { generate, isGenerating } = useGeneratePdf()
+// ── Server-generated, ATS-parseable PDF (see server/routes/cv.pdf.get.ts)
+const pdfUrl = computed(() => (locale.value === 'en' ? '/cv.pdf?locale=en' : '/cv.pdf'))
 
-function handleDownload() {
-  if (!basics.value) return
-  generate(
-    {
-      name: basics.value.name,
-      label: basics.value.label,
-      summary: basics.value.summary,
-      location: `${basics.value.location.city}, ${basics.value.location.region}`,
-      email: basics.value.email,
-      phone: basics.value.phone ?? '',
-      linkedinUrl: linkedinUrl.value,
-      githubUrl: githubUrl.value,
-      websiteUrl: basics.value.url ?? 'https://jsarmiento.dev',
-      skills: skills.value.map((s: any) => ({
-        name: s.name,
-        level: s.level,
-        keywords: s.keywords,
-      })),
-      softSkills: softSkills.value,
-      languages: languages.value.map((l: any) => ({
-        language: l.language,
-        fluency: l.fluency,
-      })),
-      certifications: certifications.value,
-      driving: t('cv_data.driving'),
-      work: work.value.map((j: any) => ({
-        position: j.position,
-        name: j.name,
-        startDate: j.startDate,
-        endDate: j.endDate ?? '',
-        summary: j.summary,
-        highlights: j.highlights ?? [],
-      })),
-      education: education.value.map((e: any) => ({
-        institution: e.institution,
-        studyType: e.studyType,
-        area: e.area,
-        startDate: e.startDate,
-        endDate: e.endDate ?? '',
-        note: e.score,
-      })),
-      projects: cvProjects.value.map((p: any) => ({
-        name: p.name,
-        description: p.description,
-        url: p.url,
-      })),
-      labels: {
-        skills: t('cv.skills'),
-        softSkills: t('cv.soft_skills'),
-        languages: t('cv.languages'),
-        certifications: t('cv.certifications'),
-        driving: t('cv.driving'),
-        work: t('cv.work'),
-        education: t('cv.education'),
-        projects: t('cv.projects'),
-        present: t('cv.present'),
-      },
-    },
-    `${basics.value.name}.pdf`,
-  )
-}
+// ── Structured data: ProfilePage + Person for search engines ────
+useHead(() => ({
+  script: basics.value
+    ? [
+        {
+          type: 'application/ld+json',
+          innerHTML: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'ProfilePage',
+            mainEntity: {
+              '@type': 'Person',
+              name: basics.value.name,
+              jobTitle: basics.value.label,
+              email: `mailto:${basics.value.email}`,
+              url: 'https://jsarmiento.dev',
+              address: {
+                '@type': 'PostalAddress',
+                addressLocality: basics.value.location?.city,
+                addressRegion: basics.value.location?.region,
+                addressCountry: basics.value.location?.countryCode ?? 'ES',
+              },
+              sameAs: [linkedinUrl.value, githubUrl.value].filter((u) => u !== '#'),
+              knowsAbout: skills.value.flatMap((s: any) => s.keywords ?? []),
+            },
+          }),
+        },
+      ]
+    : [],
+}))
 </script>
 
 <template>
   <div>
-    <div v-if="cv" ref="cv-content" class="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-10">
+    <div v-if="cv" class="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-10">
       <!-- Sidebar -->
       <aside class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-x-8 gap-y-6 lg:gap-y-0 lg:space-y-8 lg:h-fit print:grid-cols-1 print:space-y-6 print:gap-y-0">
         <!-- Contact -->
         <div class="space-y-3 break-inside-avoid">
-          <h2 class="text-2xl font-extrabold">{{ basics?.name }}</h2>
+          <h1 class="text-2xl font-extrabold">{{ basics?.name }}</h1>
           <p class="text-base font-medium text-(--ui-color-primary-500)">
             {{ basics?.label }}
           </p>
@@ -158,8 +127,9 @@ function handleDownload() {
               icon="i-lucide-download"
               size="md"
               variant="outline"
-              :loading="isGenerating"
-              @click="handleDownload"
+              :to="pdfUrl"
+              external
+              download
             />
           </div>
         </div>
@@ -168,9 +138,9 @@ function handleDownload() {
 
         <!-- Skills -->
         <div class="space-y-4 break-inside-avoid">
-          <h3 class="section-label">
+          <h2 class="section-label">
             {{ t('cv.skills') }}
-          </h3>
+          </h2>
           <div v-for="skill in skills" :key="skill.name" class="space-y-1.5">
             <div class="flex items-center justify-between">
               <span class="text-sm md:text-base font-semibold">{{ skill.name }}</span>
@@ -198,9 +168,9 @@ function handleDownload() {
 
         <!-- Soft Skills (i18n — not in Convex) -->
         <div class="space-y-3 break-inside-avoid">
-          <h3 class="section-label">
+          <h2 class="section-label">
             {{ t('cv.soft_skills') }}
-          </h3>
+          </h2>
           <div class="flex flex-wrap gap-2">
             <UBadge
               v-for="skill in softSkills"
@@ -217,9 +187,9 @@ function handleDownload() {
 
         <!-- Languages -->
         <div class="space-y-3 break-inside-avoid">
-          <h3 class="section-label">
+          <h2 class="section-label">
             {{ t('cv.languages') }}
-          </h3>
+          </h2>
           <div class="space-y-1">
             <div
               v-for="lang in languages"
@@ -236,9 +206,9 @@ function handleDownload() {
 
         <!-- Certifications (i18n — not in Convex) -->
         <div v-if="certifications.length" class="space-y-3 break-inside-avoid">
-          <h3 class="section-label">
+          <h2 class="section-label">
             {{ t('cv.certifications') }}
-          </h3>
+          </h2>
           <ul class="text-sm space-y-1 text-(--ui-text-muted)">
             <li v-for="cert in certifications" :key="cert" class="flex items-start gap-2">
               <UIcon
@@ -254,9 +224,9 @@ function handleDownload() {
 
         <!-- Driving (i18n) -->
         <div class="space-y-2 break-inside-avoid">
-          <h3 class="section-label">
+          <h2 class="section-label">
             {{ t('cv.driving') }}
-          </h3>
+          </h2>
           <p class="text-sm">{{ t('cv_data.driving') }}</p>
         </div>
       </aside>

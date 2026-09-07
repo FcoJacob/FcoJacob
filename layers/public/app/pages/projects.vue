@@ -3,7 +3,9 @@ const { t } = useI18n()
 
 useSeoMeta({
   title: `${t('nav.projects')} - ${t('app.title')}`,
-  description: t('app.description'),
+  description: t('seo.projects_description'),
+  ogTitle: `${t('nav.projects')} - ${t('app.title')}`,
+  ogDescription: t('seo.projects_description'),
 })
 
 const { data: projects } = await useAsyncData('projects', () => $fetch('/api/public/projects'))

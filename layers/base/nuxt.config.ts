@@ -9,9 +9,10 @@ export default defineNuxtConfig({
   css: [resolve(currentDir, 'app/assets/css/main.css')],
 
   i18n: {
+    baseUrl: 'https://jsarmiento.dev',
     locales: [
-      { code: 'es', name: 'Español', file: 'es.json' },
-      { code: 'en', name: 'English', file: 'en.json' },
+      { code: 'es', name: 'Español', language: 'es-ES', file: 'es.json' },
+      { code: 'en', name: 'English', language: 'en-US', file: 'en.json' },
     ],
     defaultLocale: 'es',
     strategy: 'prefix_except_default',

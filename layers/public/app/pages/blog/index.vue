@@ -3,7 +3,9 @@ const { t, locale } = useI18n()
 
 useSeoMeta({
   title: `${t('nav.blog')} - ${t('app.title')}`,
-  description: t('app.description'),
+  description: t('seo.blog_description'),
+  ogTitle: `${t('nav.blog')} - ${t('app.title')}`,
+  ogDescription: t('seo.blog_description'),
 })
 
 const { data: blogs } = await useAsyncData('blogs', () =>

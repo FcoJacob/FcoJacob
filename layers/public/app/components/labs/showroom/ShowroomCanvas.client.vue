@@ -2,6 +2,7 @@
 import * as THREE from 'three'
 import { HDRLoader } from 'three/examples/jsm/loaders/HDRLoader.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import { useTemplateRef, watch } from 'vue'
 import type {
   ShowroomDebugTuning,
@@ -67,7 +68,12 @@ let keyLight: THREE.DirectionalLight | null = null
 let rimLight: THREE.PointLight | null = null
 let celestialSphere: THREE.Mesh<THREE.SphereGeometry, THREE.MeshBasicMaterial> | null = null
 let floor: THREE.Mesh<THREE.CircleGeometry, THREE.MeshStandardMaterial> | null = null
-let pedestal: THREE.Mesh<THREE.CylinderGeometry, THREE.MeshStandardMaterial> | null = null
+let contactShadow: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> | null = null
+// Showroom room shell (wall + ceiling + LED strips) and the spotlights they cast
+let wall: THREE.Mesh<THREE.CylinderGeometry, THREE.MeshStandardMaterial> | null = null
+let ceiling: THREE.Mesh<THREE.CircleGeometry, THREE.MeshStandardMaterial> | null = null
+let ceilingStrips: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>[] = []
+let showroomSpots: THREE.SpotLight[] = []
 let frameId = 0
 let mountAborted = false
 let heroRoot: THREE.Group | null = null
@@ -94,8 +100,8 @@ let tireMeshSet: Set<THREE.Mesh> = new Set()
 let body: RuntimeMesh | null = null
 let canopy: RuntimeMesh | null = null
 let trim: RuntimeMesh | null = null
-let glowRing: THREE.Mesh<THREE.TorusGeometry, THREE.MeshBasicMaterial> | null = null
 let wheelMeshes: RuntimeMesh[] = []
+
 let environmentSource: THREE.Texture | null = null
 let environmentMap: THREE.Texture | null = null
 let pmremGenerator: THREE.PMREMGenerator | null = null
@@ -577,51 +583,69 @@ function resolveRuntimeQuality() {
 }
 
 function applyTimeOfDay() {
-  if (!scene || !ambientLight || !keyLight || !celestialSphere || !rimLight || !floor || !pedestal)
-    return
+  if (!scene || !ambientLight || !keyLight || !celestialSphere || !rimLight || !floor) return
 
   const isDay = props.timeOfDay === 'day'
+  const efficient = runtimeQuality.value === 'efficient'
 
   if (isDay) {
-    scene.background = new THREE.Color(0xb5d8eb)
-    scene.fog = new THREE.FogExp2(0xb5d8eb, 0.04)
+    scene.background = new THREE.Color(0x9aa3ad)
+    scene.fog = new THREE.FogExp2(0x9aa3ad, 0.018)
 
-    ambientLight.color.setHex(0xc0d0e0)
-    ambientLight.intensity = runtimeQuality.value === 'efficient' ? 1.5 : 2.0
+    // Daylight flooding in: bright ambient, ceiling lights as neutral fill
+    ambientLight.color.setHex(0xc9d3de)
+    ambientLight.intensity = efficient ? 1.4 : 1.8
 
-    keyLight.color.setHex(0xffea99) // Soft yellow sun
-    keyLight.intensity = runtimeQuality.value === 'efficient' ? 2.5 : 3.5
+    keyLight.color.setHex(0xfff3cc) // Soft sun through the glass front
+    keyLight.intensity = efficient ? 2.0 : 2.8
     keyLight.position.set(-16, 12, -26)
 
-    rimLight.intensity = runtimeQuality.value === 'efficient' ? 1.5 : 2.5
+    rimLight.intensity = efficient ? 1.2 : 2.0
     rimLight.color.setHex(0xffa502) // Warm accent
+
+    for (const spot of showroomSpots) {
+      spot.color.setHex(0xffffff)
+      spot.intensity = efficient ? 30 : 45
+    }
 
     celestialSphere.scale.setScalar(1.6)
     celestialSphere.position.copy(keyLight.position)
     celestialSphere.material.color.copy(keyLight.color)
 
-    floor.material.color.setHex(0x5a6572)
-    pedestal.material.color.setHex(0x738090)
+    floor.material.color.setHex(0x6b7480)
+    if (wall) wall.material.color.setHex(0x8f98a3)
+    if (ceiling) ceiling.material.color.setHex(0xb4bac2)
+    for (const strip of ceilingStrips) strip.material.color.setHex(0xffffff)
+    if (contactShadow) contactShadow.material.opacity = 0.85
   } else {
     scene.background = null
-    scene.fog = new THREE.Fog(0x090c11, 7, 16)
+    scene.fog = new THREE.Fog(0x090c11, 8, 26)
 
-    ambientLight.color.setHex(0x9ca3af) // Cool gray ambient
-    ambientLight.intensity = runtimeQuality.value === 'efficient' ? 1.0 : 1.2
+    // Night: the ceiling LED spots are the protagonists — low ambient, warm pools
+    ambientLight.color.setHex(0x9ca3af)
+    ambientLight.intensity = efficient ? 0.8 : 0.95
 
-    keyLight.color.setHex(0xe2e8f0) // Whitish-gray moon
-    keyLight.intensity = runtimeQuality.value === 'efficient' ? 1.0 : 1.5
+    keyLight.color.setHex(0xe2e8f0) // Whitish-gray moon spill
+    keyLight.intensity = efficient ? 0.6 : 0.9
     keyLight.position.set(16, 14, -20)
 
-    rimLight.intensity = runtimeQuality.value === 'efficient' ? 6 : 8
+    rimLight.intensity = efficient ? 5 : 7
     rimLight.color.setHex(0x94a3b8) // Cool rim light
+
+    for (const spot of showroomSpots) {
+      spot.color.setHex(0xffe3b3)
+      spot.intensity = efficient ? 80 : 120
+    }
 
     celestialSphere.scale.setScalar(1.2)
     celestialSphere.position.copy(keyLight.position)
     celestialSphere.material.color.copy(keyLight.color)
 
     floor.material.color.setHex(0x11161d)
-    pedestal.material.color.setHex(0x171e27)
+    if (wall) wall.material.color.setHex(0x141922)
+    if (ceiling) ceiling.material.color.setHex(0x0b0f15)
+    for (const strip of ceilingStrips) strip.material.color.setHex(0xd8b98a)
+    if (contactShadow) contactShadow.material.opacity = 0.55
   }
 }
 
@@ -651,9 +675,6 @@ function applyRuntimeQuality() {
     wireframe.visible = runtimeQuality.value !== 'efficient'
   }
 
-  if (glowRing) {
-    glowRing.visible = runtimeQuality.value !== 'efficient'
-  }
 }
 
 function renderScene() {
@@ -747,6 +768,58 @@ function applyHeroFraming() {
     -heroBaseCenter.z * scale,
   )
   heroRoot.updateMatrixWorld(true)
+  mountContactShadow()
+}
+
+// Soft radial-gradient plane under the car — grounds it visually without the
+// cost of real-time shadow maps.
+function createContactShadowTexture(): THREE.CanvasTexture {
+  const size = 256
+  const canvas = document.createElement('canvas')
+  canvas.width = size
+  canvas.height = size
+  const ctx = canvas.getContext('2d')!
+  const gradient = ctx.createRadialGradient(size / 2, size / 2, size * 0.04, size / 2, size / 2, size / 2)
+  // Plateau in the middle: the car silhouette covers the centre, so the ring the
+  // viewer actually sees sits at radius ~0.55-0.85 — keep it dark out there.
+  gradient.addColorStop(0, 'rgba(0, 0, 0, 0.55)')
+  gradient.addColorStop(0.45, 'rgba(0, 0, 0, 0.5)')
+  gradient.addColorStop(0.72, 'rgba(0, 0, 0, 0.26)')
+  gradient.addColorStop(1, 'rgba(0, 0, 0, 0)')
+  ctx.fillStyle = gradient
+  ctx.fillRect(0, 0, size, size)
+  return new THREE.CanvasTexture(canvas)
+}
+
+function mountContactShadow() {
+  if (!scene || !heroRoot) return
+  if (contactShadow) {
+    contactShadow.removeFromParent()
+    contactShadow.material.map?.dispose()
+    contactShadow.material.dispose()
+    contactShadow.geometry.dispose()
+    contactShadow = null
+  }
+  const box = new THREE.Box3().setFromObject(heroRoot)
+  if (box.isEmpty()) return
+  const size = box.getSize(new THREE.Vector3())
+  const center = box.getCenter(new THREE.Vector3())
+  const mesh = new THREE.Mesh(
+    new THREE.PlaneGeometry(1, 1),
+    new THREE.MeshBasicMaterial({
+      map: createContactShadowTexture(),
+      transparent: true,
+      opacity: props.timeOfDay === 'day' ? 0.85 : 0.55,
+      depthWrite: false,
+    }),
+  )
+  mesh.rotation.x = -Math.PI / 2
+  // Plane local X → world X, local Y → world Z after the rotation.
+  // Notably wider than the car so the penumbra ring is visible around the sills.
+  mesh.scale.set(size.x * 1.6, size.z * 1.1, 1)
+  mesh.position.set(center.x, -0.612, center.z)
+  scene.add(mesh)
+  contactShadow = mesh
 }
 
 // ── Audi TT RS 2019 node / material sets ─────────────────────────────────────
@@ -907,8 +980,21 @@ function captureHeroNodes(root: THREE.Group) {
 const PACK_ORIENT_LEFT = new THREE.Quaternion().setFromEuler(new THREE.Euler(0, 0, Math.PI / 2))
 const PACK_ORIENT_RIGHT = new THREE.Quaternion().setFromEuler(new THREE.Euler(0, 0, -Math.PI / 2))
 
+
+// Models are Draco-compressed (gltf-transform); decoder files live in /public/draco
+let dracoLoader: DRACOLoader | null = null
+function createGltfLoader(manager?: THREE.LoadingManager) {
+  if (!dracoLoader) {
+    dracoLoader = new DRACOLoader()
+    dracoLoader.setDecoderPath('/draco/')
+  }
+  const loader = new GLTFLoader(manager)
+  loader.setDRACOLoader(dracoLoader)
+  return loader
+}
+
 async function loadWheelPack() {
-  const gltfLoader = new GLTFLoader()
+  const gltfLoader = createGltfLoader()
   let gltf
   try {
     gltf = await gltfLoader.loadAsync('/labs/dealer-showroom/models/wheel-pack.glb')
@@ -961,54 +1047,60 @@ function swapRimMeshes(wheelId: string | null) {
 
   heroRoot.updateMatrixWorld(true)
 
-  // Measure pack template bounding box — center AND size in local space
+  // Pack template measured in its local space (tyre meshes were stripped on load)
   const packBox = new THREE.Box3().setFromObject(template)
   const packSize = new THREE.Vector3()
   packBox.getSize(packSize)
-  const packCenter = new THREE.Vector3()
-  packBox.getCenter(packCenter)
-  const packRadiusLocal = Math.max(packSize.x, packSize.y, packSize.z) / 2
+  const packDiameterLocal = Math.max(packSize.x, packSize.y, packSize.z)
+
+  // Car centre in world — decides which side of the car each wheel faces
+  const heroCenterW = new THREE.Box3().setFromObject(heroRoot).getCenter(new THREE.Vector3())
+
+  const AXES = ['x', 'y', 'z'] as const
 
   rimMeshes = []
   for (const rimNode of rimNodes) {
-    // Hide only the RIM METAL meshes inside the group, NOT tires.
-    // Use tireMeshSet (populated in captureHeroNodes) to distinguish — material names
-    // are unavailable here because replaceMaterial() already replaced them with unnamed materials.
+    // Hide only the RIM METAL meshes inside the group, NOT tires, and measure the
+    // original rim disc in world space (Box3 ignores visibility, so hiding first is safe).
+    const rimBoxW = new THREE.Box3()
     rimNode.traverse((obj) => {
       if (obj instanceof THREE.Mesh && !tireMeshSet.has(obj)) {
         obj.visible = false
         hiddenRimMeshes.push(obj)
+        rimBoxW.expandByObject(obj)
       }
     })
+    if (rimBoxW.isEmpty()) continue
+    const rimSizeW = rimBoxW.getSize(new THREE.Vector3())
+    const rimCenterW = rimBoxW.getCenter(new THREE.Vector3())
 
-    // Measure this rim in WORLD space for scale reference
-    const audiBox = new THREE.Box3().setFromObject(rimNode)
-    const audiSize = new THREE.Vector3()
-    audiBox.getSize(audiSize)
-    const audiRadiusWorld = Math.max(audiSize.x, audiSize.y, audiSize.z) / 2
+    // A rim is a thin disc: its hub axis is the world axis with the smallest extent,
+    // and the rim diameter is the largest extent.
+    let hubAxis: (typeof AXES)[number] = 'x'
+    for (const a of AXES) if (rimSizeW[a] < rimSizeW[hubAxis]) hubAxis = a
+    const rimDiameterW = Math.max(rimSizeW.x, rimSizeW.y, rimSizeW.z)
+    const outwardSign = Math.sign(rimCenterW[hubAxis] - heroCenterW[hubAxis]) || 1
 
-    // Find the sibling tyre mesh (e.g. Tire_Front_Left when rimNode = Rim_Front_Left).
-    // Use its outer radius as reference so the pack rim fills the rubber zone correctly.
+    // Tyre bounds (sibling node Tire_*); falls back to the rim disc itself
     const tyreSiblingName = rimNode.name.replace('Rim_', 'Tire_')
     const tyreMesh = rimNode.parent?.getObjectByName(tyreSiblingName)
-    let referenceRadiusWorld = audiRadiusWorld
+    let tyreCenterW = rimCenterW
+    let tyreWidthW = rimSizeW[hubAxis]
     if (tyreMesh) {
-      const tyreBox = new THREE.Box3().setFromObject(tyreMesh)
-      const tyreSize = new THREE.Vector3()
-      tyreBox.getSize(tyreSize)
-      const dims = [tyreSize.x, tyreSize.y, tyreSize.z].sort((a, b) => b - a)
-      referenceRadiusWorld = dims[0] / 2 // largest dimension = tyre outer diameter
+      const tyreBoxW = new THREE.Box3().setFromObject(tyreMesh)
+      const tyreSizeW = tyreBoxW.getSize(new THREE.Vector3())
+      tyreCenterW = tyreBoxW.getCenter(new THREE.Vector3())
+      tyreWidthW = tyreSizeW[hubAxis]
     }
 
     const parent = rimNode.parent ?? heroRoot
     const parentWorldScale = new THREE.Vector3()
     parent.getWorldScale(parentWorldScale)
-    // Scale the pack to 72% of tyre radius — pack rim matches original Audi rim disc
-    // and leaves ~28% of tyre rubber visible as a ring around it.
+
+    // Match the ORIGINAL rim disc diameter exactly: the new rim fills the same
+    // circle inside the rubber, so it can never overflow the tyre.
     const scaleFactor =
-      packRadiusLocal > 0.001
-        ? (referenceRadiusWorld / (parentWorldScale.x * packRadiusLocal)) * 0.72
-        : 0.72
+      packDiameterLocal > 0.001 ? rimDiameterW / (parentWorldScale.x * packDiameterLocal) : 1
 
     // Left wheels (name contains 'Left') need face pointing outward (+X);
     // Right wheels need face pointing inward-out (-X). Different orient per side.
@@ -1019,30 +1111,36 @@ function swapRimMeshes(wheelId: string | null) {
     clone.position.copy(rimNode.position)
     clone.quaternion.copy(rimNode.quaternion).multiply(orientFix)
     clone.scale.setScalar(scaleFactor)
+    parent.add(clone)
+    clone.updateMatrixWorld(true)
 
-    // Push the clone inward along the wheel's outward axis so the rim face sits
-    // flush with the tyre outer face rather than protruding beyond the bodywork.
-    // The pack hub axis (local +X) maps through clone.quaternion to the outward
-    // direction in parent space. We offset by the pack face distance so the
-    // visible face is centred over the original rim position.
-    const hubOutward = new THREE.Vector3(1, 0, 0).applyQuaternion(clone.quaternion)
-    // Pack face is at (packCenter.x - packSize.x/2) from clone origin in local X.
-    // After scaling, that distance in parent local space = face_local * scaleFactor.
-    const faceDist = (packCenter.x - packSize.x / 2) * scaleFactor // negative = outward face is inside
-    // Shift clone so that the pack face lines up at the Audi rim's outer face position.
-    // audiSize.x/2 = half hub depth of Audi rim in world; divide by parentWorldScale to get parent-local.
-    const audiHubHalfLocal = audiSize.x / 2 / parentWorldScale.x
-    // We want: clone.position + faceDist * hubOutward + audiHubHalfLocal * hubOutward = rimNode.position
-    // Solving: clone.position = rimNode.position - (faceDist + audiHubHalfLocal) * hubOutward
-    const faceAlignOffset = faceDist + audiHubHalfLocal
-    clone.position.addScaledVector(hubOutward, -faceAlignOffset)
+    // Align in world space: centre the clone on the original rim disc, then clamp
+    // along the hub axis so its outer face never protrudes past the tyre sidewall.
+    const cloneBoxW = new THREE.Box3().setFromObject(clone)
+    const cloneSizeW = cloneBoxW.getSize(new THREE.Vector3())
+    const cloneCenterW = cloneBoxW.getCenter(new THREE.Vector3())
+
+    const targetCenterW = rimCenterW.clone()
+    const rimOuterFace = rimCenterW[hubAxis] + outwardSign * (rimSizeW[hubAxis] / 2)
+    const tyreOuterFace = tyreCenterW[hubAxis] + outwardSign * (tyreWidthW / 2)
+    const allowedOuterFace =
+      outwardSign > 0
+        ? Math.min(rimOuterFace, tyreOuterFace)
+        : Math.max(rimOuterFace, tyreOuterFace)
+    targetCenterW[hubAxis] = allowedOuterFace - outwardSign * (cloneSizeW[hubAxis] / 2)
+
+    const deltaLocal = parent
+      .worldToLocal(targetCenterW.clone())
+      .sub(parent.worldToLocal(cloneCenterW.clone()))
+    clone.position.add(deltaLocal)
+    clone.updateMatrixWorld(true)
+
     clone.traverse((obj) => {
       if (obj instanceof THREE.Mesh) {
         replaceMaterial(obj as RuntimeMesh, createWheelMaterial(false))
         rimMeshes.push(obj as RuntimeMesh)
       }
     })
-    parent.add(clone)
     currentSwappedRims.push(clone)
   }
 }
@@ -1052,7 +1150,7 @@ async function mountHeroModel() {
     return false
   }
 
-  const gltfLoader = new GLTFLoader(loadingManager ?? undefined)
+  const gltfLoader = createGltfLoader(loadingManager ?? undefined)
   const gltf = await gltfLoader.loadAsync(props.modelPath)
   const root = gltf.scene
 
@@ -1297,7 +1395,6 @@ function updateSceneState(now: number, isReducedMotion: boolean) {
   const coatingLevel = props.selectedOptions.coating ?? 'standard'
   const forgedWheels = props.selectedOptions.wheels === 'forged-21'
   const oscillation = isReducedMotion ? 0 : Math.sin(now * 0.0014) * 0.03
-  const ringPulse = isReducedMotion ? 0.5 : (Math.sin(now * 0.002) + 1) * 0.05
   const velocityBoost = Math.min(interactionVelocity, 1)
 
   if (!camera) {
@@ -1413,14 +1510,6 @@ function updateSceneState(now: number, isReducedMotion: boolean) {
     }
   }
 
-  if (glowRing) {
-    glowRing.material.opacity = 0.24 + zoomProgress * 0.24 + ringPulse
-    glowRing.scale.setScalar(1 + zoomProgress * 0.06)
-    glowRing.material.color.lerp(
-      parseColor(trimShadow ? '#8b8f96' : '#c49757', '#c49757'),
-      isReducedMotion ? 1 : 0.08,
-    )
-  }
 
   // ── Wheels: only rims are updated in the render loop — tires are static black
   // When pack geometry is swapped in, rimMeshes contains pack clone meshes.
@@ -1563,28 +1652,72 @@ onMounted(async () => {
   )
   scene.add(celestialSphere)
 
+  const roomSegments = runtimeQuality.value === 'efficient' ? 40 : 80
+  const ROOM_RADIUS = 13
+  const ROOM_HEIGHT = 6
+  // The hero model is grounded at y = -0.62 (applyHeroFraming); the showroom floor
+  // sits 5mm below so the tyres visually touch it — no pedestal, like a real dealer.
+  const FLOOR_Y = -0.625
+
+  // Polished showroom floor — low roughness so it picks up the HDR environment
   floor = new THREE.Mesh(
-    new THREE.CircleGeometry(4.6, runtimeQuality.value === 'efficient' ? 40 : 80),
+    new THREE.CircleGeometry(ROOM_RADIUS, roomSegments),
     new THREE.MeshStandardMaterial({
       color: 0x11161d,
-      roughness: 0.92,
-      metalness: 0.16,
-    }),
-  )
-  floor.rotation.x = -Math.PI / 2
-  floor.position.y = -1.1
-  scene.add(floor)
-
-  pedestal = new THREE.Mesh(
-    new THREE.CylinderGeometry(1.9, 2.15, 0.45, runtimeQuality.value === 'efficient' ? 24 : 48),
-    new THREE.MeshStandardMaterial({
-      color: 0x171e27,
-      roughness: 0.78,
+      roughness: 0.34,
       metalness: 0.22,
     }),
   )
-  pedestal.position.y = -0.85
-  scene.add(pedestal)
+  floor.rotation.x = -Math.PI / 2
+  floor.position.y = FLOOR_Y
+  scene.add(floor)
+
+  // Surrounding wall — inverted open cylinder enclosing the room
+  wall = new THREE.Mesh(
+    new THREE.CylinderGeometry(ROOM_RADIUS, ROOM_RADIUS, ROOM_HEIGHT, roomSegments, 1, true),
+    new THREE.MeshStandardMaterial({
+      color: 0x151a22,
+      roughness: 0.92,
+      metalness: 0.04,
+      side: THREE.BackSide,
+    }),
+  )
+  wall.position.y = FLOOR_Y + ROOM_HEIGHT / 2
+  scene.add(wall)
+
+  // Ceiling with parallel LED light strips (dealer-showroom signature look)
+  ceiling = new THREE.Mesh(
+    new THREE.CircleGeometry(ROOM_RADIUS, roomSegments),
+    new THREE.MeshStandardMaterial({ color: 0x0d1117, roughness: 0.95, metalness: 0 }),
+  )
+  ceiling.rotation.x = Math.PI / 2
+  ceiling.position.y = FLOOR_Y + ROOM_HEIGHT
+  scene.add(ceiling)
+
+  ceilingStrips = []
+  showroomSpots = []
+  const stripGeometry = new THREE.PlaneGeometry(0.34, 9.5)
+  for (let i = -2; i <= 2; i++) {
+    const strip = new THREE.Mesh(
+      stripGeometry,
+      new THREE.MeshBasicMaterial({ color: 0xf5efe2 }),
+    )
+    strip.rotation.x = Math.PI / 2
+    strip.position.set(i * 2.6, FLOOR_Y + ROOM_HEIGHT - 0.03, 0)
+    scene.add(strip)
+    ceilingStrips.push(strip)
+  }
+
+  // Real light coming from the ceiling strips: three downward spots over the car.
+  // Intensities/colors are set per time-of-day in applyTimeOfDay.
+  for (const x of [-2.6, 0, 2.6]) {
+    const spot = new THREE.SpotLight(0xffffff, 60, 0, Math.PI / 4, 0.8, 2)
+    spot.position.set(x, FLOOR_Y + ROOM_HEIGHT - 0.1, 0)
+    spot.target.position.set(x * 0.5, FLOOR_Y, 0)
+    scene.add(spot)
+    scene.add(spot.target)
+    showroomSpots.push(spot)
+  }
 
   // Initialize day/night mode
   applyTimeOfDay()
@@ -1613,18 +1746,6 @@ onMounted(async () => {
   if (mountAborted || !scene) {
     return
   }
-
-  glowRing = new THREE.Mesh(
-    new THREE.TorusGeometry(2.5, 0.03, 8, runtimeQuality.value === 'efficient' ? 48 : 96),
-    new THREE.MeshBasicMaterial({
-      color: 0xc49757,
-      transparent: true,
-      opacity: 0.48,
-    }),
-  )
-  glowRing.rotation.x = Math.PI / 2
-  glowRing.position.y = -0.62
-  scene.add(glowRing)
 
   applyRuntimeQuality()
   updateSceneState(0, reducedMotionPreferred.value)
@@ -1755,11 +1876,16 @@ onBeforeUnmount(() => {
   canopy = null
   trim = null
   wireframe = null
-  glowRing = null
   wheelMeshes = []
   rimNodes = []
   currentSwappedRims = []
   hiddenRimMeshes = []
+  contactShadow?.material.map?.dispose()
+  contactShadow = null
+  wall = null
+  ceiling = null
+  ceilingStrips = []
+  showroomSpots = []
   tireMeshSet = new Set()
   packWheelTemplates.clear()
   environmentMap = null

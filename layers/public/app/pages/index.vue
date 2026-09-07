@@ -2,8 +2,61 @@
 const { t, tm, rt } = useI18n()
 
 useSeoMeta({
-  title: t('app.title'),
-  description: t('app.description'),
+  title: t('seo.home_title'),
+  description: t('seo.home_description'),
+  ogTitle: t('seo.home_title'),
+  ogDescription: t('seo.home_description'),
+})
+
+// Structured data: Person + WebSite for search engines
+useHead({
+  script: [
+    {
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@graph': [
+          {
+            '@type': 'Person',
+            '@id': 'https://jsarmiento.dev/#person',
+            name: 'Jacob Sarmiento',
+            jobTitle: 'Frontend Developer',
+            url: 'https://jsarmiento.dev',
+            image: 'https://jsarmiento.dev/authors/jacob-sarmiento.jpeg',
+            email: 'mailto:fco.j.sarmientoperez@gmail.com',
+            address: {
+              '@type': 'PostalAddress',
+              addressLocality: 'Las Palmas',
+              addressRegion: 'Canarias',
+              addressCountry: 'ES',
+            },
+            sameAs: [
+              'https://www.linkedin.com/in/fcojacob/',
+              'https://github.com/FcoJacob',
+            ],
+            knowsAbout: [
+              'Vue.js',
+              'Nuxt',
+              'TypeScript',
+              'JavaScript',
+              'HTML',
+              'CSS',
+              'Node.js',
+              'UI/UX',
+            ],
+          },
+          {
+            '@type': 'WebSite',
+            '@id': 'https://jsarmiento.dev/#website',
+            url: 'https://jsarmiento.dev',
+            name: 'Jacob Sarmiento',
+            publisher: { '@id': 'https://jsarmiento.dev/#person' },
+            inLanguage: ['es', 'en'],
+          },
+        ],
+      }),
+    },
+  ],
 })
 
 const skillKeys = ['frontend', 'backend', 'design', 'tools', 'ai', 'principles'] as const
@@ -30,7 +83,6 @@ const stack = [
   'Convex',
   'Pinia',
   'Vitest',
-  'Playwright',
   'Node.js',
   'Figma',
   'GSAP',

@@ -24,3 +24,6 @@ logs
 
 # Convex
 .convex
+
+# Playwright MCP artifacts
+.playwright-mcp/

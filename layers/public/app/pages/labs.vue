@@ -4,7 +4,9 @@ const route = useRoute()
 
 useSeoMeta({
   title: `${t('nav.labs')} - ${t('app.title')}`,
-  description: t('app.description'),
+  description: t('seo.labs_description'),
+  ogTitle: `${t('nav.labs')} - ${t('app.title')}`,
+  ogDescription: t('seo.labs_description'),
 })
 
 const { data: labs } = await useAsyncData('labs', () => $fetch('/api/public/labs'))

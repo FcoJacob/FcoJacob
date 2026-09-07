@@ -3,7 +3,7 @@ import type { Editor } from '@tiptap/core'
 import type { Id } from '~~/convex/_generated/dataModel'
 import { api } from '#convex/_generated/api'
 import BlogFooterBlock from '../../../../../base/app/components/BlogFooterBlock.vue'
-import authorPortrait from '../../../../../../assets/B92E7B57-48CB-4316-81F2-8EE982B602D9_1_201_a.jpeg'
+const authorPortrait = '/authors/jacob-sarmiento.jpeg'
 
 type ResearchDocument = {
   _id: string

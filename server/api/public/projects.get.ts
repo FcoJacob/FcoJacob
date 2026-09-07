@@ -1,5 +1,4 @@
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async () => {
   const { client, api } = useConvexHttpClient()
-  const query = getQuery(event)
   return await client.query(api.projects.list, {})
 })
