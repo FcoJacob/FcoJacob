@@ -19,10 +19,8 @@ const cvData = {
     phone: '+34 696124038',
     url: 'https://jsarmiento.dev/',
     summary:
-      'Me encanta la Informática y las tecnologías, la mayor parte de mi tiempo libre la dedico a investigar nuevos medios y formas de hacer las cosas, me encanta innovar, me considero una persona muy creativa, alegre y con muy buena actitud. Me afana trabajar en proyectos que mejoren la vida de los demás. Me encanta las dinámicas de grupos y el trabajo en equipo.',
+      'Desarrollador Frontend Senior con más de 8 años de experiencia construyendo interfaces y productos web con Vue.js, Nuxt y TypeScript. Combino ejecución técnica de alto volumen con iniciativa propia, documentación rigurosa y buenas prácticas de equipo (Jira, Confluence, Git). Motivado por la mejora continua, el trabajo en equipo y la creación de productos que aporten valor real a los usuarios.',
     location: {
-      address: 'Calle Del Canario, 34',
-      postalCode: '35269',
       city: 'Las Palmas',
       countryCode: 'ES',
       region: 'Canarias',
@@ -50,7 +48,7 @@ const cvData = {
         'Desarrollo de aplicaciones frontend con tecnologías modernas.',
       highlights: [
         'Promovido a Senior Frontend Developer, asumiendo ownership técnico del frontend de ventas y de la librería de componentes compartida',
-        '793 commits (+324.047 / −159.550 líneas) en los productos clave de ventas (sales-web, sales-shared, sales-specifications, importer-sales, SalesBackOffice)',
+        '793 commits (+324.047 / -159.550 líneas) en los productos clave de ventas (sales-web, sales-shared, sales-specifications, importer-sales, SalesBackOffice)',
         'En mi etapa en AIDA (2023–2026): cerré 258 de 266 incidencias Jira asignadas y reporté 90 propias, combinando ejecución técnica con detección proactiva de mejoras',
         'Documenté el conocimiento del equipo con 56 páginas creadas y contribución en 132 más en Confluence',
       ],
@@ -86,7 +84,7 @@ const cvData = {
       startDate: '2017-06',
       endDate: null,
       summary:
-        'Desarrollo de proyectos web para distintas empresas y clientes.',
+        'Desarrollo de proyectos web para distintas empresas y clientes, compaginado en paralelo con mis puestos a tiempo completo desde 2020.',
       highlights: [
         'masquehuellas.es – Digitalización web de la clínica veterinaria +QHuellas',
         'foroebc.org – Promover nuevos ámbitos y competencias profesionales',
@@ -97,38 +95,18 @@ const cvData = {
       ],
     },
     {
-      name: 'Ejército del Aire',
-      position: 'Especialista en mantenimiento de aeronaves',
-      startDate: '2007-12',
+      name: 'Fuerzas Armadas Españolas',
+      position: 'Especialista técnico y operativo (Ejército de Tierra, Armada y Ejército del Aire)',
+      startDate: '2000-12',
       endDate: '2022-01',
       summary:
-        'Realizo diversas tareas de mantenimiento en cazas de combate.',
+        'Más de 21 años en las Fuerzas Armadas españolas, con especialización progresiva en mantenimiento de aeronaves, maniobra y navegación, y transmisiones/ofimática.',
       highlights: [
-        'Medalla a la Cruz del Mérito Aeronáutico',
-        'Operaciones de transmisiones y ofimática',
+        'Ejército del Aire (2007–2022): Especialista en mantenimiento de aeronaves de combate. Medalla a la Cruz del Mérito Aeronáutico',
+        'Armada (2004–2006): Marinero, Especialista en Maniobra y Navegación. Más de 260 horas de mar en campañas de control de pesca y defensa de aguas nacionales',
+        'Ejército de Tierra (2000–2004): Operaciones de transmisiones y ofimática',
         'En excedencia desde enero de 2022 (fin de contrato: julio de 2027)',
       ],
-    },
-    {
-      name: 'Spanish Navy',
-      position: 'Marinero – Especialista Maniobra y Navegación',
-      startDate: '2004-12',
-      endDate: '2006-12',
-      summary:
-        'Más de 260 horas de mar, campañas de control de pesca, defensa de aguas nacionales y servicios de marinero de puente.',
-      highlights: [
-        'Manejo de zodiac con motor de turbina',
-        'Maniobras en alta mar con helicópteros',
-      ],
-    },
-    {
-      name: 'Ejército de Tierra',
-      position: 'Militar',
-      startDate: '2000-12',
-      endDate: '2004-08',
-      summary:
-        'Diversas tareas como servicios de guardia y ofimática.',
-      highlights: [],
     },
   ],
   education: [
@@ -206,7 +184,7 @@ const cvData = {
     },
     {
       language: 'Inglés',
-      fluency: 'Elemental',
+      fluency: 'Intermedio (B1)',
     },
   ],
   projects: [

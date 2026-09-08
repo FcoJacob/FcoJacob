@@ -239,7 +239,8 @@
     "active": "Active",
     "certifications": "Certifications",
     "soft_skills": "Soft Skills",
-    "driving": "Driving License"
+    "driving": "Driving License",
+    "additional_info": "Additional Information"
   },
   "admin": {
     "title": "Admin Panel",

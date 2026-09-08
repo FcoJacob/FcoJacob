@@ -239,7 +239,8 @@
     "active": "Activo",
     "certifications": "Certificaciones",
     "soft_skills": "Habilidades Blandas",
-    "driving": "Carnet de Conducir"
+    "driving": "Carnet de Conducir",
+    "additional_info": "Información Adicional"
   },
   "admin": {
     "title": "Panel de administración",

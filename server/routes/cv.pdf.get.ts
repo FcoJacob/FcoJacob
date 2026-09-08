@@ -72,6 +72,7 @@ export default defineEventHandler(async (event) => {
       education: t.cv.education,
       projects: t.cv.projects,
       present: t.cv.present,
+      additionalInfo: t.cv.additional_info,
     },
   }
 
