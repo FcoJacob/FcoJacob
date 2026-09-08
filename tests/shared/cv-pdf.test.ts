@@ -47,6 +47,7 @@ const fixture: CvPdfData = {
     education: 'Educación',
     projects: 'Proyectos',
     present: 'Actualmente',
+    additionalInfo: 'Información Adicional',
   },
 }
 

@@ -19,7 +19,7 @@ const cvData = {
     phone: '+34 696124038',
     url: 'https://jsarmiento.dev/',
     summary:
-      'Desarrollador Frontend Senior con más de 8 años de experiencia construyendo interfaces y productos web con Vue.js, Nuxt y TypeScript. Combino ejecución técnica de alto volumen con iniciativa propia, documentación rigurosa y buenas prácticas de equipo (Jira, Confluence, Git). Motivado por la mejora continua, el trabajo en equipo y la creación de productos que aporten valor real a los usuarios.',
+      'Desarrollador Frontend Senior con más de 8 años de experiencia construyendo interfaces y productos web con Vue.js, Nuxt y TypeScript. Combino ejecución técnica de alto volumen con iniciativa propia, documentación rigurosa y buenas prácticas de equipo (Jira, Confluence, Git). Motivado por la mejora continua, el trabajo en equipo y la creación de productos que aporten valor real a los usuarios. Me implico activamente en el negocio y en entender las necesidades reales de los clientes, buscando siempre soluciones que aporten valor medible, no solo la implementación técnica.',
     location: {
       city: 'Las Palmas',
       countryCode: 'ES',
@@ -155,6 +155,16 @@ const cvData = {
       name: 'Calidad',
       level: 'Intermedio Alto',
       keywords: ['Testing', 'Mocks (MSW)', 'Refactorización'],
+    },
+    {
+      name: 'Negocio',
+      level: 'Avanzado',
+      keywords: [
+        'Orientación al cliente',
+        'Visión de negocio',
+        'Requisitos funcionales',
+        'Comunicación con stakeholders',
+      ],
     },
     {
       name: 'Diseño',

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { t, tm, rt } = useI18n()
+const { t, locale } = useI18n()
 
 useSeoMeta({
   title: t('seo.home_title'),
@@ -8,71 +8,83 @@ useSeoMeta({
   ogDescription: t('seo.home_description'),
 })
 
-// Structured data: Person + WebSite for search engines
-useHead({
-  script: [
-    {
-      type: 'application/ld+json',
-      innerHTML: JSON.stringify({
-        '@context': 'https://schema.org',
-        '@graph': [
-          {
-            '@type': 'Person',
-            '@id': 'https://jsarmiento.dev/#person',
-            name: 'Jacob Sarmiento',
-            jobTitle: 'Frontend Developer',
-            url: 'https://jsarmiento.dev',
-            image: 'https://jsarmiento.dev/authors/jacob-sarmiento.jpeg',
-            email: 'mailto:fco.j.sarmientoperez@gmail.com',
-            address: {
-              '@type': 'PostalAddress',
-              addressLocality: 'Las Palmas',
-              addressRegion: 'Canarias',
-              addressCountry: 'ES',
-            },
-            sameAs: [
-              'https://www.linkedin.com/in/fcojacob/',
-              'https://github.com/FcoJacob',
-            ],
-            knowsAbout: [
-              'Vue.js',
-              'Nuxt',
-              'TypeScript',
-              'JavaScript',
-              'HTML',
-              'CSS',
-              'Node.js',
-              'UI/UX',
-            ],
-          },
-          {
-            '@type': 'WebSite',
-            '@id': 'https://jsarmiento.dev/#website',
-            url: 'https://jsarmiento.dev',
-            name: 'Jacob Sarmiento',
-            publisher: { '@id': 'https://jsarmiento.dev/#person' },
-            inLanguage: ['es', 'en'],
-          },
-        ],
-      }),
-    },
-  ],
+// ── Single source of truth: same data as /cv and /projects ──────
+const { data: cv } = await useAsyncData(
+  `home-cv-${locale.value}`,
+  () => $fetch('/api/public/cv', { query: { locale: locale.value } }),
+  { watch: [locale] },
+)
+const { data: projects } = await useAsyncData('home-projects', () =>
+  $fetch('/api/public/projects'),
+)
+
+const basics = computed(() => cv.value?.basics)
+const skills = computed(() => cv.value?.skills ?? [])
+const work = computed(() => cv.value?.work ?? [])
+
+// Years of experience: earliest tech-related role, excluding the
+// consolidated military service entry (not relevant to a dev career stat).
+const NON_TECH_WORK_NAMES = ['Fuerzas Armadas Españolas', 'Spanish Armed Forces']
+const experienceYears = computed(() => {
+  const techWork = work.value.filter((w: any) => !NON_TECH_WORK_NAMES.includes(w.name))
+  if (!techWork.length) return 0
+  const earliest = techWork.reduce(
+    (min: string, w: any) => (w.startDate < min ? w.startDate : min),
+    techWork[0].startDate,
+  )
+  const [y, m] = earliest.split('-').map(Number)
+  const start = new Date(y, (m || 1) - 1, 1).getTime()
+  const years = (Date.now() - start) / (1000 * 60 * 60 * 24 * 365.25)
+  return Math.floor(years)
 })
 
-const skillKeys = ['frontend', 'backend', 'design', 'tools', 'ai', 'principles'] as const
+const topProjects = computed(() =>
+  [...(projects.value ?? [])]
+    .sort((a: any, b: any) => Number(b.isActive) - Number(a.isActive))
+    .slice(0, 3),
+)
+const projectsCount = computed(() => projects.value?.length ?? 0)
 
-function resolveStringArray(key: string): string[] {
-  const raw = tm(key)
-  if (!Array.isArray(raw)) return []
-  return raw.map((v: unknown) => {
-    if (typeof v === 'string') return v
-    try {
-      return rt(v as any)
-    } catch {
-      return String(v)
-    }
-  })
-}
+// Structured data: Person + WebSite for search engines
+useHead(() => ({
+  script: basics.value
+    ? [
+        {
+          type: 'application/ld+json',
+          innerHTML: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@graph': [
+              {
+                '@type': 'Person',
+                '@id': 'https://jsarmiento.dev/#person',
+                name: basics.value.name,
+                jobTitle: basics.value.label,
+                url: 'https://jsarmiento.dev',
+                image: 'https://jsarmiento.dev/authors/jacob-sarmiento.jpeg',
+                email: `mailto:${basics.value.email}`,
+                address: {
+                  '@type': 'PostalAddress',
+                  addressLocality: basics.value.location?.city,
+                  addressRegion: basics.value.location?.region,
+                  addressCountry: basics.value.location?.countryCode ?? 'ES',
+                },
+                sameAs: (basics.value.profiles ?? []).map((p: any) => p.url),
+                knowsAbout: skills.value.flatMap((s: any) => s.keywords ?? []),
+              },
+              {
+                '@type': 'WebSite',
+                '@id': 'https://jsarmiento.dev/#website',
+                url: 'https://jsarmiento.dev',
+                name: basics.value.name,
+                publisher: { '@id': 'https://jsarmiento.dev/#person' },
+                inLanguage: ['es', 'en'],
+              },
+            ],
+          }),
+        },
+      ]
+    : [],
+}))
 
 // Marquee tape of core technologies
 const stack = [
@@ -104,8 +116,8 @@ const scrollHint = useTemplateRef<HTMLElement>('scrollHint')
 useMagnetic(ctaPrimary, { strength: 14, radius: 140 })
 
 // Animated counters
-useCounter(statExperience, 6, { prefix: '+', duration: 1.8 })
-useCounter(statProjects, 10, { prefix: '+', duration: 1.8, delay: 0.15 })
+useCounter(statExperience, experienceYears.value, { prefix: '+', duration: 1.8 })
+useCounter(statProjects, projectsCount.value, { prefix: '+', duration: 1.8, delay: 0.15 })
 
 onMounted(async () => {
   if (typeof window === 'undefined') return
@@ -201,18 +213,18 @@ onMounted(async () => {
             ref="heroTitle"
             class="hero-title text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold tracking-tight leading-[1.15]"
           >
-            {{ t('cv_data.basics.name') }}
+            {{ basics?.name }}
           </h1>
 
           <p ref="heroSubtitle" class="text-xl lg:text-2xl font-semibold text-gradient">
-            {{ t('cv_data.basics.label') }}
+            {{ basics?.label }}
           </p>
 
           <p
             ref="heroSummary"
             class="text-base lg:text-lg text-(--ui-text-muted) max-w-xl leading-relaxed"
           >
-            {{ t('hero.summary') }}
+            {{ basics?.summary }}
           </p>
 
           <div ref="heroActions" class="flex flex-wrap gap-3 pt-3">
@@ -246,7 +258,7 @@ onMounted(async () => {
                   ref="statExperience"
                   class="text-2xl sm:text-4xl font-extrabold bg-gradient-to-br from-(--ui-color-primary-500) to-(--ui-color-primary-700) bg-clip-text text-transparent"
                 >
-                  +6
+                  +{{ experienceYears }}
                 </p>
                 <p class="text-xs sm:text-sm lg:text-base text-(--ui-text-muted) mt-1">
                   {{ t('hero.stats_experience') }}
@@ -258,7 +270,7 @@ onMounted(async () => {
                   ref="statProjects"
                   class="text-2xl sm:text-4xl font-extrabold bg-gradient-to-br from-(--ui-color-primary-500) to-(--ui-color-primary-700) bg-clip-text text-transparent"
                 >
-                  +10
+                  +{{ projectsCount }}
                 </p>
                 <p class="text-xs sm:text-sm lg:text-base text-(--ui-text-muted) mt-1">
                   {{ t('hero.stats_projects') }}
@@ -307,36 +319,36 @@ onMounted(async () => {
     </section>
 
     <!-- Skills -->
-    <section v-reveal>
+    <section v-if="skills.length" v-reveal>
       <div class="flex items-end justify-between mb-10">
         <div>
           <p class="eyebrow mb-2">{{ t('cv.skills') }}</p>
           <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">
-            {{ t('cv_data.basics.label') }}
+            {{ basics?.label }}
           </h2>
         </div>
       </div>
       <div v-reveal.stagger class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <UCard
-          v-for="key in skillKeys"
-          :key="key"
+          v-for="skill in skills"
+          :key="skill.name"
           v-tilt
           variant="subtle"
           class="skill-card !overflow-visible transition-[border-color,box-shadow] duration-300 hover:shadow-lg hover:border-(--ui-color-primary-500)/30"
         >
           <div class="space-y-3">
             <div class="flex items-center justify-between">
-              <h3 class="card-title">{{ t(`cv_data.skills.${key}.name`) }}</h3>
+              <h3 class="card-title">{{ skill.name }}</h3>
               <UBadge
-                :label="t(`cv_data.skills.${key}.level`)"
-                :color="t(`cv_data.skills.${key}.level`) === 'Senior' ? 'success' : 'neutral'"
+                :label="skill.level"
+                :color="skill.level === 'Avanzado' || skill.level === 'Advanced' ? 'success' : 'neutral'"
                 variant="subtle"
                 size="md"
               />
             </div>
             <div class="flex flex-wrap gap-1.5">
               <UBadge
-                v-for="kw in resolveStringArray(`cv_data.skills.${key}.keywords`)"
+                v-for="kw in skill.keywords"
                 :key="kw"
                 :label="kw"
                 color="neutral"
@@ -349,8 +361,8 @@ onMounted(async () => {
       </div>
     </section>
 
-    <!-- Projects Carousel -->
-    <section v-reveal>
+    <!-- Projects summary (mirrors /projects, the source of truth) -->
+    <section v-if="topProjects.length" v-reveal>
       <div class="flex items-end justify-between mb-10">
         <div>
           <p class="eyebrow mb-2">Selected work</p>
@@ -369,7 +381,40 @@ onMounted(async () => {
           />
         </NuxtLink>
       </div>
-      <ProjectCarousel />
+      <div v-reveal.stagger class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <NuxtLink
+          v-for="project in topProjects"
+          :key="project._id"
+          v-tilt
+          to="/projects"
+          class="project-card group relative block rounded-2xl border border-(--ui-border) bg-(--ui-bg-elevated) overflow-hidden"
+        >
+          <div class="relative h-40 overflow-hidden">
+            <img
+              v-if="project.thumbnail"
+              :src="project.thumbnail"
+              :alt="project.name"
+              class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+            />
+            <div
+              v-else
+              class="w-full h-full bg-gradient-to-br from-(--ui-color-primary-900)/30 to-(--ui-bg) flex items-center justify-center"
+            >
+              <UIcon
+                name="i-lucide-layout-dashboard"
+                class="size-10 text-(--ui-color-primary-500)/30"
+              />
+            </div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+            <h3 class="absolute bottom-0 left-0 right-0 p-4 text-base font-bold text-white drop-shadow-lg">
+              {{ project.name }}
+            </h3>
+          </div>
+          <p class="p-4 text-sm text-(--ui-text-muted) line-clamp-2">
+            {{ project.description }}
+          </p>
+        </NuxtLink>
+      </div>
     </section>
   </div>
 </template>
