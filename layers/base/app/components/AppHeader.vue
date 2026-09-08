@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { t } = useI18n()
+const localePath = useLocalePath()
 
 const navItems = computed(() => [
   { label: t('nav.home'), to: '/' },
@@ -80,7 +81,7 @@ onBeforeUnmount(() => {
   <header class="sticky top-0 z-50 bg-(--ui-bg)/80 backdrop-blur-lg border-b border-(--ui-border)">
     <UContainer>
       <nav class="flex items-center justify-between h-16">
-        <NuxtLink to="/" class="flex items-center gap-2 group">
+        <NuxtLink :to="localePath('/')" class="flex items-center gap-2 group">
           <span class="flex items-center justify-center size-8 rounded-full bg-(--ui-color-secondary-500) text-white text-sm font-bold">JS</span>
         </NuxtLink>
 
@@ -100,7 +101,7 @@ onBeforeUnmount(() => {
             <NuxtLink
               v-for="item in navItems"
               :key="item.to"
-              :to="item.to"
+              :to="localePath(item.to)"
               class="relative px-3.5 py-1 text-sm font-medium transition-colors duration-200 text-(--ui-text-muted) hover:text-(--ui-text) cursor-pointer"
               active-class="!text-(--ui-color-primary-500) font-semibold"
               @mouseenter="updatePill($event.target as HTMLElement)"
@@ -137,7 +138,7 @@ onBeforeUnmount(() => {
           <NuxtLink
             v-for="item in navItems"
             :key="item.to"
-            :to="item.to"
+            :to="localePath(item.to)"
             class="w-full text-center text-xl font-semibold py-4 rounded-xl transition-colors hover:bg-(--ui-bg-elevated) active:bg-(--ui-bg-elevated)"
             active-class="text-(--ui-color-primary-500)"
           >

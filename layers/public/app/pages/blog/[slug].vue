@@ -47,6 +47,7 @@ const DEFAULT_FOOTER = {
 } as const
 
 const { t, locale } = useI18n()
+const localePath = useLocalePath()
 const route = useRoute()
 
 const { data: blog } = await useAsyncData(`blog-${route.params.slug}`, () =>
@@ -331,7 +332,7 @@ useHead(() => ({
   <article v-if="blog" class="blog-article mx-auto max-w-4xl">
     <header class="mb-12 space-y-6">
       <UButton
-        to="/blog"
+        :to="localePath('/blog')"
         :label="t('common.back')"
         variant="ghost"
         icon="i-lucide-arrow-left"
@@ -453,7 +454,7 @@ useHead(() => ({
     <USeparator class="my-12" />
 
     <UButton
-      to="/blog"
+      :to="localePath('/blog')"
       :label="t('common.back')"
       variant="outline"
       icon="i-lucide-arrow-left"

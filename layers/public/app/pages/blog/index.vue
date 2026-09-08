@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { t, locale } = useI18n()
+const localePath = useLocalePath()
 
 useSeoMeta({
   title: `${t('nav.blog')} - ${t('app.title')}`,
@@ -22,7 +23,7 @@ const { data: blogs } = await useAsyncData('blogs', () =>
         v-for="(blog, i) in blogs"
         :key="blog._id"
         v-reveal="{ delay: i * 0.08 }"
-        :to="`/blog/${blog.slug}`"
+        :to="localePath(`/blog/${blog.slug}`)"
         class="block group"
       >
         <UCard

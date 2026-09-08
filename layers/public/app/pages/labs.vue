@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const { t } = useI18n()
 const route = useRoute()
+const localePath = useLocalePath()
 
 useSeoMeta({
   title: `${t('nav.labs')} - ${t('app.title')}`,
@@ -11,15 +12,17 @@ useSeoMeta({
 
 const { data: labs } = await useAsyncData('labs', () => $fetch('/api/public/labs'))
 
-const isNestedLabsRoute = computed(() => {
-  const normalizedPath = route.path.replace(/\/$/, '') || '/'
-  return normalizedPath !== '/labs'
-})
+// Strip the locale prefix (e.g. "/en") before matching, since route.path
+// includes it under the "prefix_except_default" i18n strategy.
+function withoutLocalePrefix(path: string) {
+  return path.replace(/\/$/, '').replace(/^\/en(?=\/|$)/, '') || '/'
+}
 
-const isShowroomRoute = computed(() => {
-  const normalizedPath = route.path.replace(/\/$/, '') || '/'
-  return normalizedPath === '/labs/dealer-showroom'
-})
+const isNestedLabsRoute = computed(() => withoutLocalePrefix(route.path) !== '/labs')
+
+const isShowroomRoute = computed(
+  () => withoutLocalePrefix(route.path) === '/labs/dealer-showroom',
+)
 </script>
 
 <template>
@@ -70,7 +73,7 @@ const isShowroomRoute = computed(() => {
 
             <div class="flex flex-wrap gap-3 pt-1">
               <UButton
-                to="/labs/dealer-showroom"
+                :to="localePath('/labs/dealer-showroom')"
                 :label="t('labs_showroom.enter_cta')"
                 icon="i-lucide-arrow-right"
                 size="lg"

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { t, locale } = useI18n()
+const localePath = useLocalePath()
 
 useSeoMeta({
   title: t('seo.home_title'),
@@ -231,7 +232,7 @@ onMounted(async () => {
             <div ref="ctaPrimary" class="will-change-transform">
               <UButton
                 :label="t('hero.cta')"
-                to="/cv"
+                :to="localePath('/cv')"
                 size="lg"
                 icon="i-lucide-arrow-right"
                 trailing
@@ -371,7 +372,7 @@ onMounted(async () => {
           </h2>
         </div>
         <NuxtLink
-          to="/projects"
+          :to="localePath('/projects')"
           class="group hidden sm:inline-flex items-center gap-1.5 text-base md:text-lg font-medium text-(--ui-text-muted) hover:text-(--ui-color-primary-500) transition-colors"
         >
           {{ t('common.view_all') }}
@@ -386,7 +387,7 @@ onMounted(async () => {
           v-for="project in topProjects"
           :key="project._id"
           v-tilt
-          to="/projects"
+          :to="localePath('/projects')"
           class="project-card group relative block rounded-2xl border border-(--ui-border) bg-(--ui-bg-elevated) overflow-hidden"
         >
           <div class="relative h-40 overflow-hidden">

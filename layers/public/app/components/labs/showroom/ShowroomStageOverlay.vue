@@ -24,6 +24,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const localePath = useLocalePath()
 const activeCardRef = useTemplateRef<HTMLElement>('activeCard')
 
 const stepCounter = computed(() => {
@@ -122,7 +123,7 @@ defineExpose({
 
             <p class="showroom-editorial-hint">{{ t('labs_showroom.overlay.enter_hint') }}</p>
 
-            <NuxtLink to="/labs" class="showroom-editorial-link">
+            <NuxtLink :to="localePath('/labs')" class="showroom-editorial-link">
               {{ t('labs_showroom.back_to_labs') }}
             </NuxtLink>
 

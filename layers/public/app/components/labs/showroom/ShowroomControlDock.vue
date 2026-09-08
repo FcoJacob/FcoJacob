@@ -38,6 +38,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const localePath = useLocalePath()
 
 // Only essential strings kept for minimalist luxury design
 function getLocalizedGroupLabel(groupId: string, fallback: string) {
@@ -250,7 +251,7 @@ function getLocalizedOptionLabel(groupId: string, option: ShowroomOption) {
             </button>
           </div>
 
-          <NuxtLink to="/labs" class="dock-sleek-btn-primary">
+          <NuxtLink :to="localePath('/labs')" class="dock-sleek-btn-primary">
             {{ t('labs_showroom.back_to_labs') }}
           </NuxtLink>
         </footer>
