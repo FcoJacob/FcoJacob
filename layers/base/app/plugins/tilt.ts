@@ -30,6 +30,12 @@ export default defineNuxtPlugin(async (nuxtApp) => {
       el.style.transformStyle = 'preserve-3d'
       el.appendChild(glare)
 
+      // Give GSAP a known baseline for rotateX/rotateY/scale before any
+      // quickTo runs. Without this, a combined 3D rotation can't always be
+      // decomposed back into separate axes when a tween resets mid-flight,
+      // which is what triggers the "not eligible for reset" console warning.
+      gsap.set(el, { rotateX: 0, rotateY: 0, scale: 1, transformPerspective: 800 })
+
       // GSAP quickTo hooks for incredibly buttery smooth spring movements
       const xTo = gsap.quickTo(el, 'rotateY', { duration: 0.5, ease: 'power2.out' })
       const yTo = gsap.quickTo(el, 'rotateX', { duration: 0.5, ease: 'power2.out' })
