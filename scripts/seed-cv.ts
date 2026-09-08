@@ -45,10 +45,15 @@ const cvData = {
       name: 'AIDA',
       position: 'Senior Frontend Developer',
       startDate: '2024-12',
-      endDate: null,
+      endDate: '2026-08',
       summary:
         'Desarrollo de aplicaciones frontend con tecnologías modernas.',
-      highlights: ['Promoción a Senior Frontend Developer'],
+      highlights: [
+        'Promovido a Senior Frontend Developer, asumiendo ownership técnico del frontend de ventas y de la librería de componentes compartida',
+        '793 commits (+324.047 / −159.550 líneas) en los productos clave de ventas (sales-web, sales-shared, sales-specifications, importer-sales, SalesBackOffice)',
+        'En mi etapa en AIDA (2023–2026): cerré 258 de 266 incidencias Jira asignadas y reporté 90 propias, combinando ejecución técnica con detección proactiva de mejoras',
+        'Documenté el conocimiento del equipo con 56 páginas creadas y contribución en 132 más en Confluence',
+      ],
     },
     {
       name: 'AIDA',
@@ -95,12 +100,13 @@ const cvData = {
       name: 'Ejército del Aire',
       position: 'Especialista en mantenimiento de aeronaves',
       startDate: '2007-12',
-      endDate: null,
+      endDate: '2022-01',
       summary:
         'Realizo diversas tareas de mantenimiento en cazas de combate.',
       highlights: [
         'Medalla a la Cruz del Mérito Aeronáutico',
         'Operaciones de transmisiones y ofimática',
+        'En excedencia desde enero de 2022 (fin de contrato: julio de 2027)',
       ],
     },
     {
@@ -159,13 +165,18 @@ const cvData = {
   skills: [
     {
       name: 'Frontend',
-      level: 'Senior',
+      level: 'Avanzado',
       keywords: ['HTML', 'CSS', 'JavaScript', 'TypeScript', 'Vue.js', 'Nuxt'],
     },
     {
       name: 'Backend',
-      level: 'Intermedio',
-      keywords: ['Node.js', 'Firebase', 'Convex'],
+      level: 'Intermedio Alto',
+      keywords: ['Node.js', '.NET', 'C#', 'OpenAPI', 'Firebase', 'Convex'],
+    },
+    {
+      name: 'Calidad',
+      level: 'Intermedio Alto',
+      keywords: ['Testing', 'Mocks (MSW)', 'Refactorización'],
     },
     {
       name: 'Diseño',
@@ -175,7 +186,7 @@ const cvData = {
     {
       name: 'Herramientas',
       level: 'Avanzado',
-      keywords: ['Git', 'GitHub', 'ClickUp', 'Jira', 'Office'],
+      keywords: ['Git', 'GitHub', 'ClickUp', 'Jira', 'Confluence', 'Azure DevOps', 'Office'],
     },
     {
       name: 'IA',
@@ -201,31 +212,28 @@ const cvData = {
   projects: [
     {
       name: 'masquehuellas.es',
-      isActive: true,
+      isActive: false,
       description: 'Digitalización web de la clínica veterinaria +QHuellas.',
       highlights: ['Vue.js', 'Firebase'],
-      url: 'https://masquehuellas.es/',
     },
     {
       name: 'foroebc.org',
-      isActive: true,
+      isActive: false,
       description: 'Promover nuevos ámbitos y competencias profesionales.',
       highlights: ['Web development'],
-      url: 'https://foroebc.org/',
     },
     {
       name: 'businessevolver.net',
-      isActive: true,
+      isActive: false,
       description:
         'Proyecto de alianzas para llevar a las empresas a un futuro en el desarrollo sostenible (ODS) y la digitalización.',
       highlights: ['ODS', 'Digitalización'],
-      url: 'https://businessevolver.net/',
     },
     {
       name: 'lajairadeana.com',
-      isActive: true,
+      isActive: false,
       description: 'Web para la granja escuela La Jaira de Ana.',
-      highlights: ['Colaboración continua'],
+      highlights: ['Proyecto anterior, actualmente mantenido por otro proveedor'],
       url: 'https://lajairadeana.com/',
     },
     {

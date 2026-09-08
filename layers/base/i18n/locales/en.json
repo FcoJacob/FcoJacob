@@ -469,22 +469,19 @@
         "name": "masquehuellas.es",
         "description": "Web digitalization of the veterinary clinic +QHuellas.",
         "details": "Freelance full design and development project. Includes service catalog, appointment system, and patient gallery. Mobile-optimized responsive design.",
-        "tags": ["Nuxt", "Vue.js", "Responsive", "SEO"],
-        "url": "https://masquehuellas.es/"
+        "tags": ["Nuxt", "Vue.js", "Responsive", "SEO"]
       },
       {
         "name": "foroebc.org",
         "description": "Promoting new areas and professional competencies.",
         "details": "Web portal for the Canary Islands Blue Economy Forum. Event management, news and resources for maritime sector professionals.",
-        "tags": ["Vue.js", "CMS", "UI/UX"],
-        "url": "https://foroebc.org/"
+        "tags": ["Vue.js", "CMS", "UI/UX"]
       },
       {
         "name": "businessevolver.net",
         "description": "Partnership project for sustainable development (SDGs) and digitalization.",
         "details": "Business partnership platform focused on Sustainable Development Goals. Interactive dashboard, company profiles and collaboration matching.",
-        "tags": ["Vue.js", "Node.js", "Dashboard"],
-        "url": "https://businessevolver.net/"
+        "tags": ["Vue.js", "Node.js", "Dashboard"]
       },
       {
         "name": "lajairadeana.com",

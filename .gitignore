@@ -27,3 +27,5 @@ logs
 
 # Playwright MCP artifacts
 .playwright-mcp/
+.vercel
+.env*

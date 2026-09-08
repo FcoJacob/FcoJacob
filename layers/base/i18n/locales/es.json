@@ -469,22 +469,19 @@
         "name": "masquehuellas.es",
         "description": "Digitalización web de la clínica veterinaria +QHuellas.",
         "details": "Proyecto freelance de diseño y desarrollo completo. Incluye catálogo de servicios, sistema de citas, y galería de pacientes. Diseño responsive optimizado para móviles.",
-        "tags": ["Nuxt", "Vue.js", "Responsive", "SEO"],
-        "url": "https://masquehuellas.es/"
+        "tags": ["Nuxt", "Vue.js", "Responsive", "SEO"]
       },
       {
         "name": "foroebc.org",
         "description": "Promover nuevos ámbitos y competencias profesionales.",
         "details": "Portal web para el Foro de Economía Azul de Canarias. Gestión de eventos, noticias y recursos para profesionales del sector marítimo.",
-        "tags": ["Vue.js", "CMS", "UI/UX"],
-        "url": "https://foroebc.org/"
+        "tags": ["Vue.js", "CMS", "UI/UX"]
       },
       {
         "name": "businessevolver.net",
         "description": "Alianzas para un futuro en desarrollo sostenible (ODS) y digitalización.",
         "details": "Plataforma de alianzas empresariales enfocada en los Objetivos de Desarrollo Sostenible. Dashboard interactivo, perfiles de empresa y matching de colaboraciones.",
-        "tags": ["Vue.js", "Node.js", "Dashboard"],
-        "url": "https://businessevolver.net/"
+        "tags": ["Vue.js", "Node.js", "Dashboard"]
       },
       {
         "name": "lajairadeana.com",
