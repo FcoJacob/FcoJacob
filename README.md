@@ -1,175 +1,65 @@
 <div align="center">
 
-# Jacob Sarmiento — Portfolio
+# ¡Hola! Soy Jacob Sarmiento 👋
 
-**Personal portfolio & CV built with Nuxt 4, Convex, and Nuxt UI**
+### Senior Frontend Developer · Vue.js & Nuxt · +8 años de experiencia
 
-[![Nuxt](https://img.shields.io/badge/Nuxt-4.x-00DC82?style=flat&logo=nuxt.js&logoColor=white)](https://nuxt.com)
-[![Vue](https://img.shields.io/badge/Vue-3-4FC08D?style=flat&logo=vue.js&logoColor=white)](https://vuejs.org)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
-[![Convex](https://img.shields.io/badge/Convex-Backend-EE342F?style=flat&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyeiIvPjwvc3ZnPg==)](https://convex.dev)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.x-06B6D4?style=flat&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
-[![pnpm](https://img.shields.io/badge/pnpm-10.x-F69220?style=flat&logo=pnpm&logoColor=white)](https://pnpm.io)
-[![License](https://img.shields.io/badge/License-MIT-slate?style=flat)](LICENSE)
-
-[Live Site](https://jsarmiento.dev) · [CV](https://jsarmiento.dev/cv) · [Blog](https://jsarmiento.dev/blog)
+[![Portfolio](https://img.shields.io/badge/Portfolio-jsarmiento.dev-2563EB?style=flat&logo=vercel&logoColor=white)](https://jsarmiento.dev)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-fcojacob-0A66C2?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/fcojacob/)
+[![Email](https://img.shields.io/badge/Email-Contactar-D14836?style=flat&logo=gmail&logoColor=white)](mailto:fco.j.sarmientoperez@gmail.com)
+[![CV](https://img.shields.io/badge/CV-Descargar%20PDF-1F2937?style=flat&logo=readdotcv&logoColor=white)](https://jsarmiento.dev/cv.pdf)
 
 </div>
 
 ---
 
-## Overview
+## Sobre mí
 
-Full-stack personal portfolio with blog, project showcase, labs section, and an interactive PDF CV. Built with a **Nuxt Layers** architecture to separate concerns cleanly, powered by a **Convex** real-time backend and protected by an **OAuth admin panel**.
+Desarrollador Frontend Senior especializado en **Vue.js**, **Nuxt** y **TypeScript**, con más de 8 años construyendo interfaces y productos web. Combino ejecución técnica de alto volumen (documentación rigurosa, buenas prácticas de equipo) con una fuerte orientación al negocio: me implico en entender qué necesita el cliente, no solo en implementarlo.
 
-## Features
+🟢 **Abierto a nuevas oportunidades** como Frontend / Fullstack Developer — 📍 Las Palmas de Gran Canaria (remoto o híbrido).
 
-- **Portfolio** — Skills, project carousel, and a downloadable PDF CV
-- **Blog** — Multilingual posts (ES / EN) managed from the admin panel
-- **Labs** — Experimental projects section
-- **Admin Panel** — Protected CRUD for all content (blogs, projects, labs, CV)
-- **i18n** — Full Spanish / English support
-- **SEO** — Sitemap, robots.txt, Open Graph, hreflang, and JSON-LD structured data
-- **Dark mode** — System-aware with manual toggle
-- **PDF export** — ATS-friendly, text-based CV generated with `jsPDF`, served at [`/cv.pdf`](https://jsarmiento.dev/cv.pdf)
-- **OAuth login** — Google via `nuxt-auth-utils`
+## Stack
 
-## Tech Stack
+**Frontend**
 
-| Layer | Technology |
+![Vue.js](https://img.shields.io/badge/Vue.js-4FC08D?style=flat&logo=vuedotjs&logoColor=white)
+![Nuxt](https://img.shields.io/badge/Nuxt-00DC82?style=flat&logo=nuxtdotjs&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-06B6D4?style=flat&logo=tailwindcss&logoColor=white)
+
+**Backend & APIs**
+
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat&logo=nodedotjs&logoColor=white)
+![.NET](https://img.shields.io/badge/.NET-512BD4?style=flat&logo=dotnet&logoColor=white)
+![C#](https://img.shields.io/badge/C%23-239120?style=flat&logo=csharp&logoColor=white)
+![Convex](https://img.shields.io/badge/Convex-EE342F?style=flat)
+![OpenAPI](https://img.shields.io/badge/OpenAPI-6BA539?style=flat&logo=openapiinitiative&logoColor=white)
+
+**Herramientas**
+
+![Git](https://img.shields.io/badge/Git-F05032?style=flat&logo=git&logoColor=white)
+![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)
+![Jira](https://img.shields.io/badge/Jira-0052CC?style=flat&logo=jira&logoColor=white)
+![Confluence](https://img.shields.io/badge/Confluence-172B4D?style=flat&logo=confluence&logoColor=white)
+![Azure DevOps](https://img.shields.io/badge/Azure%20DevOps-0078D7?style=flat&logo=azuredevops&logoColor=white)
+
+## Proyectos destacados
+
+| Proyecto | Descripción |
 |---|---|
-| Framework | [Nuxt 4](https://nuxt.com) + [Vue 3](https://vuejs.org) |
-| UI | [Nuxt UI 4](https://ui.nuxt.com) + [Tailwind CSS 4](https://tailwindcss.com) |
-| Backend | [Convex](https://convex.dev) (real-time database + serverless functions) |
-| Auth | [nuxt-auth-utils](https://github.com/atinux/nuxt-auth-utils) (Google) |
-| i18n | [@nuxtjs/i18n](https://i18n.nuxtjs.org) |
-| SEO | [@nuxtjs/sitemap](https://nuxtseo.com/docs/sitemap) + [@nuxtjs/robots](https://nuxtseo.com/docs/robots) |
-| Testing | [Vitest](https://vitest.dev) + [@nuxt/test-utils](https://nuxt.com/docs/getting-started/testing) |
-| Linting | ESLint + Prettier |
-| Package manager | [pnpm 10](https://pnpm.io) |
-
-## Architecture — Nuxt Layers
-
-```
-layers/
-├── base/        # Shared layout, styles (Tailwind), i18n, ESLint config
-├── public/      # Public-facing pages: home, blog, projects, labs, CV
-└── admin/       # Protected admin panel: auth middleware, CRUD pages
-```
-
-Convex functions and schema live in `convex/`, and Nuxt server routes in `server/` provide a thin API layer on top.
-
-## Project Structure
-
-```
-.
-├── app/                   # Root app entry (app.vue)
-├── convex/                # Convex schema & server functions
-│   ├── schema.ts
-│   ├── blogs.ts
-│   ├── projects.ts
-│   ├── labs.ts
-│   └── cv.ts
-├── layers/
-│   ├── base/              # Shared: layout, CSS, composables, i18n
-│   ├── public/            # Public pages & project carousel component
-│   └── admin/             # Admin pages, middleware, composables
-├── server/                # Nuxt server routes & API handlers
-│   ├── api/
-│   ├── routes/auth/       # OAuth callback (Google)
-│   └── routes/cv.pdf.get.ts  # ATS-friendly PDF CV endpoint
-├── shared/                # Code shared between app and server (CV PDF renderer)
-├── tests/                 # Vitest unit tests
-└── scripts/               # Seed scripts (e.g. CV data)
-```
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js ≥ 20
-- pnpm 10
-- A [Convex](https://dashboard.convex.dev) project
-
-### Installation
-
-```bash
-# Clone the repo
-git clone https://github.com/FcoJacob/fsarmiento.git
-cd fsarmiento
-
-# Install dependencies
-pnpm install
-```
-
-### Environment Variables
-
-Create a `.env` file at the project root:
-
-```env
-# Convex — local development (read at build time)
-CONVEX_URL=https://<your-deployment>.convex.cloud
-
-# Convex — Vercel production/preview (overrides runtimeConfig at runtime)
-# Set this in Vercel dashboard: Settings > Environment Variables
-NUXT_PUBLIC_CONVEX_URL=https://<your-deployment>.convex.cloud
-
-# OAuth — Google
-NUXT_OAUTH_GOOGLE_CLIENT_ID=
-NUXT_OAUTH_GOOGLE_CLIENT_SECRET=
-
-# Comma-separated list of emails allowed to access the admin panel
-NUXT_ADMIN_EMAILS=
-
-# Session secret (min 32 chars)
-NUXT_SESSION_PASSWORD=
-```
-
-### Development
-
-```bash
-# Start Convex dev server (separate terminal)
-npx convex dev
-
-# Start Nuxt dev server
-pnpm dev
-```
-
-Open [http://localhost:3000](http://localhost:3000).
-
-### Build & Preview
-
-```bash
-pnpm build
-pnpm preview
-```
-
-### Tests
-
-```bash
-pnpm test          # Run once
-pnpm test:watch    # Watch mode
-```
-
-### Linting
-
-```bash
-pnpm lint          # Check
-pnpm lint:fix      # Auto-fix
-```
-
-## Seed Data
-
-To populate the Convex database with initial CV data:
-
-```bash
-npx tsx scripts/seed-cv.ts
-```
+| 🌐 **[jsarmiento.dev](https://jsarmiento.dev)** | Mi portfolio — Nuxt 4 + Convex, blog bilingüe (ES/EN), CV descargable en PDF y panel de administración propio. [Código fuente](https://github.com/FcoJacob/FcoJacob) |
+| 🎨 **[TTAIDEART](https://www.ttaideart.com)** | Portfolio digital de arte visual, construido con Next.js |
+| 💪 **[Método Lamí](https://metodolami.com)** | Plataforma de asesoría online de entrenamiento, nutrición y medicina deportiva |
+| 🍷 **[D.O. Vinos El Hierro](https://doelhierro.es)** | Web institucional del Consejo Regulador de la Denominación de Origen |
 
 ---
 
 <div align="center">
 
-Made by **Jacob Sarmiento** — [fsarmiento.dev](https://jsarmiento.dev) · [LinkedIn](https://linkedin.com/in/fcojacob) · [GitHub](https://github.com/FcoJacob)
+📫 **fco.j.sarmientoperez@gmail.com** · 💼 [LinkedIn](https://www.linkedin.com/in/fcojacob/) · 🌐 [jsarmiento.dev](https://jsarmiento.dev)
 
 </div>
