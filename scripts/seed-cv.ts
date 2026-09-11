@@ -102,8 +102,8 @@ const cvData = {
       summary:
         'Más de 21 años en las Fuerzas Armadas españolas (Ejército de Tierra, Armada y Ejército del Aire), con especialización en mantenimiento de aeronaves, maniobra/navegación y transmisiones.',
       highlights: [
-        'Acumulé más de 260 horas de mar como Especialista en Maniobra y Navegación en la Armada (2004 a 2006), en campañas de control de pesca y defensa de aguas nacionales',
-        'Reconocido con la Medalla a la Cruz del Mérito Aeronáutico en el Ejército del Aire; actualmente en excedencia desde enero de 2022 (fin de contrato: julio de 2027)',
+        'Desempeñé funciones de Especialista en Maniobra y Navegación en la Armada (2004 a 2006), acumulando más de 260 horas de mar en campañas de control de pesca y defensa de aguas nacionales',
+        'Obtuve la Medalla a la Cruz del Mérito Aeronáutico en el Ejército del Aire; actualmente en excedencia desde enero de 2022 (fin de contrato: julio de 2027)',
       ],
     },
   ],
