@@ -79,7 +79,6 @@ const cvData = {
         'Desarrollo de actividades de front-end con Vue, JavaScript, HTML y CSS.',
       highlights: [
         'Desarrollé más de 30 vistas de interfaz de usuario en Vue.js para los productos sales-web y ordering',
-        'Integré 2 APIs REST con el backend de ventas, desbloqueando el flujo completo de gestión de pedidos y la sincronización de datos entre sales-web y el backend',
       ],
     },
     {
@@ -150,19 +149,6 @@ const cvData = {
       name: 'Calidad',
       level: 'Intermedio Alto',
       keywords: ['Testing', 'Mocks (MSW)', 'Refactorización'],
-    },
-    {
-      name: 'Negocio',
-      level: 'Avanzado',
-      keywords: [
-        'Orientación al cliente',
-        'Visión de negocio',
-        'Requisitos funcionales',
-        'Comunicación con stakeholders',
-        'Liderazgo',
-        'Emprendimiento',
-        'Gestión de proyectos',
-      ],
     },
     {
       name: 'Diseño',
