@@ -66,13 +66,18 @@ const MARGIN_X = 18
 const CONTENT_W = PAGE_W - MARGIN_X * 2
 const BOTTOM = PAGE_H - 16
 
+// All body text renders in pure black per ATS/reviewer-tool convention
+// (color variation reads as "not fully black" to automated CV scorers).
+// Color is reserved for the thin hairline rules between sections.
 const C = {
-  heading: [30, 41, 59] as [number, number, number],
-  accent: [37, 99, 235] as [number, number, number],
-  text: [30, 41, 59] as [number, number, number],
-  muted: [100, 116, 139] as [number, number, number],
-  border: [203, 213, 225] as [number, number, number],
+  heading: [0, 0, 0] as [number, number, number],
+  accent: [0, 0, 0] as [number, number, number],
+  text: [0, 0, 0] as [number, number, number],
+  muted: [0, 0, 0] as [number, number, number],
+  border: [190, 190, 190] as [number, number, number],
 }
+
+const SECTION_GAP_BEFORE = 3.5
 
 function setText(doc: jsPDF, c: [number, number, number]) {
   doc.setTextColor(c[0], c[1], c[2])
@@ -99,6 +104,7 @@ class Cursor {
 }
 
 function drawSectionHeading(doc: jsPDF, cursor: Cursor, text: string) {
+  cursor.gap(SECTION_GAP_BEFORE)
   cursor.ensure(9)
   doc.setFontSize(11)
   doc.setFont('helvetica', 'bold')
@@ -183,7 +189,7 @@ function drawHeader(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
   setDraw(doc, C.border)
   doc.setLineWidth(0.5)
   doc.line(MARGIN_X, cursor.y, MARGIN_X + CONTENT_W, cursor.y)
-  cursor.gap(6)
+  cursor.gap(2)
 }
 
 function drawSkills(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
@@ -191,9 +197,8 @@ function drawSkills(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
   for (const skill of data.skills) {
     const line = `${skill.name} (${skill.level}): ${skill.keywords.join(', ')}`
     drawParagraph(doc, cursor, line, { size: 8.8 })
-    cursor.gap(1)
+    cursor.gap(1.4)
   }
-  cursor.gap(3)
 }
 
 function drawWork(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
@@ -206,7 +211,7 @@ function drawWork(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
     setText(doc, C.text)
     doc.text(job.position, MARGIN_X, cursor.y)
     doc.setFontSize(8.4)
-    doc.setFont('helvetica', 'normal')
+    doc.setFont('helvetica', 'bold')
     setText(doc, C.muted)
     doc.text(dateText, MARGIN_X + CONTENT_W, cursor.y, { align: 'right' })
     cursor.gap(4.4)
@@ -233,21 +238,26 @@ function drawEducation(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
   for (const edu of data.education) {
     cursor.ensure(10)
     const dateText = `${edu.startDate} - ${edu.endDate || data.labels.present}`
+
+    // Degree/qualification first (most relevant), then area, then institution,
+    // then dates. Area always gets its own wrapped line below so a long
+    // qualification name never overlaps the right-aligned date.
     doc.setFontSize(9.5)
     doc.setFont('helvetica', 'bold')
     setText(doc, C.text)
-    doc.text(edu.institution, MARGIN_X, cursor.y)
+    doc.text(edu.studyType, MARGIN_X, cursor.y)
     doc.setFontSize(8.4)
-    doc.setFont('helvetica', 'normal')
+    doc.setFont('helvetica', 'bold')
     setText(doc, C.muted)
     doc.text(dateText, MARGIN_X + CONTENT_W, cursor.y, { align: 'right' })
     cursor.gap(4.2)
 
-    drawParagraph(doc, cursor, `${edu.studyType} - ${edu.area}`, { size: 8.6, color: C.accent })
+    drawParagraph(doc, cursor, edu.area, { size: 8.6, color: C.text })
+    drawParagraph(doc, cursor, edu.institution, { size: 8.6, color: C.accent })
     if (edu.note) {
       drawParagraph(doc, cursor, edu.note, { size: 8, color: C.muted })
     }
-    cursor.gap(3.5)
+    cursor.gap(3.2)
   }
 }
 
@@ -262,7 +272,7 @@ function drawProjects(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
     doc.text(label, MARGIN_X, cursor.y)
     cursor.gap(3.8)
     drawParagraph(doc, cursor, proj.description, { size: 8.4, color: C.muted })
-    cursor.gap(2)
+    cursor.gap(1.8)
   }
 }
 
@@ -270,14 +280,14 @@ function drawAdditionalInfo(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
   drawSectionHeading(doc, cursor, data.labels.additionalInfo)
 
   const languagesLine = data.languages.map((l) => `${l.language} (${l.fluency})`).join(', ')
-  drawParagraph(doc, cursor, `${data.labels.languages}: ${languagesLine}`, { size: 8.8 })
-  cursor.gap(2)
+  drawParagraph(doc, cursor, `${data.labels.languages}: ${languagesLine}`, { size: 8.6 })
+  cursor.gap(1.3)
 
   if (data.softSkills.length) {
     drawParagraph(doc, cursor, `${data.labels.softSkills}: ${data.softSkills.join(', ')}`, {
-      size: 8.8,
+      size: 8.6,
     })
-    cursor.gap(2)
+    cursor.gap(1.3)
   }
 
   if (data.certifications.length) {
@@ -285,13 +295,13 @@ function drawAdditionalInfo(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
       doc,
       cursor,
       `${data.labels.certifications}: ${data.certifications.join(', ')}`,
-      { size: 8.8 },
+      { size: 8.6 },
     )
-    cursor.gap(2)
+    cursor.gap(1.3)
   }
 
   if (data.driving) {
-    drawParagraph(doc, cursor, `${data.labels.driving}: ${data.driving}`, { size: 8.8 })
+    drawParagraph(doc, cursor, `${data.labels.driving}: ${data.driving}`, { size: 8.6 })
   }
 }
 
@@ -302,7 +312,6 @@ export function drawCvPdf(doc: jsPDF, data: CvPdfData) {
 
   if (data.summary) {
     drawParagraph(doc, cursor, data.summary, { size: 9 })
-    cursor.gap(4)
   }
 
   drawSkills(doc, cursor, data)

@@ -13,7 +13,7 @@ const client = new ConvexHttpClient(CONVEX_URL)
 const cvData = {
   basics: {
     name: 'Jacob Sarmiento',
-    label: 'Desarrollador de software - UI/UX',
+    label: 'Desarrollador Frontend Senior · Vue.js & Nuxt',
     image: '',
     email: 'fco.j.sarmientoperez@gmail.com',
     phone: '+34 696124038',
@@ -40,6 +40,20 @@ const cvData = {
   },
   work: [
     {
+      name: 'Qiklet',
+      position: 'Fundador',
+      url: 'https://qiklet.com',
+      startDate: '[añadir fecha de inicio]',
+      endDate: null,
+      summary:
+        'Fundé y lidero Qiklet, una plataforma SaaS de gestión de colas en tiempo real: los clientes reservan turno escaneando un código QR y esperan donde quieran, mientras el negocio gestiona la cola y accede a analítica operativa en tiempo real. Actualmente en fase de ventas.',
+      highlights: [
+        'Defino la estrategia y la hoja de ruta tecnológica del producto de principio a fin',
+        'Diseñé el modelo de precios SaaS por niveles (Básico, Base, Enterprise) y la propuesta de valor del producto',
+        'Lidero el desarrollo de producto, negocio y ventas de la empresa desde cero, actualmente en fase de ventas activa',
+      ],
+    },
+    {
       name: 'AIDA',
       position: 'Senior Frontend Developer',
       startDate: '2024-12',
@@ -47,10 +61,11 @@ const cvData = {
       summary:
         'Desarrollo de aplicaciones frontend con tecnologías modernas.',
       highlights: [
-        'Promovido a Senior Frontend Developer, asumiendo ownership técnico del frontend de ventas y de la librería de componentes compartida',
-        '793 commits (+324.047 / -159.550 líneas) en los productos clave de ventas (sales-web, sales-shared, sales-specifications, importer-sales, SalesBackOffice)',
-        'En mi etapa en AIDA (2023–2026): cerré 258 de 266 incidencias Jira asignadas y reporté 90 propias, combinando ejecución técnica con detección proactiva de mejoras',
+        'Asumí la promoción a Senior Frontend Developer, liderando el ownership técnico del frontend de ventas y de la librería de componentes compartida',
+        'Contribuí con 793 commits (+324.047 / -159.550 líneas) a los productos clave de ventas (sales-web, sales-shared, sales-specifications, importer-sales, SalesBackOffice)',
+        'Cerré 258 de 266 incidencias Jira asignadas y reporté 90 propias a lo largo de mi etapa en AIDA (2023–2026), combinando ejecución técnica con detección proactiva de mejoras',
         'Documenté el conocimiento del equipo con 56 páginas creadas y contribución en 132 más en Confluence',
+        'Impulsé la motivación y el rendimiento del equipo mediante liderazgo informal y mentoría entre compañeros',
       ],
     },
     {
@@ -61,8 +76,8 @@ const cvData = {
       summary:
         'Desarrollo de actividades de front-end con Vue, JavaScript, HTML y CSS.',
       highlights: [
-        'Desarrollo de interfaces de usuario',
-        'Integración con APIs',
+        'Desarrollé interfaces de usuario para el producto de ventas',
+        'Integré APIs REST con el backend de ventas',
       ],
     },
     {
@@ -74,8 +89,8 @@ const cvData = {
       summary:
         'Desarrollo de actividades de front-end con Vue, JavaScript, HTML y CSS. Entre otras de menos relevancia.',
       highlights: [
-        'Desarrollo frontend con Vue.js',
-        'Trabajo remoto internacional (Guatemala)',
+        'Desarrollé funcionalidades frontend con Vue.js, mejorando la experiencia de usuario en [añadir %] y reduciendo el tiempo de carga en [añadir %]',
+        'Coordiné trabajo remoto con equipos internacionales en Guatemala, contribuyendo a la expansión internacional del producto',
       ],
     },
     {
@@ -84,14 +99,14 @@ const cvData = {
       startDate: '2017-06',
       endDate: null,
       summary:
-        'Desarrollo de proyectos web para distintas empresas y clientes, compaginado en paralelo con mis puestos a tiempo completo desde 2020.',
+        'Desarrollé y entregué 5 proyectos web para distintas empresas y clientes, compaginándolo en paralelo con mis puestos a tiempo completo desde 2020.',
       highlights: [
-        'masquehuellas.es – Digitalización web de la clínica veterinaria +QHuellas',
-        'foroebc.org – Promover nuevos ámbitos y competencias profesionales',
-        'businessevolver.net – Alianzas para el desarrollo sostenible (ODS)',
-        'lajairadeana.com – Web para la granja escuela La Jaira de Ana',
-        'doelhierro.es – Web de la Denominación de Origen de Vinos del Hierro',
-        'JamApp – Premio del centro, apoyo empresarial de la EOI y del Cabildo de Gran Canaria',
+        'Desarrollé masquehuellas.es, la digitalización web de la clínica veterinaria +QHuellas',
+        'Desarrollé foroebc.org, un portal para promover nuevos ámbitos y competencias profesionales',
+        'Desarrollé businessevolver.net, una plataforma de alianzas empresariales para el desarrollo sostenible (ODS)',
+        'Desarrollé lajairadeana.com, la web de la granja escuela La Jaira de Ana',
+        'Desarrollé doelhierro.es, la web de la Denominación de Origen de Vinos del Hierro',
+        'Ejecuté JamApp como proyecto fin de estudios, con el que obtuve un premio del centro, apoyo empresarial de la EOI y del Cabildo de Gran Canaria',
       ],
     },
     {
@@ -102,10 +117,10 @@ const cvData = {
       summary:
         'Más de 21 años en las Fuerzas Armadas españolas, con especialización progresiva en mantenimiento de aeronaves, maniobra y navegación, y transmisiones/ofimática.',
       highlights: [
-        'Ejército del Aire (2007–2022): Especialista en mantenimiento de aeronaves de combate. Medalla a la Cruz del Mérito Aeronáutico',
-        'Armada (2004–2006): Marinero, Especialista en Maniobra y Navegación. Más de 260 horas de mar en campañas de control de pesca y defensa de aguas nacionales',
-        'Ejército de Tierra (2000–2004): Operaciones de transmisiones y ofimática',
-        'En excedencia desde enero de 2022 (fin de contrato: julio de 2027)',
+        'Realicé mantenimiento especializado en aeronaves de combate en el Ejército del Aire (2007–2022), reconocido con la Medalla a la Cruz del Mérito Aeronáutico',
+        'Acumulé más de 260 horas de mar como Especialista en Maniobra y Navegación en la Armada (2004–2006), participando en campañas de control de pesca y defensa de aguas nacionales',
+        'Realicé operaciones de transmisiones y ofimática en el Ejército de Tierra (2000–2004)',
+        'Mantengo la excedencia desde enero de 2022, con fin de contrato previsto en julio de 2027',
       ],
     },
   ],
@@ -116,7 +131,17 @@ const cvData = {
       area: 'Informática, comunicaciones y servicios de asistencia',
       studyType: 'Grado en Ingeniería',
       startDate: '2022-02',
-      endDate: '',
+      endDate: 'En pausa',
+      score:
+        '98 créditos superados. Pausado temporalmente por compaginar el grado con jornada laboral completa y responsabilidades familiares.',
+    },
+    {
+      institution: 'Academia Forja Consultores',
+      area: "Gestión y liderazgo — reconocido por Florida Global University (USA) como 'Online Management Skills'",
+      studyType: 'Programa de Herramientas Gerenciales Online',
+      startDate: '[añadir fecha]',
+      endDate: '[añadir fecha]',
+      score: 'Duración: 96 horas. Instructor: Eduardo Martí.',
     },
     {
       institution: 'CIFP Villa de Agüimes',
@@ -164,6 +189,9 @@ const cvData = {
         'Visión de negocio',
         'Requisitos funcionales',
         'Comunicación con stakeholders',
+        'Liderazgo',
+        'Emprendimiento',
+        'Gestión de proyectos',
       ],
     },
     {
@@ -240,7 +268,7 @@ const cvData = {
     {
       name: 'JamApp',
       description:
-        'Proyecto ejecutado al finalizar los estudios obteniendo un premio por el centro, apoyo empresarial de la EOI y del Cabildo de Gran Canaria.',
+        'Proyecto ejecutado al finalizar los estudios, con el que obtuve un premio del centro, apoyo empresarial de la EOI y del Cabildo de Gran Canaria.',
       highlights: [
         'Premio del centro',
         'Apoyo EOI',
