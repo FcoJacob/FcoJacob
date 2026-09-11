@@ -75,6 +75,10 @@ const C = {
   text: [0, 0, 0] as [number, number, number],
   muted: [0, 0, 0] as [number, number, number],
   border: [190, 190, 190] as [number, number, number],
+  // Conventional hyperlink styling (blue + underline) — the one deliberate
+  // exception to the all-black rule, since it's how a link is expected to
+  // read visually, in print or on screen.
+  link: [37, 99, 235] as [number, number, number],
 }
 
 const SECTION_GAP_BEFORE = 3.6
@@ -213,10 +217,14 @@ function drawHeader(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
         x += sepW
       }
     }
-    setText(doc, C.muted)
     if (part.url) {
+      setText(doc, C.link)
       doc.textWithLink(part.text, x, cursor.y, { url: part.url })
+      setDraw(doc, C.link)
+      doc.setLineWidth(0.15)
+      doc.line(x, cursor.y + 0.8, x + partW, cursor.y + 0.8)
     } else {
+      setText(doc, C.muted)
       doc.text(part.text, x, cursor.y)
     }
     x += partW
@@ -232,16 +240,17 @@ function drawHeader(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
 
 function drawSkills(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
   drawSectionHeading(doc, cursor, data.labels.skills)
-  for (const skill of data.skills) {
+  data.skills.forEach((skill, i) => {
+    if (i > 0) cursor.gap(2)
     const line = `${skill.name} (${skill.level}): ${skill.keywords.join(', ')}`
     drawParagraph(doc, cursor, line, { size: 8.8 })
-    cursor.gap(2)
-  }
+  })
 }
 
 function drawWork(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
   drawSectionHeading(doc, cursor, data.labels.work)
-  for (const job of data.work) {
+  data.work.forEach((job, jobIndex) => {
+    if (jobIndex > 0) cursor.gap(4.5)
     cursor.ensure(10)
     const dateText = `${job.startDate} – ${job.endDate || data.labels.present}`
     doc.setFontSize(10)
@@ -267,13 +276,13 @@ function drawWork(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
       cursor.gap(1)
       for (const h of job.highlights) drawBullet(doc, cursor, h)
     }
-    cursor.gap(4.5)
-  }
+  })
 }
 
 function drawEducation(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
   drawSectionHeading(doc, cursor, data.labels.education)
-  for (const edu of data.education) {
+  data.education.forEach((edu, eduIndex) => {
+    if (eduIndex > 0) cursor.gap(4)
     cursor.ensure(10)
     const dateText = `${edu.startDate} – ${edu.endDate || data.labels.present}`
 
@@ -295,13 +304,13 @@ function drawEducation(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
     if (edu.note) {
       drawParagraph(doc, cursor, edu.note, { size: 8, color: C.muted })
     }
-    cursor.gap(4)
-  }
+  })
 }
 
 function drawProjects(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
   drawSectionHeading(doc, cursor, data.labels.projects)
-  for (const proj of data.projects) {
+  data.projects.forEach((proj, projIndex) => {
+    if (projIndex > 0) cursor.gap(3)
     cursor.ensure(6)
     const label = proj.url ? `${proj.name} (${proj.url.replace(/^https?:\/\//, '').replace(/\/$/, '')})` : proj.name
     doc.setFontSize(9)
@@ -310,8 +319,7 @@ function drawProjects(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
     doc.text(label, MARGIN_X, cursor.y)
     cursor.gap(3.2)
     drawParagraph(doc, cursor, proj.description, { size: 8.4, color: C.muted })
-    cursor.gap(3)
-  }
+  })
 }
 
 function drawAdditionalInfo(doc: jsPDF, cursor: Cursor, data: CvPdfData) {

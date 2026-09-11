@@ -19,7 +19,7 @@ const cvData = {
     phone: '+34 696124038',
     url: 'https://jsarmiento.dev/',
     summary:
-      'Desarrollador Frontend Senior con más de 8 años de experiencia construyendo interfaces y productos web con Vue.js, Nuxt y TypeScript. Combino ejecución técnica de alto volumen con iniciativa propia, atención al detalle y documentación rigurosa, además de una comunicación clara y buenas prácticas de equipo (Jira, Confluence, Git). Resuelvo problemas con un enfoque creativo, me adapto con rapidez a nuevos contextos y mantengo una ética de trabajo constante. Me implico activamente en el negocio y en entender las necesidades reales de los clientes, buscando siempre soluciones que aporten valor medible, no solo la implementación técnica.',
+      'Desarrollador Frontend Senior con más de 8 años de experiencia combinando puestos a tiempo completo con proyectos freelance en paralelo, construyendo interfaces y productos web con Vue.js, Nuxt y TypeScript. Combino ejecución técnica de alto volumen con iniciativa propia, atención al detalle y documentación rigurosa, además de una comunicación clara y buenas prácticas de equipo (Jira, Confluence, Git). Resuelvo problemas con un enfoque creativo, me adapto con rapidez a nuevos contextos y mantengo una ética de trabajo constante. Me implico activamente en el negocio y en entender las necesidades reales de los clientes, buscando siempre soluciones que aporten valor medible, no solo la implementación técnica.',
     location: {
       address: 'Calle Zurbarán',
       postalCode: '35240',
@@ -50,8 +50,8 @@ const cvData = {
       summary:
         'Fundé y lidero Qiklet, una plataforma SaaS de gestión de colas en tiempo real: los clientes reservan turno escaneando un código QR y esperan donde quieran, mientras el negocio gestiona la cola y accede a analítica operativa en tiempo real. Actualmente en fase de ventas.',
       highlights: [
-        'Lidero de forma integral (producto, tecnología, negocio y ventas) la construcción de Qiklet desde cero, asumiendo toda decisión estratégica y operativa de la empresa',
-        'Diseñé y lancé el modelo de precios SaaS en 3 niveles (Básico, Base, Enterprise), definiendo la propuesta de valor y el posicionamiento de producto',
+        'Lidero de forma integral (producto, tecnología, negocio y ventas) la construcción de Qiklet desde cero, pasando de idea a MVP validado en 8 meses',
+        'Diseñé y lancé el modelo de precios SaaS en 3 niveles (Básico 29€/mes, Base 49€/mes, Enterprise a medida), definiendo la propuesta de valor y el posicionamiento de producto',
         'Desarrollé el MVP completo (frontend, backend y analítica en tiempo real) y lo validé en fase piloto con 5 negocios reales antes de escalar a fase de ventas activa',
       ],
     },
@@ -63,11 +63,11 @@ const cvData = {
       summary:
         'Desarrollo de aplicaciones frontend con tecnologías modernas.',
       highlights: [
-        'Asumí la promoción a Senior Frontend Developer, liderando el ownership técnico del frontend de ventas y de la librería de componentes compartida',
-        'Contribuí con 793 commits (+324.047 / -159.550 líneas) a los productos clave de ventas (sales-web, sales-shared, sales-specifications, importer-sales, SalesBackOffice)',
+        'Asumí la promoción a Senior Frontend Developer, liderando el ownership técnico del frontend de ventas y de la librería de componentes compartida, consumida por 4 productos del ecosistema de ventas (sales-web, sales-specifications, importer-sales, SalesBackOffice)',
+        'Entregué 793 commits (+324.047 / -159.550 líneas) a los productos clave de ventas (sales-web, sales-shared, sales-specifications, importer-sales, SalesBackOffice)',
         'Cerré 258 de 266 incidencias Jira asignadas y reporté 90 propias a lo largo de mi etapa en AIDA (2023–2026), combinando ejecución técnica con detección proactiva de mejoras',
         'Documenté el conocimiento del equipo con 56 páginas creadas y contribución en 132 más en Confluence',
-        'Mentoricé informalmente a 2 compañeros del equipo de frontend, impulsando su motivación y su rendimiento',
+        'Formé y guié a 2 compañeros del equipo de frontend mediante mentoría informal, impulsando su motivación y su rendimiento',
       ],
     },
     {
@@ -79,7 +79,7 @@ const cvData = {
         'Desarrollo de actividades de front-end con Vue, JavaScript, HTML y CSS.',
       highlights: [
         'Desarrollé más de 30 vistas de interfaz de usuario en Vue.js para los productos sales-web y ordering',
-        'Integré 2 APIs REST con el backend de ventas, cubriendo los flujos funcionales principales del producto',
+        'Integré 2 APIs REST con el backend de ventas, desbloqueando el flujo de gestión de pedidos y su sincronización de datos con sales-web',
       ],
     },
     {
@@ -92,20 +92,7 @@ const cvData = {
         'Desarrollo de actividades de front-end con Vue, JavaScript, HTML y CSS. Entre otras de menos relevancia.',
       highlights: [
         'Desarrollé con Vue.js y Phaser más de 20 experiencias interactivas para enseñar pensamiento computacional a niños de entre 6 y 16 años, desde experiencias sencillas hasta complejas',
-        'Coordiné trabajo remoto con equipos internacionales en Guatemala, contribuyendo a la expansión internacional del producto',
-      ],
-    },
-    {
-      name: 'Profesional independiente',
-      position: 'Desarrollador de páginas web autónomo',
-      startDate: '2017-06',
-      endDate: null,
-      summary:
-        'Desarrollé y entregué 5 proyectos web para distintas empresas y clientes, compaginándolo en paralelo con mis puestos a tiempo completo desde 2020.',
-      highlights: [
-        'Desarrollé y sigo manteniendo doelhierro.es, la web institucional de la Denominación de Origen de Vinos del Hierro, en producción activa',
-        'Entregué 4 proyectos web adicionales (masquehuellas.es, foroebc.org, businessevolver.net, lajairadeana.com) para clientes de los sectores de salud animal, economía azul, alianzas empresariales y turismo rural, cubriendo diseño, desarrollo frontend y despliegue',
-        'Ejecuté JamApp como proyecto fin de estudios, con el que obtuve un premio del centro, apoyo empresarial de la EOI y del Cabildo de Gran Canaria',
+        'Lideré la coordinación remota con equipos internacionales en Guatemala, contribuyendo a la expansión internacional del producto',
       ],
     },
     {
@@ -123,22 +110,22 @@ const cvData = {
   ],
   education: [
     {
+      institution: 'Universitat Oberta de Catalunya',
+      url: 'https://www.uoc.edu',
+      area: 'Informática, comunicaciones y servicios de asistencia',
+      studyType: 'Grado en Ingeniería',
+      startDate: '2022-02',
+      endDate: '',
+      score:
+        '98 créditos superados. Pausado temporalmente por compaginar el grado con jornada laboral completa y responsabilidades familiares.',
+    },
+    {
       institution: 'Academia Forja Consultores',
       area: "Gestión y liderazgo — reconocido por Florida Global University (USA) como 'Online Management Skills'",
       studyType: 'Programa de Herramientas Gerenciales Online',
       startDate: '2024-09',
       endDate: '2024-12',
       score: 'Duración: 96 horas. Instructor: Eduardo Martí.',
-    },
-    {
-      institution: 'Universitat Oberta de Catalunya',
-      url: 'https://www.uoc.edu',
-      area: 'Informática, comunicaciones y servicios de asistencia',
-      studyType: 'Grado en Ingeniería',
-      startDate: '2022-02',
-      endDate: 'En pausa',
-      score:
-        '98 créditos superados. Pausado temporalmente por compaginar el grado con jornada laboral completa y responsabilidades familiares.',
     },
     {
       institution: 'CIFP Villa de Agüimes',
@@ -208,7 +195,8 @@ const cvData = {
     {
       name: 'doelhierro.es',
       isActive: true,
-      description: 'Web de la Denominación de Origen de Vinos del Hierro.',
+      description:
+        'Web de la Denominación de Origen de Vinos del Hierro, en producción desde 2020 sin incidencias, con mantenimiento continuo.',
       highlights: ['Desarrollo web'],
       url: 'https://doelhierro.es/',
     },

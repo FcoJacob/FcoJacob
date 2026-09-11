@@ -30,7 +30,9 @@ export default defineEventHandler(async (event) => {
     name: cv.basics.name,
     label: cv.basics.label,
     summary: cv.basics.summary,
-    location: `${cv.basics.location.city}, ${cv.basics.location.region}`,
+    location: [cv.basics.location.city, cv.basics.location.region, cv.basics.location.postalCode]
+      .filter(Boolean)
+      .join(', '),
     email: cv.basics.email,
     phone: cv.basics.phone ?? '',
     linkedinUrl: profileUrl('LinkedIn'),
