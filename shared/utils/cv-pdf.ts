@@ -46,6 +46,7 @@ export interface CvPdfData {
     education: string
     projects: string
     present: string
+    dateTo: string
     additionalInfo: string
   }
 }
@@ -142,6 +143,10 @@ function drawParagraph(
   setText(doc, color)
   const lines = doc.splitTextToSize(text, CONTENT_W - indent) as string[]
   const lineH = size * LINE_HEIGHT_FACTOR
+  const blockH = lines.length * lineH
+  // Keep the whole paragraph together across a page break so no single
+  // wrapped line is orphaned at the top of the next page.
+  if (blockH <= BOTTOM - 16) cursor.ensure(blockH)
   for (const line of lines) {
     cursor.ensure(lineH)
     doc.text(line, MARGIN_X + indent, cursor.y)
@@ -155,6 +160,10 @@ function drawBullet(doc: jsPDF, cursor: Cursor, text: string) {
   doc.setFont('helvetica', 'normal')
   const lines = doc.splitTextToSize(text, CONTENT_W - 5) as string[]
   const lineH = size * LINE_HEIGHT_FACTOR
+  const blockH = lines.length * lineH
+  // Keep the whole bullet together across a page break so no single
+  // wrapped line is orphaned at the top of the next page.
+  if (blockH <= BOTTOM - 16) cursor.ensure(blockH)
   for (let i = 0; i < lines.length; i++) {
     cursor.ensure(lineH)
     setText(doc, C.accent)
@@ -252,7 +261,7 @@ function drawWork(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
   data.work.forEach((job, jobIndex) => {
     if (jobIndex > 0) cursor.gap(4.5)
     cursor.ensure(10)
-    const dateText = `${job.startDate} – ${job.endDate || data.labels.present}`
+    const dateText = `${job.startDate} ${data.labels.dateTo} ${job.endDate || data.labels.present}`
     doc.setFontSize(10)
     doc.setFont('helvetica', 'bold')
     setText(doc, C.text)
@@ -284,7 +293,7 @@ function drawEducation(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
   data.education.forEach((edu, eduIndex) => {
     if (eduIndex > 0) cursor.gap(4)
     cursor.ensure(10)
-    const dateText = `${edu.startDate} – ${edu.endDate || data.labels.present}`
+    const dateText = `${edu.startDate} ${data.labels.dateTo} ${edu.endDate || data.labels.present}`
 
     // Degree/qualification first (most relevant), then area, then institution,
     // then dates. Area always gets its own wrapped line below so a long
