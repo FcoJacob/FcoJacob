@@ -52,7 +52,7 @@ const cvData = {
       highlights: [
         'Lidero de forma integral (producto, tecnología, negocio y ventas) la construcción de Qiklet desde cero, pasando de idea a MVP validado en 8 meses',
         'Desarrollé el MVP completo (frontend, backend y analítica en tiempo real) y lo validé en fase piloto con 5 negocios reales antes de escalar a fase de ventas activa',
-        'Motivé e impulsé a más de 12 personas a emprender proyectos propios a lo largo de mi trayectoria, una iniciativa que también apliqué en primera persona al fundar Qiklet',
+        'Lideré la unión estratégica de Qiklet con otro proyecto, consolidando un equipo de 12 profesionales para reforzar la fase de ventas',
       ],
     },
     {
