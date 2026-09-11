@@ -65,7 +65,7 @@ const cvData = {
       highlights: [
         'Ascendí a Senior Frontend Developer, asumiendo el ownership técnico del frontend de ventas y de una librería de componentes compartida utilizada por 4 productos del ecosistema (sales-web, sales-specifications, importer-sales, SalesBackOffice)',
         'Entregué 793 commits (+324.047 / -159.550 líneas) a los productos clave de ventas (sales-web, sales-shared, sales-specifications, importer-sales, SalesBackOffice)',
-        'Cerré 258 de 266 incidencias Jira asignadas y reporté 90 propias a lo largo de mi etapa en AIDA (2023–2026), combinando ejecución técnica con detección proactiva de mejoras',
+        'Cerré 258 de 266 incidencias Jira asignadas y reporté 90 propias a lo largo de mi etapa en AIDA (2023 a 2026), combinando ejecución técnica con detección proactiva de mejoras',
         'Documenté el conocimiento del equipo con 56 páginas creadas y contribución en 132 más en Confluence',
         'Formé y guié a 2 compañeros del equipo de frontend mediante mentoría informal, impulsando su motivación y su rendimiento',
       ],
@@ -103,7 +103,7 @@ const cvData = {
       summary:
         'Más de 21 años en las Fuerzas Armadas españolas (Ejército de Tierra, Armada y Ejército del Aire), con especialización en mantenimiento de aeronaves, maniobra/navegación y transmisiones.',
       highlights: [
-        'Acumulé más de 260 horas de mar como Especialista en Maniobra y Navegación en la Armada (2004–2006), en campañas de control de pesca y defensa de aguas nacionales',
+        'Acumulé más de 260 horas de mar como Especialista en Maniobra y Navegación en la Armada (2004 a 2006), en campañas de control de pesca y defensa de aguas nacionales',
         'Reconocido con la Medalla a la Cruz del Mérito Aeronáutico en el Ejército del Aire; actualmente en excedencia desde enero de 2022 (fin de contrato: julio de 2027)',
       ],
     },
