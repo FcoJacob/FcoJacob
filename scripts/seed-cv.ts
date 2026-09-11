@@ -52,7 +52,7 @@ const cvData = {
       highlights: [
         'Lidero de forma integral (producto, tecnología, negocio y ventas) la construcción de Qiklet desde cero, asumiendo toda decisión estratégica y operativa de la empresa',
         'Diseñé y lancé el modelo de precios SaaS en 3 niveles (Básico, Base, Enterprise), definiendo la propuesta de valor y el posicionamiento de producto',
-        'Desarrollé el MVP completo (frontend, backend y analítica en tiempo real) y lo llevé a fase de ventas activa con [REVISAR: nº de negocios en fase piloto o de ventas]',
+        'Desarrollé el MVP completo (frontend, backend y analítica en tiempo real) y lo validé en fase piloto con 5 negocios reales antes de escalar a fase de ventas activa',
       ],
     },
     {
@@ -67,7 +67,7 @@ const cvData = {
         'Contribuí con 793 commits (+324.047 / -159.550 líneas) a los productos clave de ventas (sales-web, sales-shared, sales-specifications, importer-sales, SalesBackOffice)',
         'Cerré 258 de 266 incidencias Jira asignadas y reporté 90 propias a lo largo de mi etapa en AIDA (2023–2026), combinando ejecución técnica con detección proactiva de mejoras',
         'Documenté el conocimiento del equipo con 56 páginas creadas y contribución en 132 más en Confluence',
-        'Mentoricé informalmente a [REVISAR: nº] compañeros del equipo de frontend, impulsando su motivación y su rendimiento',
+        'Mentoricé informalmente a 2 compañeros del equipo de frontend, impulsando su motivación y su rendimiento',
       ],
     },
     {
@@ -78,8 +78,8 @@ const cvData = {
       summary:
         'Desarrollo de actividades de front-end con Vue, JavaScript, HTML y CSS.',
       highlights: [
-        'Desarrollé [REVISAR: nº] componentes y vistas de interfaz de usuario en Vue.js para el producto de ventas',
-        'Integré [REVISAR: nº] APIs REST con el backend de ventas, cubriendo los flujos funcionales principales del producto',
+        'Desarrollé más de 30 vistas de interfaz de usuario en Vue.js para los productos sales-web y ordering',
+        'Integré 2 APIs REST con el backend de ventas, cubriendo los flujos funcionales principales del producto',
       ],
     },
     {
@@ -91,7 +91,7 @@ const cvData = {
       summary:
         'Desarrollo de actividades de front-end con Vue, JavaScript, HTML y CSS. Entre otras de menos relevancia.',
       highlights: [
-        'Desarrollé con Vue.js y Phaser [REVISAR: nº] experiencias interactivas para enseñar pensamiento computacional a niños de entre 6 y 16 años, desde experiencias sencillas hasta complejas',
+        'Desarrollé con Vue.js y Phaser más de 20 experiencias interactivas para enseñar pensamiento computacional a niños de entre 6 y 16 años, desde experiencias sencillas hasta complejas',
         'Coordiné trabajo remoto con equipos internacionales en Guatemala, contribuyendo a la expansión internacional del producto',
       ],
     },
