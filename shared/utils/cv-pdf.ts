@@ -1,4 +1,5 @@
 import type { jsPDF } from 'jspdf'
+import { PT_SANS_REGULAR_BASE64, PT_SANS_BOLD_BASE64 } from './pt-sans-font-data'
 
 export interface CvPdfData {
   name: string
@@ -89,6 +90,21 @@ const SECTION_GAP_BEFORE = 3.6
 // extracted text — legibility takes priority over hitting a page count.
 const LINE_HEIGHT_FACTOR = 0.5
 
+// jsPDF's built-in "Helvetica" is one of the 14 standard PDF fonts, which
+// ships with no embedded glyph data and no ToUnicode CMap. Rendering looks
+// fine, but any text extractor that requires a real Unicode mapping (many
+// ATS/reviewer tools, unlike lenient viewers such as Poppler) can fail to
+// read the text back correctly. Embedding a real TrueType font gives every
+// glyph a proper Unicode mapping, so extraction is reliable everywhere.
+const FONT = 'PTSans'
+
+function registerFonts(doc: jsPDF) {
+  doc.addFileToVFS('PTSans-Regular.ttf', PT_SANS_REGULAR_BASE64)
+  doc.addFont('PTSans-Regular.ttf', FONT, 'normal')
+  doc.addFileToVFS('PTSans-Bold.ttf', PT_SANS_BOLD_BASE64)
+  doc.addFont('PTSans-Bold.ttf', FONT, 'bold')
+}
+
 function setText(doc: jsPDF, c: [number, number, number]) {
   doc.setTextColor(c[0], c[1], c[2])
 }
@@ -120,7 +136,7 @@ function drawSectionHeading(doc: jsPDF, cursor: Cursor, text: string) {
   // of its content pushed to the next one (an orphaned heading).
   cursor.ensure(20)
   doc.setFontSize(11)
-  doc.setFont('helvetica', 'bold')
+  doc.setFont(FONT, 'bold')
   setText(doc, C.heading)
   doc.text(text.toUpperCase(), MARGIN_X, cursor.y, { charSpace: 0.4 })
   setDraw(doc, C.border)
@@ -139,7 +155,7 @@ function drawParagraph(
   const color = opts.color ?? C.text
   const indent = opts.indent ?? 0
   doc.setFontSize(size)
-  doc.setFont('helvetica', opts.bold ? 'bold' : 'normal')
+  doc.setFont(FONT, opts.bold ? 'bold' : 'normal')
   setText(doc, color)
   const lines = doc.splitTextToSize(text, CONTENT_W - indent) as string[]
   const lineH = size * LINE_HEIGHT_FACTOR
@@ -157,7 +173,7 @@ function drawParagraph(
 function drawBullet(doc: jsPDF, cursor: Cursor, text: string) {
   const size = 8.6
   doc.setFontSize(size)
-  doc.setFont('helvetica', 'normal')
+  doc.setFont(FONT, 'normal')
   const lines = doc.splitTextToSize(text, CONTENT_W - 5) as string[]
   const lineH = size * LINE_HEIGHT_FACTOR
   const blockH = lines.length * lineH
@@ -176,13 +192,13 @@ function drawBullet(doc: jsPDF, cursor: Cursor, text: string) {
 
 function drawHeader(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
   doc.setFontSize(19)
-  doc.setFont('helvetica', 'bold')
+  doc.setFont(FONT, 'bold')
   setText(doc, C.heading)
   doc.text(data.name, MARGIN_X, cursor.y)
   cursor.gap(7)
 
   doc.setFontSize(11.5)
-  doc.setFont('helvetica', 'normal')
+  doc.setFont(FONT, 'normal')
   setText(doc, C.accent)
   doc.text(data.label, MARGIN_X, cursor.y)
   cursor.gap(6.5)
@@ -213,7 +229,7 @@ function drawHeader(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
   ].filter(Boolean) as Array<{ text: string; url?: string; colored?: boolean }>
 
   doc.setFontSize(8.6)
-  doc.setFont('helvetica', 'normal')
+  doc.setFont(FONT, 'normal')
   const SEP = '   |   '
   const sepW = doc.getTextWidth(SEP)
   let x = MARGIN_X
@@ -270,17 +286,17 @@ function drawWork(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
     cursor.ensure(10)
     const dateText = `${job.startDate} ${data.labels.dateTo} ${job.endDate || data.labels.present}`
     doc.setFontSize(10)
-    doc.setFont('helvetica', 'bold')
+    doc.setFont(FONT, 'bold')
     setText(doc, C.text)
     doc.text(job.position, MARGIN_X, cursor.y)
     doc.setFontSize(8.4)
-    doc.setFont('helvetica', 'bold')
+    doc.setFont(FONT, 'bold')
     setText(doc, C.muted)
     doc.text(dateText, MARGIN_X + CONTENT_W, cursor.y, { align: 'right' })
     cursor.gap(4.4)
 
     doc.setFontSize(9)
-    doc.setFont('helvetica', 'bold')
+    doc.setFont(FONT, 'bold')
     setText(doc, C.accent)
     doc.text(job.name, MARGIN_X, cursor.y)
     cursor.gap(4)
@@ -306,11 +322,11 @@ function drawEducation(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
     // then dates. Area always gets its own wrapped line below so a long
     // qualification name never overlaps the right-aligned date.
     doc.setFontSize(9.5)
-    doc.setFont('helvetica', 'bold')
+    doc.setFont(FONT, 'bold')
     setText(doc, C.text)
     doc.text(edu.studyType, MARGIN_X, cursor.y)
     doc.setFontSize(8.4)
-    doc.setFont('helvetica', 'bold')
+    doc.setFont(FONT, 'bold')
     setText(doc, C.muted)
     doc.text(dateText, MARGIN_X + CONTENT_W, cursor.y, { align: 'right' })
     cursor.gap(4.2)
@@ -330,7 +346,7 @@ function drawProjects(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
     cursor.ensure(6)
     const label = proj.url ? `${proj.name} (${proj.url.replace(/^https?:\/\//, '').replace(/\/$/, '')})` : proj.name
     doc.setFontSize(9)
-    doc.setFont('helvetica', 'bold')
+    doc.setFont(FONT, 'bold')
     setText(doc, C.text)
     doc.text(label, MARGIN_X, cursor.y)
     cursor.gap(3.2)
@@ -365,6 +381,7 @@ function drawAdditionalInfo(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
 
 /** Draws the full single-column, ATS-friendly A4 CV into the given jsPDF document. */
 export function drawCvPdf(doc: jsPDF, data: CvPdfData) {
+  registerFonts(doc)
   const cursor = new Cursor(doc)
   drawHeader(doc, cursor, data)
 
