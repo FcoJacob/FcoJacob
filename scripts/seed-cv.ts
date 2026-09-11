@@ -51,7 +51,7 @@ const cvData = {
         'Fundé y lidero Qiklet, una plataforma SaaS de gestión de colas en tiempo real: los clientes reservan turno escaneando un código QR y esperan donde quieran, mientras el negocio gestiona la cola y accede a analítica operativa en tiempo real. Actualmente en fase de ventas.',
       highlights: [
         'Lidero de forma integral (producto, tecnología, negocio y ventas) la construcción de Qiklet desde cero, pasando de idea a MVP validado en 8 meses',
-        'Definí y lancé una estructura de precios SaaS en 3 niveles (Básico 29€/mes, Base 49€/mes, Enterprise a medida) para distintos segmentos de cliente, estableciendo la propuesta de valor y el posicionamiento de producto',
+        'Definí precios en 3 niveles (Básico, Base, Enterprise) para distintos segmentos de cliente, con tarifas mensuales desde 29€ hasta 49€ según el nivel (Enterprise a medida), estableciendo la propuesta de valor y el posicionamiento de producto',
         'Desarrollé el MVP completo (frontend, backend y analítica en tiempo real) y lo validé en fase piloto con 5 negocios reales antes de escalar a fase de ventas activa',
       ],
     },
