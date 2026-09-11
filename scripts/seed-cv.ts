@@ -52,6 +52,7 @@ const cvData = {
       highlights: [
         'Lidero de forma integral (producto, tecnología, negocio y ventas) la construcción de Qiklet desde cero, pasando de idea a MVP validado en 8 meses',
         'Desarrollé el MVP completo (frontend, backend y analítica en tiempo real) y lo validé en fase piloto con 5 negocios reales antes de escalar a fase de ventas activa',
+        'Motivé e impulsé a más de 12 personas a emprender proyectos propios a lo largo de mi trayectoria, una iniciativa que también apliqué en primera persona al fundar Qiklet',
       ],
     },
     {
@@ -90,7 +91,7 @@ const cvData = {
         'Desarrollo de actividades de front-end con Vue, JavaScript, HTML y CSS. Entre otras de menos relevancia.',
       highlights: [
         'Desarrollé con Vue.js y Phaser más de 20 experiencias interactivas para enseñar pensamiento computacional a niños de entre 6 y 16 años, desde experiencias sencillas hasta complejas',
-        'Lideré la coordinación remota con equipos internacionales en Guatemala, contribuyendo a la expansión internacional del producto',
+        'Lideré la coordinación remota con equipos internacionales en Guatemala, contribuyendo a la expansión internacional del producto hasta superar 1 millón de usuarios activos en escuelas de Latinoamérica y España',
       ],
     },
     {
@@ -101,8 +102,8 @@ const cvData = {
       summary:
         'Más de 21 años en las Fuerzas Armadas españolas (Ejército de Tierra, Armada y Ejército del Aire), con especialización en mantenimiento de aeronaves, maniobra/navegación y transmisiones. Actualmente en excedencia desde enero de 2022 (fin de contrato: julio de 2027).',
       highlights: [
-        'Desempeñé funciones de Especialista en Maniobra y Navegación en la Armada (2004 a 2006), acumulando más de 260 horas de mar en campañas de control de pesca y defensa de aguas nacionales',
-        'Obtuve la Medalla a la Cruz del Mérito Aeronáutico en el Ejército del Aire',
+        'Desempeñé funciones de Especialista en Maniobra y Navegación en la Armada (2004 a 2006), acumulando más de 260 horas de mar en campañas de control de pesca y defensa de aguas nacionales, consolidando experiencia operativa en entornos exigentes de alta responsabilidad',
+        'Obtuve la Medalla a la Cruz del Mérito Aeronáutico en el Ejército del Aire por mi desempeño como único responsable de las averías de una aeronave, superando las responsabilidades de mi puesto',
       ],
     },
   ],
