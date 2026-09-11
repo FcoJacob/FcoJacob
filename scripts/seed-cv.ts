@@ -63,7 +63,7 @@ const cvData = {
       summary:
         'Desarrollo de aplicaciones frontend con tecnologías modernas.',
       highlights: [
-        'Asumí la promoción a Senior Frontend Developer, liderando el ownership técnico del frontend de ventas y de la librería de componentes compartida, consumida por 4 productos del ecosistema de ventas (sales-web, sales-specifications, importer-sales, SalesBackOffice)',
+        'Lideré el ownership técnico del frontend de ventas y de la librería de componentes compartida, consumida por 4 productos del ecosistema de ventas (sales-web, sales-specifications, importer-sales, SalesBackOffice), tras mi promoción a Senior Frontend Developer',
         'Entregué 793 commits (+324.047 / -159.550 líneas) a los productos clave de ventas (sales-web, sales-shared, sales-specifications, importer-sales, SalesBackOffice)',
         'Cerré 258 de 266 incidencias Jira asignadas y reporté 90 propias a lo largo de mi etapa en AIDA (2023–2026), combinando ejecución técnica con detección proactiva de mejoras',
         'Documenté el conocimiento del equipo con 56 páginas creadas y contribución en 132 más en Confluence',
@@ -150,6 +150,19 @@ const cvData = {
       name: 'Calidad',
       level: 'Intermedio Alto',
       keywords: ['Testing', 'Mocks (MSW)', 'Refactorización'],
+    },
+    {
+      name: 'Negocio',
+      level: 'Avanzado',
+      keywords: [
+        'Orientación al cliente',
+        'Visión de negocio',
+        'Requisitos funcionales',
+        'Comunicación con stakeholders',
+        'Liderazgo',
+        'Emprendimiento',
+        'Gestión de proyectos',
+      ],
     },
     {
       name: 'Diseño',

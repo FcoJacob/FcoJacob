@@ -189,14 +189,18 @@ function drawHeader(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
 
   // Each contact part that has a real URL becomes an actual clickable link
   // annotation in the PDF (not just styled text), so LinkedIn/GitHub/site
-  // work when opened in a PDF viewer.
-  const contactParts: Array<{ text: string; url?: string }> = [
-    data.email && { text: data.email, url: `mailto:${data.email}` },
+  // work when opened in a PDF viewer. Only email and LinkedIn are rendered
+  // in the blue link color — reviewer tooling treats any other colored text
+  // as a "not fully black" violation, so GitHub/website links stay black
+  // while remaining real, clickable URI annotations.
+  const contactParts: Array<{ text: string; url?: string; colored?: boolean }> = [
+    data.email && { text: data.email, url: `mailto:${data.email}`, colored: true },
     data.phone && { text: data.phone },
     data.location && { text: data.location },
     data.linkedinUrl && {
       text: `linkedin.com/in/${data.linkedinUrl.replace('https://www.linkedin.com/in/', '').replace(/\/$/, '')}`,
       url: data.linkedinUrl,
+      colored: true,
     },
     data.githubUrl && {
       text: `github.com/${data.githubUrl.replace('https://github.com/', '')}`,
@@ -206,7 +210,7 @@ function drawHeader(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
       text: data.websiteUrl.replace(/^https?:\/\//, '').replace(/\/$/, ''),
       url: data.websiteUrl,
     },
-  ].filter(Boolean) as Array<{ text: string; url?: string }>
+  ].filter(Boolean) as Array<{ text: string; url?: string; colored?: boolean }>
 
   doc.setFontSize(8.6)
   doc.setFont('helvetica', 'normal')
@@ -226,12 +230,15 @@ function drawHeader(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
         x += sepW
       }
     }
-    if (part.url) {
+    if (part.url && part.colored) {
       setText(doc, C.link)
       doc.textWithLink(part.text, x, cursor.y, { url: part.url })
       setDraw(doc, C.link)
       doc.setLineWidth(0.15)
       doc.line(x, cursor.y + 0.8, x + partW, cursor.y + 0.8)
+    } else if (part.url) {
+      setText(doc, C.muted)
+      doc.textWithLink(part.text, x, cursor.y, { url: part.url })
     } else {
       setText(doc, C.muted)
       doc.text(part.text, x, cursor.y)
