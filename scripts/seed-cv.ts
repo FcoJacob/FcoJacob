@@ -19,7 +19,7 @@ const cvData = {
     phone: '+34 696124038',
     url: 'https://jsarmiento.dev/',
     summary:
-      'Desarrollador Frontend Senior con más de 8 años de experiencia construyendo interfaces y productos web con Vue.js, Nuxt y TypeScript. Combino ejecución técnica de alto volumen con iniciativa propia, documentación rigurosa y buenas prácticas de equipo (Jira, Confluence, Git). Motivado por la mejora continua, el trabajo en equipo y la creación de productos que aporten valor real a los usuarios. Me implico activamente en el negocio y en entender las necesidades reales de los clientes, buscando siempre soluciones que aporten valor medible, no solo la implementación técnica.',
+      'Desarrollador Frontend Senior con más de 8 años de experiencia construyendo interfaces y productos web con Vue.js, Nuxt y TypeScript. Combino ejecución técnica de alto volumen con iniciativa propia, atención al detalle y documentación rigurosa, además de una comunicación clara y buenas prácticas de equipo (Jira, Confluence, Git). Resuelvo problemas con un enfoque creativo, me adapto con rapidez a nuevos contextos y mantengo una ética de trabajo constante. Me implico activamente en el negocio y en entender las necesidades reales de los clientes, buscando siempre soluciones que aporten valor medible, no solo la implementación técnica.',
     location: {
       city: 'Las Palmas',
       countryCode: 'ES',
@@ -43,7 +43,7 @@ const cvData = {
       name: 'Qiklet',
       position: 'Fundador',
       url: 'https://qiklet.com',
-      startDate: '[añadir fecha de inicio]',
+      startDate: '2025-11',
       endDate: null,
       summary:
         'Fundé y lidero Qiklet, una plataforma SaaS de gestión de colas en tiempo real: los clientes reservan turno escaneando un código QR y esperan donde quieran, mientras el negocio gestiona la cola y accede a analítica operativa en tiempo real. Actualmente en fase de ventas.',
@@ -89,7 +89,7 @@ const cvData = {
       summary:
         'Desarrollo de actividades de front-end con Vue, JavaScript, HTML y CSS. Entre otras de menos relevancia.',
       highlights: [
-        'Desarrollé funcionalidades frontend con Vue.js, mejorando la experiencia de usuario en [añadir %] y reduciendo el tiempo de carga en [añadir %]',
+        'Desarrollé con Vue.js y Phaser interfaces para enseñar pensamiento computacional a niños de entre 6 y 16 años, desde experiencias sencillas hasta complejas, adaptadas para un uso intuitivo con apenas conocimientos previos',
         'Coordiné trabajo remoto con equipos internacionales en Guatemala, contribuyendo a la expansión internacional del producto',
       ],
     },
@@ -139,8 +139,8 @@ const cvData = {
       institution: 'Academia Forja Consultores',
       area: "Gestión y liderazgo — reconocido por Florida Global University (USA) como 'Online Management Skills'",
       studyType: 'Programa de Herramientas Gerenciales Online',
-      startDate: '[añadir fecha]',
-      endDate: '[añadir fecha]',
+      startDate: '2024-09',
+      endDate: '2024-12',
       score: 'Duración: 96 horas. Instructor: Eduardo Martí.',
     },
     {
@@ -216,10 +216,6 @@ const cvData = {
     },
   ],
   languages: [
-    {
-      language: 'Español',
-      fluency: 'Nativo',
-    },
     {
       language: 'Inglés',
       fluency: 'Intermedio (B1)',

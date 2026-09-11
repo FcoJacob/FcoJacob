@@ -77,7 +77,12 @@ const C = {
   border: [190, 190, 190] as [number, number, number],
 }
 
-const SECTION_GAP_BEFORE = 3.5
+const SECTION_GAP_BEFORE = 6.5
+// Comfortable single-line leading for wrapped body text. A tighter factor
+// (previously 0.42, chosen to force the document onto fewer pages) reads
+// as cramped in a real PDF viewer even though it looks fine as raw
+// extracted text — legibility takes priority over hitting a page count.
+const LINE_HEIGHT_FACTOR = 0.5
 
 function setText(doc: jsPDF, c: [number, number, number]) {
   doc.setTextColor(c[0], c[1], c[2])
@@ -129,7 +134,7 @@ function drawParagraph(
   doc.setFont('helvetica', opts.bold ? 'bold' : 'normal')
   setText(doc, color)
   const lines = doc.splitTextToSize(text, CONTENT_W - indent) as string[]
-  const lineH = size * 0.42
+  const lineH = size * LINE_HEIGHT_FACTOR
   for (const line of lines) {
     cursor.ensure(lineH)
     doc.text(line, MARGIN_X + indent, cursor.y)
@@ -142,7 +147,7 @@ function drawBullet(doc: jsPDF, cursor: Cursor, text: string) {
   doc.setFontSize(size)
   doc.setFont('helvetica', 'normal')
   const lines = doc.splitTextToSize(text, CONTENT_W - 5) as string[]
-  const lineH = size * 0.42
+  const lineH = size * LINE_HEIGHT_FACTOR
   for (let i = 0; i < lines.length; i++) {
     cursor.ensure(lineH)
     setText(doc, C.accent)
@@ -197,7 +202,7 @@ function drawSkills(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
   for (const skill of data.skills) {
     const line = `${skill.name} (${skill.level}): ${skill.keywords.join(', ')}`
     drawParagraph(doc, cursor, line, { size: 8.8 })
-    cursor.gap(1.4)
+    cursor.gap(2)
   }
 }
 
@@ -226,10 +231,10 @@ function drawWork(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
       drawParagraph(doc, cursor, job.summary, { size: 8.6, color: C.muted })
     }
     if (job.highlights.length) {
-      cursor.gap(0.5)
+      cursor.gap(1)
       for (const h of job.highlights) drawBullet(doc, cursor, h)
     }
-    cursor.gap(4.5)
+    cursor.gap(6)
   }
 }
 
@@ -257,7 +262,7 @@ function drawEducation(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
     if (edu.note) {
       drawParagraph(doc, cursor, edu.note, { size: 8, color: C.muted })
     }
-    cursor.gap(3.2)
+    cursor.gap(5)
   }
 }
 
@@ -272,7 +277,7 @@ function drawProjects(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
     doc.text(label, MARGIN_X, cursor.y)
     cursor.gap(3.8)
     drawParagraph(doc, cursor, proj.description, { size: 8.4, color: C.muted })
-    cursor.gap(1.8)
+    cursor.gap(3)
   }
 }
 
@@ -281,13 +286,13 @@ function drawAdditionalInfo(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
 
   const languagesLine = data.languages.map((l) => `${l.language} (${l.fluency})`).join(', ')
   drawParagraph(doc, cursor, `${data.labels.languages}: ${languagesLine}`, { size: 8.6 })
-  cursor.gap(1.3)
+  cursor.gap(2.2)
 
   if (data.softSkills.length) {
     drawParagraph(doc, cursor, `${data.labels.softSkills}: ${data.softSkills.join(', ')}`, {
       size: 8.6,
     })
-    cursor.gap(1.3)
+    cursor.gap(2.2)
   }
 
   if (data.certifications.length) {
@@ -297,7 +302,7 @@ function drawAdditionalInfo(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
       `${data.labels.certifications}: ${data.certifications.join(', ')}`,
       { size: 8.6 },
     )
-    cursor.gap(1.3)
+    cursor.gap(2.2)
   }
 
   if (data.driving) {
