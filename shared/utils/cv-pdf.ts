@@ -352,7 +352,7 @@ function drawAdditionalInfo(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
     drawParagraph(
       doc,
       cursor,
-      `${data.labels.certifications}: ${data.certifications.join(', ')}`,
+      `${data.labels.certifications} (${data.certifications.length}): ${data.certifications.join(', ')}`,
       { size: 8.6 },
     )
     cursor.gap(1.6)

@@ -51,7 +51,7 @@ const cvData = {
         'Fundé y lidero Qiklet, una plataforma SaaS de gestión de colas en tiempo real: los clientes reservan turno escaneando un código QR y esperan donde quieran, mientras el negocio gestiona la cola y accede a analítica operativa en tiempo real. Actualmente en fase de ventas.',
       highlights: [
         'Lidero de forma integral (producto, tecnología, negocio y ventas) la construcción de Qiklet desde cero, pasando de idea a MVP validado en 8 meses',
-        'Diseñé y lancé el modelo de precios SaaS en 3 niveles (Básico 29€/mes, Base 49€/mes, Enterprise a medida), definiendo la propuesta de valor y el posicionamiento de producto',
+        'Definí y lancé una estructura de precios SaaS en 3 niveles (Básico 29€/mes, Base 49€/mes, Enterprise a medida) para distintos segmentos de cliente, estableciendo la propuesta de valor y el posicionamiento de producto',
         'Desarrollé el MVP completo (frontend, backend y analítica en tiempo real) y lo validé en fase piloto con 5 negocios reales antes de escalar a fase de ventas activa',
       ],
     },
@@ -63,7 +63,7 @@ const cvData = {
       summary:
         'Desarrollo de aplicaciones frontend con tecnologías modernas.',
       highlights: [
-        'Lideré el ownership técnico del frontend de ventas y de la librería de componentes compartida, consumida por 4 productos del ecosistema de ventas (sales-web, sales-specifications, importer-sales, SalesBackOffice), tras mi promoción a Senior Frontend Developer',
+        'Ascendí a Senior Frontend Developer, asumiendo el ownership técnico del frontend de ventas y de una librería de componentes compartida utilizada por 4 productos del ecosistema (sales-web, sales-specifications, importer-sales, SalesBackOffice)',
         'Entregué 793 commits (+324.047 / -159.550 líneas) a los productos clave de ventas (sales-web, sales-shared, sales-specifications, importer-sales, SalesBackOffice)',
         'Cerré 258 de 266 incidencias Jira asignadas y reporté 90 propias a lo largo de mi etapa en AIDA (2023–2026), combinando ejecución técnica con detección proactiva de mejoras',
         'Documenté el conocimiento del equipo con 56 páginas creadas y contribución en 132 más en Confluence',
@@ -79,7 +79,7 @@ const cvData = {
         'Desarrollo de actividades de front-end con Vue, JavaScript, HTML y CSS.',
       highlights: [
         'Desarrollé más de 30 vistas de interfaz de usuario en Vue.js para los productos sales-web y ordering',
-        'Integré 2 APIs REST con el backend de ventas, desbloqueando el flujo de gestión de pedidos y su sincronización de datos con sales-web',
+        'Integré 2 APIs REST con el backend de ventas, desbloqueando el flujo completo de gestión de pedidos y la sincronización de datos entre sales-web y el backend',
       ],
     },
     {
@@ -209,7 +209,7 @@ const cvData = {
     {
       name: 'JamApp',
       description:
-        'Proyecto ejecutado al finalizar los estudios, con el que obtuve un premio del centro, apoyo empresarial de la EOI y del Cabildo de Gran Canaria.',
+        'Proyecto ejecutado al finalizar los estudios, reconocido por 3 entidades distintas: premio del centro, apoyo empresarial de la EOI y del Cabildo de Gran Canaria.',
       highlights: [
         'Premio del centro',
         'Apoyo EOI',
