@@ -66,7 +66,7 @@ const cvData = {
         'Entregué 793 commits (+324.047 / -159.550 líneas) a los productos clave de ventas (sales-web, sales-shared, sales-specifications, importer-sales, SalesBackOffice)',
         'Cerré 258 de 266 incidencias Jira asignadas y reporté 90 propias a lo largo de mi etapa en AIDA (2023 a 2026), combinando ejecución técnica con detección proactiva de mejoras',
         'Documenté el conocimiento del equipo con 56 páginas creadas y contribución en 132 más en Confluence',
-        'Formé y guié a 2 compañeros del equipo de frontend mediante mentoría informal, impulsando su motivación y su rendimiento',
+        'Lideré la mentoría informal de 2 compañeros del equipo de frontend, formándolos y guiándolos para impulsar su motivación y su rendimiento',
       ],
     },
     {
@@ -99,10 +99,10 @@ const cvData = {
       startDate: '2000-12',
       endDate: '2022-01',
       summary:
-        'Más de 21 años en las Fuerzas Armadas españolas (Ejército de Tierra, Armada y Ejército del Aire), con especialización en mantenimiento de aeronaves, maniobra/navegación y transmisiones.',
+        'Más de 21 años en las Fuerzas Armadas españolas (Ejército de Tierra, Armada y Ejército del Aire), con especialización en mantenimiento de aeronaves, maniobra/navegación y transmisiones. Actualmente en excedencia desde enero de 2022 (fin de contrato: julio de 2027).',
       highlights: [
         'Desempeñé funciones de Especialista en Maniobra y Navegación en la Armada (2004 a 2006), acumulando más de 260 horas de mar en campañas de control de pesca y defensa de aguas nacionales',
-        'Obtuve la Medalla a la Cruz del Mérito Aeronáutico en el Ejército del Aire; actualmente en excedencia desde enero de 2022 (fin de contrato: julio de 2027)',
+        'Obtuve la Medalla a la Cruz del Mérito Aeronáutico en el Ejército del Aire',
       ],
     },
   ],
@@ -194,7 +194,7 @@ const cvData = {
     {
       name: 'JamApp',
       description:
-        'Proyecto ejecutado al finalizar los estudios, reconocido por 3 entidades distintas: premio del centro, apoyo empresarial de la EOI y del Cabildo de Gran Canaria.',
+        'Proyecto ejecutado al finalizar los estudios, reconocido por 3 entidades distintas: premio del centro educativo, apoyo empresarial de la EOI y apoyo institucional del Cabildo de Gran Canaria.',
       highlights: [
         'Premio del centro',
         'Apoyo EOI',
