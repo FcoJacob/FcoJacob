@@ -63,7 +63,7 @@ const cvData = {
       summary:
         'Desarrollo de aplicaciones frontend con tecnologías modernas.',
       highlights: [
-        'Ascendí a Senior Frontend Developer, asumiendo el ownership técnico del frontend de ventas y de una librería de componentes compartida utilizada por 4 productos del ecosistema (sales-web, sales-specifications, importer-sales, SalesBackOffice)',
+        'Aumenté la reutilización de componentes en 4 productos del ecosistema de ventas (sales-web, sales-specifications, importer-sales, SalesBackOffice) y mejoré la calidad técnica del frontend de ventas, tras ascender a Senior Frontend Developer y asumir el ownership técnico de ambos',
         'Entregué 793 commits (+324.047 / -159.550 líneas) a los productos clave de ventas (sales-web, sales-shared, sales-specifications, importer-sales, SalesBackOffice)',
         'Cerré 258 de 266 incidencias Jira asignadas y reporté 90 propias a lo largo de mi etapa en AIDA (2023 a 2026), combinando ejecución técnica con detección proactiva de mejoras',
         'Documenté el conocimiento del equipo con 56 páginas creadas y contribución en 132 más en Confluence',
