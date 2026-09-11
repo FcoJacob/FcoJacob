@@ -77,7 +77,7 @@ const C = {
   border: [190, 190, 190] as [number, number, number],
 }
 
-const SECTION_GAP_BEFORE = 6.5
+const SECTION_GAP_BEFORE = 3.6
 // Comfortable single-line leading for wrapped body text. A tighter factor
 // (previously 0.42, chosen to force the document onto fewer pages) reads
 // as cramped in a real PDF viewer even though it looks fine as raw
@@ -113,7 +113,7 @@ function drawSectionHeading(doc: jsPDF, cursor: Cursor, text: string) {
   // Reserve room for the heading plus at least the start of its first
   // entry, so a heading never lands as the last line on a page with all
   // of its content pushed to the next one (an orphaned heading).
-  cursor.ensure(24)
+  cursor.ensure(20)
   doc.setFontSize(11)
   doc.setFont('helvetica', 'bold')
   setText(doc, C.heading)
@@ -174,30 +174,60 @@ function drawHeader(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
   doc.text(data.label, MARGIN_X, cursor.y)
   cursor.gap(6.5)
 
-  const contactParts = [
-    data.email,
-    data.phone,
-    data.location,
-    data.linkedinUrl && `linkedin.com/in/${data.linkedinUrl.replace('https://www.linkedin.com/in/', '').replace(/\/$/, '')}`,
-    data.githubUrl && `github.com/${data.githubUrl.replace('https://github.com/', '')}`,
-    data.websiteUrl && data.websiteUrl.replace(/^https?:\/\//, '').replace(/\/$/, ''),
-  ].filter(Boolean) as string[]
+  // Each contact part that has a real URL becomes an actual clickable link
+  // annotation in the PDF (not just styled text), so LinkedIn/GitHub/site
+  // work when opened in a PDF viewer.
+  const contactParts: Array<{ text: string; url?: string }> = [
+    data.email && { text: data.email, url: `mailto:${data.email}` },
+    data.phone && { text: data.phone },
+    data.location && { text: data.location },
+    data.linkedinUrl && {
+      text: `linkedin.com/in/${data.linkedinUrl.replace('https://www.linkedin.com/in/', '').replace(/\/$/, '')}`,
+      url: data.linkedinUrl,
+    },
+    data.githubUrl && {
+      text: `github.com/${data.githubUrl.replace('https://github.com/', '')}`,
+      url: data.githubUrl,
+    },
+    data.websiteUrl && {
+      text: data.websiteUrl.replace(/^https?:\/\//, '').replace(/\/$/, ''),
+      url: data.websiteUrl,
+    },
+  ].filter(Boolean) as Array<{ text: string; url?: string }>
 
   doc.setFontSize(8.6)
   doc.setFont('helvetica', 'normal')
-  setText(doc, C.muted)
-  const contactLine = contactParts.join('   |   ')
-  const contactLines = doc.splitTextToSize(contactLine, CONTENT_W) as string[]
-  for (const line of contactLines) {
-    doc.text(line, MARGIN_X, cursor.y)
-    cursor.gap(3.6)
+  const SEP = '   |   '
+  const sepW = doc.getTextWidth(SEP)
+  let x = MARGIN_X
+  for (let i = 0; i < contactParts.length; i++) {
+    const part = contactParts[i]
+    const partW = doc.getTextWidth(part.text)
+    if (i > 0) {
+      if (x + sepW + partW > MARGIN_X + CONTENT_W) {
+        cursor.gap(3.6)
+        x = MARGIN_X
+      } else {
+        setText(doc, C.muted)
+        doc.text('|', x + (sepW - doc.getTextWidth('|')) / 2, cursor.y)
+        x += sepW
+      }
+    }
+    setText(doc, C.muted)
+    if (part.url) {
+      doc.textWithLink(part.text, x, cursor.y, { url: part.url })
+    } else {
+      doc.text(part.text, x, cursor.y)
+    }
+    x += partW
   }
-  cursor.gap(3)
+  cursor.gap(3.6)
+  cursor.gap(2.5)
 
   setDraw(doc, C.border)
   doc.setLineWidth(0.5)
   doc.line(MARGIN_X, cursor.y, MARGIN_X + CONTENT_W, cursor.y)
-  cursor.gap(5)
+  cursor.gap(4)
 }
 
 function drawSkills(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
@@ -213,7 +243,7 @@ function drawWork(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
   drawSectionHeading(doc, cursor, data.labels.work)
   for (const job of data.work) {
     cursor.ensure(10)
-    const dateText = `${job.startDate} - ${job.endDate || data.labels.present}`
+    const dateText = `${job.startDate} – ${job.endDate || data.labels.present}`
     doc.setFontSize(10)
     doc.setFont('helvetica', 'bold')
     setText(doc, C.text)
@@ -237,7 +267,7 @@ function drawWork(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
       cursor.gap(1)
       for (const h of job.highlights) drawBullet(doc, cursor, h)
     }
-    cursor.gap(6)
+    cursor.gap(4.5)
   }
 }
 
@@ -245,7 +275,7 @@ function drawEducation(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
   drawSectionHeading(doc, cursor, data.labels.education)
   for (const edu of data.education) {
     cursor.ensure(10)
-    const dateText = `${edu.startDate} - ${edu.endDate || data.labels.present}`
+    const dateText = `${edu.startDate} – ${edu.endDate || data.labels.present}`
 
     // Degree/qualification first (most relevant), then area, then institution,
     // then dates. Area always gets its own wrapped line below so a long
@@ -265,7 +295,7 @@ function drawEducation(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
     if (edu.note) {
       drawParagraph(doc, cursor, edu.note, { size: 8, color: C.muted })
     }
-    cursor.gap(5)
+    cursor.gap(4)
   }
 }
 
@@ -278,7 +308,7 @@ function drawProjects(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
     doc.setFont('helvetica', 'bold')
     setText(doc, C.text)
     doc.text(label, MARGIN_X, cursor.y)
-    cursor.gap(3.8)
+    cursor.gap(3.2)
     drawParagraph(doc, cursor, proj.description, { size: 8.4, color: C.muted })
     cursor.gap(3)
   }
@@ -289,7 +319,7 @@ function drawAdditionalInfo(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
 
   const languagesLine = data.languages.map((l) => `${l.language} (${l.fluency})`).join(', ')
   drawParagraph(doc, cursor, `${data.labels.languages}: ${languagesLine}`, { size: 8.6 })
-  cursor.gap(2.2)
+  cursor.gap(1.6)
 
   // Soft skills are woven into the opening summary as prose instead of
   // repeated here as a bare keyword list (per user request).
@@ -301,7 +331,7 @@ function drawAdditionalInfo(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
       `${data.labels.certifications}: ${data.certifications.join(', ')}`,
       { size: 8.6 },
     )
-    cursor.gap(2.2)
+    cursor.gap(1.6)
   }
 
   if (data.driving) {
