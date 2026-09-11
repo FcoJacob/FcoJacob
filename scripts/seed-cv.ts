@@ -195,7 +195,7 @@ const cvData = {
     {
       name: 'JamApp',
       description:
-        'Proyecto ejecutado al finalizar los estudios, reconocido por 3 entidades distintas: premio del centro educativo, apoyo empresarial de la EOI y apoyo institucional del Cabildo de Gran Canaria.',
+        'Recibí reconocimiento de 3 entidades distintas (premio del centro educativo, apoyo empresarial de la EOI y apoyo institucional del Cabildo de Gran Canaria) por mi proyecto de fin de estudios.',
       highlights: [
         'Premio del centro',
         'Apoyo EOI',
