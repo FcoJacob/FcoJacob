@@ -110,7 +110,10 @@ class Cursor {
 
 function drawSectionHeading(doc: jsPDF, cursor: Cursor, text: string) {
   cursor.gap(SECTION_GAP_BEFORE)
-  cursor.ensure(9)
+  // Reserve room for the heading plus at least the start of its first
+  // entry, so a heading never lands as the last line on a page with all
+  // of its content pushed to the next one (an orphaned heading).
+  cursor.ensure(24)
   doc.setFontSize(11)
   doc.setFont('helvetica', 'bold')
   setText(doc, C.heading)
@@ -194,7 +197,7 @@ function drawHeader(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
   setDraw(doc, C.border)
   doc.setLineWidth(0.5)
   doc.line(MARGIN_X, cursor.y, MARGIN_X + CONTENT_W, cursor.y)
-  cursor.gap(2)
+  cursor.gap(5)
 }
 
 function drawSkills(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
@@ -288,12 +291,8 @@ function drawAdditionalInfo(doc: jsPDF, cursor: Cursor, data: CvPdfData) {
   drawParagraph(doc, cursor, `${data.labels.languages}: ${languagesLine}`, { size: 8.6 })
   cursor.gap(2.2)
 
-  if (data.softSkills.length) {
-    drawParagraph(doc, cursor, `${data.labels.softSkills}: ${data.softSkills.join(', ')}`, {
-      size: 8.6,
-    })
-    cursor.gap(2.2)
-  }
+  // Soft skills are woven into the opening summary as prose instead of
+  // repeated here as a bare keyword list (per user request).
 
   if (data.certifications.length) {
     drawParagraph(
