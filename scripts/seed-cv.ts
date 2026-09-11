@@ -152,19 +152,6 @@ const cvData = {
       keywords: ['Testing', 'Mocks (MSW)', 'Refactorización'],
     },
     {
-      name: 'Negocio',
-      level: 'Avanzado',
-      keywords: [
-        'Orientación al cliente',
-        'Visión de negocio',
-        'Requisitos funcionales',
-        'Comunicación con stakeholders',
-        'Liderazgo',
-        'Emprendimiento',
-        'Gestión de proyectos',
-      ],
-    },
-    {
       name: 'Diseño',
       level: 'Intermedio',
       keywords: ['Photoshop', 'Illustrator', 'UI/UX'],
