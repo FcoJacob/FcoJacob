@@ -138,4 +138,15 @@ export default defineSchema({
     languages: v.array(languageValidator),
     projects: v.array(cvProjectValidator),
   }).index('by_locale', ['locale']),
+
+  chapiKnowledge: defineTable({
+    source: v.string(),
+    chunks: v.array(
+      v.object({
+        text: v.string(),
+        embedding: v.array(v.number()),
+      }),
+    ),
+    updatedAt: v.number(),
+  }).index('by_source', ['source']),
 })

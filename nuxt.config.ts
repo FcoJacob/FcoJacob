@@ -6,6 +6,12 @@ export default defineNuxtConfig({
     compatibilityVersion: 5,
   },
 
+  vue: {
+    compilerOptions: {
+      isCustomElement: (tag) => tag === 'chapi-chat',
+    },
+  },
+
   modules: ['convex-nuxt', '@nuxtjs/sitemap', '@nuxtjs/robots'],
 
   site: {

@@ -8,7 +8,7 @@
     "build": "nuxt build",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare",
+    "postinstall": "nuxt prepare && node scripts/copy-chapi-widget.mjs",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
@@ -16,6 +16,10 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^4.0.56",
+    "@ai-sdk/google": "^4.0.74",
+    "@ai-sdk/groq": "^4.0.44",
+    "@ai-sdk/openai": "^4.0.69",
     "@codemirror/lang-json": "^6.0.2",
     "@codemirror/state": "^6.6.0",
     "@codemirror/theme-one-dark": "^6.1.3",
@@ -30,6 +34,7 @@
     "@tiptap/extension-underline": "^3.22.4",
     "@tiptap/pm": "^3.22.4",
     "@tiptap/starter-kit": "^3.22.4",
+    "chapi-ai": "^0.3.1",
     "codemirror": "^6.0.2",
     "convex": "^1.34.1",
     "convex-nuxt": "^0.1.5",

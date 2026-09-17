@@ -11,7 +11,13 @@
 import type * as blogFooters from "../blogFooters.js";
 import type * as blogValidators from "../blogValidators.js";
 import type * as blogs from "../blogs.js";
+import type * as chapiBot from "../chapiBot.js";
+import type * as chapiIngest from "../chapiIngest.js";
+import type * as chapiKnowledge from "../chapiKnowledge.js";
+import type * as chapiSupplementalFacts from "../chapiSupplementalFacts.js";
+import type * as crons from "../crons.js";
 import type * as cv from "../cv.js";
+import type * as http from "../http.js";
 import type * as labs from "../labs.js";
 import type * as projects from "../projects.js";
 import type * as researchDocuments from "../researchDocuments.js";
@@ -26,7 +32,13 @@ declare const fullApi: ApiFromModules<{
   blogFooters: typeof blogFooters;
   blogValidators: typeof blogValidators;
   blogs: typeof blogs;
+  chapiBot: typeof chapiBot;
+  chapiIngest: typeof chapiIngest;
+  chapiKnowledge: typeof chapiKnowledge;
+  chapiSupplementalFacts: typeof chapiSupplementalFacts;
+  crons: typeof crons;
   cv: typeof cv;
+  http: typeof http;
   labs: typeof labs;
   projects: typeof projects;
   researchDocuments: typeof researchDocuments;

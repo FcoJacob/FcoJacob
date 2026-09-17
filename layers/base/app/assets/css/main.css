@@ -252,3 +252,29 @@ html.dark .noise-overlay {
   }
 }
 
+/* =============================================================
+   chapi-ai widget theme sync
+   ============================================================= */
+/* The widget only reacts to the OS's prefers-color-scheme; it has no way
+   to know about this site's own manual light/dark toggle (UColorModeButton,
+   which sets/removes html.dark). Its --chapi-* custom properties are
+   defined on its shadow host's :host rule, which loses precedence to a
+   rule targeting that same host element (chapi-chat) from outside the
+   shadow tree — so setting them here keeps the widget in sync with the
+   site's toggle regardless of the visitor's OS preference. */
+chapi-chat {
+  --chapi-bg: #f7f8fc;
+  --chapi-surface: #ffffff;
+  --chapi-text: #1f2937;
+  --chapi-input-bg: #f3f4f6;
+  --chapi-border: rgb(0 0 0 / 0.06);
+}
+
+html.dark chapi-chat {
+  --chapi-bg: #1c1c24;
+  --chapi-surface: #26262f;
+  --chapi-text: #e5e7eb;
+  --chapi-input-bg: #33333e;
+  --chapi-border: rgb(255 255 255 / 0.08);
+}
+

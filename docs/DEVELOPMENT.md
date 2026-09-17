@@ -159,3 +159,16 @@ To populate the Convex database with initial CV data:
 ```bash
 node scripts/seed-cv.ts
 ```
+
+## Chatbot (chapi-ai)
+
+The floating chat launcher (bottom corner, all public pages) is [`chapi-ai`](https://www.npmjs.com/package/chapi-ai) `^0.3.0`: a RAG chatbot answering strictly from the site's own CV — never from the model's general knowledge.
+
+- **Persona**: `fsarmiento` — answers in first person as Jacob, in Spanish, in a friendly tone aimed at recruiters.
+- **Chat provider**: Groq (`openai/gpt-oss-20b`). Embeddings: Voyage AI.
+- **Knowledge source**: the live [`/cv.pdf`](https://jsarmiento.dev/cv.pdf) endpoint (same Convex `cv` data as the `/cv` page) — not a separate/duplicated PDF, so the chatbot never drifts from the published CV.
+- **Why ingestion is split from serving**: `ingestPdf` (PDF parsing, via `unpdf`) uses a Worker internally, which Convex's default V8 action runtime doesn't support. `convex/chapiIngest.ts` runs the ingestion in the Node action runtime (`"use node"`) and persists the resulting embedded chunks to the `chapiKnowledge` table; `convex/http.ts` (`POST /chat`, default runtime) only ever reads those chunks and builds the bot per request — no PDF parsing at request time.
+- **Supplemental facts**: `convex/chapiSupplementalFacts.ts` holds facts that shouldn't appear on the public, downloadable CV but that the chatbot should still be able to answer (e.g. Jacob's legal name). Since 0.3.0, these go straight through `chapi-ai`'s `ingestText` — no more routing them through a throwaway PDF via `ingestPdf`.
+- **Keeping it in sync**: a daily cron (`convex/crons.ts`) re-runs `chapiIngest:ingest`. Run it manually after editing the CV: `npx convex run chapiIngest:ingest`.
+- **Required Convex env vars** (`npx convex env set <NAME> <value>`, not in `.env` — Convex functions don't read the project's local `.env`): `GROQ_API_KEY`, `VOYAGE_API_KEY`.
+- **CORS**: the widget calls `*.convex.site/chat` from the browser (a different origin than the site itself). Since 0.3.0, `convex/http.ts` uses `chapi-ai/adapters/cors`'s `withCors` instead of hand-rolled CORS headers — a wildcard origin is safe here since the endpoint is public and unauthenticated. Convex's router still dispatches by method+path, so `/chat` is registered for both `POST` and `OPTIONS` against the same handler.

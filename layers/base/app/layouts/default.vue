@@ -10,5 +10,6 @@
     </main>
 
     <AppFooter />
+    <AppChatWidget />
   </div>
 </template>
