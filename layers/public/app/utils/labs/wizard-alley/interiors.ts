@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { ALLEY_HALF_WIDTH, type AlleyItem, type AlleyShop } from './catalog'
 import { createItemObject, disposeObject } from './items'
 import { createRandom, type AlleyTextureSet } from './textures'
+import type { AlleyPropLibrary } from './assets'
 
 /**
  * Shop interiors live behind their storefront, hidden until the avatar walks
@@ -25,6 +26,8 @@ export interface ShopInterior {
   cameraTarget: THREE.Vector3
   update(elapsed: number): void
   setVisible(visible: boolean): void
+  /** Dresses the room with Blender props once the GLB has loaded. */
+  applyProps(library: AlleyPropLibrary): void
   dispose(): void
 }
 
@@ -284,7 +287,8 @@ export function createShopInterior(shop: AlleyShop, textures: AlleyTextureSet): 
   lanternCore.position.copy(lanternBody.position)
   group.add(lanternCore)
   disposables.push(lanternCore.geometry)
-  const mainLight = new THREE.PointLight('#ffc78a', 14, 14, 2)
+  const lanternPrimitives: THREE.Object3D[] = [lanternBody, lanternCore, chain]
+  const mainLight = new THREE.PointLight('#ffc78a', 9, 14, 2)
   mainLight.position.set(0, ROOM_HEIGHT - 1.1, 0.2)
   group.add(mainLight)
   const fillLight = new THREE.PointLight(accent.clone().lerp(new THREE.Color('#ffffff'), 0.4), 5, 10, 2)
@@ -358,6 +362,82 @@ export function createShopInterior(shop: AlleyShop, textures: AlleyTextureSet): 
     group.visible = visible
   }
 
+  let propsApplied = false
+
+  function applyProps(library: AlleyPropLibrary) {
+    if (propsApplied) {
+      return
+    }
+    propsApplied = true
+
+    // Ceiling lantern model in place of the octahedron.
+    const hanging = library.create('hanging_lantern')
+    if (hanging) {
+      lanternPrimitives.forEach((part) => (part.visible = false))
+      const height = library.size('hanging_lantern').y
+      hanging.scale.setScalar(1.05 / Math.max(0.1, height))
+      hanging.position.set(0, ROOM_HEIGHT - 1.55, 0)
+      group.add(hanging)
+    }
+
+    // Candles on the counter and by the pedestals.
+    const candleSpots: Array<[number, number, number, number]> = [
+      [-2.6, 1.01, -2.05, 0.8],
+      [-1.0, 1.01, -2.3, 0.8],
+      [3.1, 0, -2.9, 1],
+      [-3.1, 0, 2.6, 1],
+    ]
+    for (const [x, y, z, scale] of candleSpots) {
+      const candles = library.create('floor_candles')
+      if (!candles) {
+        break
+      }
+      candles.scale.setScalar(scale)
+      candles.position.set(x, y, z)
+      candles.rotation.y = random() * Math.PI * 2
+      group.add(candles)
+      const light = new THREE.PointLight('#ffb15c', 1.6, 3.5, 2)
+      light.position.set(x, y + 0.45 * scale, z)
+      group.add(light)
+    }
+
+    if (shop.slot === 'wand') {
+      // Potion shelves flank the side walls; a cauldron simmers in the corner.
+      const shelfSize = library.size('alchemy_shelf')
+      const shelfScale = 2.4 / Math.max(0.1, shelfSize.y)
+      for (const [x, yaw] of [
+        [-ROOM_WIDTH / 2 + 0.45, Math.PI / 2],
+        [ROOM_WIDTH / 2 - 0.45, -Math.PI / 2],
+      ] as Array<[number, number]>) {
+        const shelf = library.create('alchemy_shelf')
+        if (!shelf) {
+          break
+        }
+        shelf.scale.setScalar(shelfScale)
+        shelf.position.set(x, 0, 1.6)
+        shelf.rotation.y = yaw
+        group.add(shelf)
+      }
+      const cauldron = library.create('cauldron')
+      if (cauldron) {
+        cauldron.scale.setScalar(0.8)
+        cauldron.position.set(2.9, 0, -2.6)
+        group.add(cauldron)
+        const brew = new THREE.PointLight('#6cff9a', 2.2, 4, 2)
+        brew.position.set(2.9, 0.9, -2.6)
+        group.add(brew)
+      }
+    } else {
+      // Stock in the corner: a crate for the hatter, a barrel for the cloak shop.
+      const stock = library.create(shop.slot === 'head' ? 'crate' : 'barrel')
+      if (stock) {
+        stock.position.set(2.9, 0, -2.7)
+        stock.rotation.y = 0.4
+        group.add(stock)
+      }
+    }
+  }
+
   function dispose() {
     disposables.forEach((entry) => entry.dispose())
     displays.forEach((display) => disposeObject(display.object))
@@ -368,5 +448,5 @@ export function createShopInterior(shop: AlleyShop, textures: AlleyTextureSet): 
     })
   }
 
-  return { shop, group, displays, standPoint, cameraPosition, cameraTarget, update, setVisible, dispose }
+  return { shop, group, displays, standPoint, cameraPosition, cameraTarget, update, setVisible, applyProps, dispose }
 }

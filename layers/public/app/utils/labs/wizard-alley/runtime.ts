@@ -13,6 +13,7 @@ import {
   type AlleyShop,
   type AlleySlot,
 } from './catalog'
+import { loadAlleyProps, type AlleyPropLibrary } from './assets'
 import { createAvatar } from './avatar'
 import { createShopInterior, type ShopInterior } from './interiors'
 import { createItemObject } from './items'
@@ -175,7 +176,30 @@ export function createAlleyRuntime(options: AlleyRuntimeOptions): AlleyRuntime {
   const sparks = createSparkSystem(textures.glow)
   scene.add(sparks.points)
 
+  // Blender props arrive asynchronously; the world renders with primitives
+  // meanwhile and swaps them in once the GLB is parsed.
+  let propLibrary: AlleyPropLibrary | null = null
+  let assetsSettled = false
+  loadAlleyProps()
+    .then((library) => {
+      if (disposed) {
+        library.dispose()
+        return
+      }
+      propLibrary = library
+      world.applyProps(library)
+      interiors.forEach((interior) => interior.applyProps(library))
+    })
+    .catch((error: unknown) => {
+      console.warn('[wizard-alley] props failed to load, keeping primitives', error)
+    })
+    .finally(() => {
+      assetsSettled = true
+      publishState(true)
+    })
+
   // ── State ───────────────────────────────────────────────────────────────
+  let disposed = false
   let mode: AlleyMode = 'alley'
   const position = new THREE.Vector2(0, 0) // x across the alley, y along z
   const velocity = new THREE.Vector2(0, 0)
@@ -194,7 +218,6 @@ export function createAlleyRuntime(options: AlleyRuntimeOptions): AlleyRuntime {
   let trickleAccumulator = 0
   let elapsed = 0
   let frameId = 0
-  let disposed = false
   let currentFov = camera.fov
   const wornItems: Record<AlleySlot, AlleyItem | null> = { head: null, cloak: null, wand: null }
   const cameraTarget = new THREE.Vector3(0, 1.15, -3)
@@ -220,7 +243,7 @@ export function createAlleyRuntime(options: AlleyRuntimeOptions): AlleyRuntime {
         cloak: wornItems.cloak?.id ?? null,
         wand: wornItems.wand?.id ?? null,
       },
-      ready: true,
+      ready: assetsSettled,
       quality,
     }
   }
@@ -236,7 +259,8 @@ export function createAlleyRuntime(options: AlleyRuntimeOptions): AlleyRuntime {
       previous.activeShopId === next.activeShopId &&
       previous.worn.head === next.worn.head &&
       previous.worn.cloak === next.worn.cloak &&
-      previous.worn.wand === next.worn.wand
+      previous.worn.wand === next.worn.wand &&
+      previous.ready === next.ready
     if (unchanged && !force) {
       return
     }
@@ -805,6 +829,8 @@ export function createAlleyRuntime(options: AlleyRuntimeOptions): AlleyRuntime {
     avatar.dispose()
     sparks.dispose()
     disposeAlleyTextures(textures)
+    propLibrary?.dispose()
+    propLibrary = null
     environment.dispose()
     pmrem.dispose()
     composer?.dispose()

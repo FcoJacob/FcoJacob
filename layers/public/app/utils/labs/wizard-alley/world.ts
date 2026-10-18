@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import { ALLEY_HALF_WIDTH, ALLEY_LENGTH, type AlleyShop } from './catalog'
+import type { AlleyPropLibrary } from './assets'
 import { createItemObject } from './items'
 import { createRandom, createSignTexture, createWindowTexture, type AlleyTextureSet } from './textures'
 
@@ -15,6 +16,8 @@ export interface AlleyWorld {
   update(elapsed: number, dt: number): void
   /** Disables half the lantern lights on constrained devices. */
   setLightBudget(level: 'full' | 'reduced'): void
+  /** Swaps procedural stand-ins for the Blender props once the GLB has loaded. */
+  applyProps(library: AlleyPropLibrary): void
   dispose(): void
 }
 
@@ -69,6 +72,22 @@ export function createAlleyWorld(
   const lanternLights: THREE.PointLight[] = []
   const lanternCores: THREE.MeshBasicMaterial[] = []
   const signs: Array<{ pivot: THREE.Group; phase: number }> = []
+  // Registries used by applyProps() to swap primitives for Blender models.
+  const lanternRegistry: Array<{
+    lantern: THREE.Group
+    shellParts: THREE.Object3D[]
+    wallMounted: boolean
+  }> = []
+  const postRegistry: Array<{ post: THREE.Group; parts: THREE.Object3D[]; lantern: THREE.Group }> = []
+  const streetPropRegistry: Array<{ parts: THREE.Object3D[]; kind: 'barrel' | 'crate'; x: number; z: number; yaw: number }> = []
+  const storefrontRegistry: Array<{ front: THREE.Group; shop: AlleyShop; doorX: number }> = []
+  const gateRegistry: { gate: THREE.Group | null; portal: THREE.Mesh | null; halo: THREE.Sprite | null } = {
+    gate: null,
+    portal: null,
+    halo: null,
+  }
+  const extraLights: THREE.PointLight[] = []
+  let propsApplied = false
   const windowTexture = createWindowTexture()
   disposables.push(windowTexture)
 
@@ -419,6 +438,8 @@ export function createAlleyWorld(
       }
     }
 
+    storefrontRegistry.push({ front, shop, doorX: 1.85 })
+
     // Door + transom.
     const doorX = 1.85
     const doorFrame = new THREE.Mesh(new THREE.BoxGeometry(1.15, 2.5, 0.16), darkWoodMaterial)
@@ -525,6 +546,7 @@ export function createAlleyWorld(
     const core = new THREE.Mesh(lanternCoreGeometry, coreMaterial)
     lantern.add(core)
     lanternCores.push(coreMaterial)
+    const shellParts: THREE.Object3D[] = [cage, cap, core]
 
     const halo = new THREE.Sprite(haloMaterial.clone())
     ;(halo.material as THREE.SpriteMaterial).color.copy(color)
@@ -543,6 +565,8 @@ export function createAlleyWorld(
       lantern.add(arm)
       disposables.push(arm.geometry)
     }
+    lanternRegistry.push({ lantern, shellParts, wallMounted })
+    return lantern
   }
 
   const postGeometry = new THREE.CylinderGeometry(0.05, 0.07, 3.3, 10)
@@ -562,7 +586,8 @@ export function createAlleyWorld(
     const base = new THREE.Mesh(postBaseGeometry, ironMaterial)
     base.position.y = 0.12
     post.add(base)
-    addLantern(post, new THREE.Vector3(0, 3.4, 0), new THREE.Color('#ffb066'), 9, false)
+    const lantern = addLantern(post, new THREE.Vector3(0, 3.4, 0), new THREE.Color('#ffb066'), 9, false)
+    postRegistry.push({ post, parts: [pole, base], lantern })
   }
 
   // ── Street props: barrels and crates ────────────────────────────────────
@@ -584,24 +609,30 @@ export function createAlleyWorld(
       barrel.position.set(x, 0.36, z)
       barrel.rotation.y = random() * Math.PI
       group.add(barrel)
+      const parts: THREE.Object3D[] = [barrel]
       for (const y of [0.15, 0.55]) {
         const band = new THREE.Mesh(bandGeometry, ironMaterial)
         band.rotation.x = Math.PI / 2
         band.position.set(x, y, z)
         group.add(band)
+        parts.push(band)
       }
+      streetPropRegistry.push({ parts, kind: 'barrel', x, z, yaw: barrel.rotation.y })
     } else {
       const crate = new THREE.Mesh(crateGeometry, darkWoodMaterial)
       crate.position.set(x, 0.3, z)
       crate.rotation.y = (random() - 0.5) * 0.6
       group.add(crate)
+      const parts: THREE.Object3D[] = [crate]
       if (random() > 0.5) {
         const top = new THREE.Mesh(crateGeometry, woodMaterial)
         top.scale.setScalar(0.8)
         top.position.set(x + (random() - 0.5) * 0.1, 0.84, z)
         top.rotation.y = (random() - 0.5) * 0.9
         group.add(top)
+        parts.push(top)
       }
+      streetPropRegistry.push({ parts, kind: 'crate', x, z, yaw: crate.rotation.y })
     }
   }
 
@@ -648,6 +679,9 @@ export function createAlleyWorld(
   portalHalo.position.set(0, 4, -0.3)
   gate.add(portalHalo)
   disposables.push(portalHalo.material)
+  gateRegistry.gate = gate
+  gateRegistry.portal = portal
+  gateRegistry.halo = portalHalo
   addLantern(gate, new THREE.Vector3(-3.4, 5.6, 0.8), new THREE.Color('#9db2ff'), 6, true)
   addLantern(gate, new THREE.Vector3(3.4, 5.6, 0.8), new THREE.Color('#9db2ff'), 6, true)
 
@@ -776,6 +810,135 @@ export function createAlleyWorld(
     moteAttribute.needsUpdate = true
   }
 
+  function applyProps(library: AlleyPropLibrary) {
+    if (propsApplied) {
+      return
+    }
+    propsApplied = true
+
+    // Street lamps: Blender post replaces pole + base, lantern light moves to its head.
+    if (library.has('streetlamp')) {
+      const lampHeight = library.size('streetlamp').y
+      const scale = 3.1 / Math.max(0.1, lampHeight)
+      for (const entry of postRegistry) {
+        entry.parts.forEach((part) => (part.visible = false))
+        const lamp = library.create('streetlamp')
+        if (!lamp) {
+          continue
+        }
+        lamp.scale.setScalar(scale)
+        lamp.rotation.y = entry.post.position.x < 0 ? Math.PI / 2 : -Math.PI / 2
+        entry.post.add(lamp)
+        entry.lantern.position.y = lampHeight * scale * 0.9
+        const registered = lanternRegistry.find((item) => item.lantern === entry.lantern)
+        registered?.shellParts.forEach((part) => (part.visible = false))
+      }
+    }
+
+    // Wall lanterns: swap the primitive cage for the hanging lantern model.
+    if (library.has('hanging_lantern')) {
+      const lanternHeight = library.size('hanging_lantern').y
+      for (const entry of lanternRegistry) {
+        if (!entry.wallMounted) {
+          continue
+        }
+        entry.shellParts.forEach((part) => (part.visible = false))
+        const model = library.create('hanging_lantern')
+        if (!model) {
+          continue
+        }
+        const scale = 0.72 / Math.max(0.1, lanternHeight)
+        model.scale.setScalar(scale)
+        model.position.set(0, -0.42, 0)
+        entry.lantern.add(model)
+      }
+    }
+
+    // Barrels and crates.
+    for (const entry of streetPropRegistry) {
+      const model = library.create(entry.kind)
+      if (!model) {
+        continue
+      }
+      entry.parts.forEach((part) => (part.visible = false))
+      model.position.set(entry.x, 0, entry.z)
+      model.rotation.y = entry.yaw
+      group.add(model)
+      if (entry.kind === 'crate' && entry.parts.length > 1) {
+        const top = library.create('crate')
+        if (top) {
+          top.scale.setScalar(0.82)
+          top.position.set(entry.x + 0.05, library.size('crate').y, entry.z)
+          top.rotation.y = entry.yaw + 0.5
+          group.add(top)
+        }
+      }
+    }
+
+    // Hand carts parked where no shopfront lives.
+    if (library.has('hand_cart')) {
+      const cartSpots: Array<{ side: -1 | 1; z: number }> = [
+        { side: 1, z: -8 },
+        { side: -1, z: -37 },
+      ]
+      for (const spot of cartSpots) {
+        const blocked = shopZones.some((zone) => zone.side === spot.side && Math.abs(zone.z - spot.z) < 5)
+        if (blocked) {
+          continue
+        }
+        const cart = library.create('hand_cart')
+        if (!cart) {
+          continue
+        }
+        cart.position.set(spot.side * (ROW_X - 1.05), 0, spot.z)
+        cart.rotation.y = spot.side === 1 ? Math.PI * 0.08 : Math.PI * 0.92
+        group.add(cart)
+      }
+    }
+
+    // Shopfront dressing: chalkboard by the window, cauldron by the wand shop door.
+    for (const entry of storefrontRegistry) {
+      const board = library.create('chalkboard')
+      if (board) {
+        board.scale.setScalar(0.85)
+        board.position.set(-3.1, 0, 0.8)
+        board.rotation.y = 0.35
+        entry.front.add(board)
+      }
+      if (entry.shop.slot === 'wand') {
+        const cauldron = library.create('cauldron')
+        if (cauldron) {
+          cauldron.scale.setScalar(0.85)
+          cauldron.position.set(entry.doorX + 1.55, 0, 0.75)
+          entry.front.add(cauldron)
+          const brew = new THREE.PointLight('#6cff9a', 2.4, 4, 2)
+          brew.position.set(entry.doorX + 1.55, 0.9, 0.75)
+          entry.front.add(brew)
+          extraLights.push(brew)
+        }
+      }
+    }
+
+    // Far gate: the rune portal replaces the flat glowing plane.
+    if (library.has('magic_portal') && gateRegistry.gate && gateRegistry.portal && gateRegistry.halo) {
+      const portal = library.create('magic_portal')
+      if (portal) {
+        const size = library.size('magic_portal')
+        const scale = 6.0 / Math.max(0.1, size.x)
+        portal.scale.setScalar(scale)
+        portal.position.set(0, 0, 0.9)
+        gateRegistry.gate.add(portal)
+        gateRegistry.portal.visible = false
+        ;(gateRegistry.halo.material as THREE.SpriteMaterial).opacity = 0.35
+        gateRegistry.halo.position.y = 3.2
+        const glow = new THREE.PointLight('#8a6cff', 10, 16, 2)
+        glow.position.set(0, 3, 2.2)
+        gateRegistry.gate.add(glow)
+        extraLights.push(glow)
+      }
+    }
+  }
+
   function setLightBudget(level: 'full' | 'reduced') {
     lanternLights.forEach((light, index) => {
       light.visible = level === 'full' || index % 2 === 0
@@ -792,5 +955,5 @@ export function createAlleyWorld(
     })
   }
 
-  return { group, update, setLightBudget, dispose }
+  return { group, update, setLightBudget, applyProps, dispose }
 }
