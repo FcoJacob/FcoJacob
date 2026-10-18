@@ -18,11 +18,42 @@ function withoutLocalePrefix(path: string) {
   return path.replace(/\/$/, '').replace(/^\/en(?=\/|$)/, '') || '/'
 }
 
-const isNestedLabsRoute = computed(() => withoutLocalePrefix(route.path) !== '/labs')
+// Immersive labs mount as a fixed fullscreen stage on top of the base layout.
+const immersiveRoutes = ['/labs/wizard-alley', '/labs/dealer-showroom']
 
-const isShowroomRoute = computed(
-  () => withoutLocalePrefix(route.path) === '/labs/dealer-showroom',
-)
+const isNestedLabsRoute = computed(() => withoutLocalePrefix(route.path) !== '/labs')
+const isImmersiveRoute = computed(() => immersiveRoutes.includes(withoutLocalePrefix(route.path)))
+
+const immersiveLabs = computed(() => [
+  {
+    slug: 'wizard-alley',
+    badge: t('labs_alley.badge'),
+    phase: t('labs_alley.phase_badge'),
+    title: t('labs_alley.title'),
+    summary: t('labs_alley.featured_summary'),
+    tags: [t('labs_alley.tag_three'), t('labs_alley.tag_procedural'), t('labs_alley.tag_tryon')],
+    cta: t('labs_alley.enter_cta'),
+    poster: '/labs/wizard-alley/posters/hero-poster.svg',
+    posterAlt: t('labs_alley.poster_alt'),
+    posterCaption: t('labs_alley.poster_caption'),
+  },
+  {
+    slug: 'dealer-showroom',
+    badge: t('labs_showroom.featured_badge'),
+    phase: t('labs_showroom.phase_zero_badge'),
+    title: t('labs_showroom.title'),
+    summary: t('labs_showroom.featured_summary'),
+    tags: [
+      t('labs_showroom.tag_webgl'),
+      t('labs_showroom.tag_scroll'),
+      t('labs_showroom.tag_configurator'),
+    ],
+    cta: t('labs_showroom.enter_cta'),
+    poster: '/labs/dealer-showroom/posters/hero-poster.svg',
+    posterAlt: t('labs_showroom.poster_alt'),
+    posterCaption: t('labs_showroom.poster_caption'),
+  },
+])
 </script>
 
 <template>
@@ -30,7 +61,7 @@ const isShowroomRoute = computed(
     <div
       v-if="isNestedLabsRoute"
       class="labs-nested-route"
-      :class="{ 'labs-nested-route-showroom': isShowroomRoute }"
+      :class="{ 'labs-nested-route-immersive': isImmersiveRoute }"
     >
       <NuxtPage />
     </div>
@@ -38,64 +69,71 @@ const isShowroomRoute = computed(
     <div v-else class="space-y-12">
       <PageHeader eyebrow="Experiments" :title="t('nav.labs')" />
 
-      <UCard
-        v-reveal
-        v-tilt
-        variant="subtle"
-        class="featured-lab-card !overflow-visible"
-      >
-        <div class="grid gap-6 lg:grid-cols-[1.25fr_0.9fr] lg:items-center">
-          <div class="space-y-4">
-            <div class="flex flex-wrap gap-2">
-              <UBadge color="primary" variant="soft" :label="t('labs_showroom.featured_badge')" />
-              <UBadge color="neutral" variant="outline" :label="t('labs_showroom.phase_zero_badge')" />
+      <div class="space-y-6">
+        <UCard
+          v-for="(lab, i) in immersiveLabs"
+          :key="lab.slug"
+          v-reveal="{ delay: i * 0.1 }"
+          v-tilt
+          variant="subtle"
+          class="featured-lab-card !overflow-visible"
+        >
+          <div
+            class="grid gap-6 lg:grid-cols-[1.25fr_0.9fr] lg:items-center"
+            :class="{ 'lg:[&>*:first-child]:order-2': i % 2 === 1 }"
+          >
+            <div class="space-y-4">
+              <div class="flex flex-wrap gap-2">
+                <UBadge color="primary" variant="soft" :label="lab.badge" />
+                <UBadge color="neutral" variant="outline" :label="lab.phase" />
+              </div>
+
+              <div class="space-y-3">
+                <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-highlighted">
+                  {{ lab.title }}
+                </h2>
+                <p class="max-w-2xl text-sm sm:text-base leading-7 text-muted">
+                  {{ lab.summary }}
+                </p>
+              </div>
+
+              <div class="flex flex-wrap gap-2">
+                <UBadge
+                  v-for="tag in lab.tags"
+                  :key="tag"
+                  :label="tag"
+                  color="neutral"
+                  variant="outline"
+                  size="md"
+                />
+              </div>
+
+              <div class="flex flex-wrap gap-3 pt-1">
+                <UButton
+                  :to="localePath(`/labs/${lab.slug}`)"
+                  :label="lab.cta"
+                  icon="i-lucide-arrow-right"
+                  size="lg"
+                />
+              </div>
             </div>
 
-            <div class="space-y-3">
-              <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-highlighted">
-                {{ t('labs_showroom.title') }}
-              </h2>
-              <p class="max-w-2xl text-sm sm:text-base leading-7 text-muted">
-                {{ t('labs_showroom.featured_summary') }}
-              </p>
-            </div>
-
-            <div class="flex flex-wrap gap-2">
-              <UBadge
-                v-for="tag in [t('labs_showroom.tag_webgl'), t('labs_showroom.tag_scroll'), t('labs_showroom.tag_configurator')]"
-                :key="tag"
-                :label="tag"
-                color="neutral"
-                variant="outline"
-                size="md"
-              />
-            </div>
-
-            <div class="flex flex-wrap gap-3 pt-1">
-              <UButton
-                :to="localePath('/labs/dealer-showroom')"
-                :label="t('labs_showroom.enter_cta')"
-                icon="i-lucide-arrow-right"
-                size="lg"
-              />
+            <div class="relative min-h-64 overflow-hidden rounded-2xl border border-white/10 bg-black/30">
+              <img
+                :src="lab.poster"
+                :alt="lab.posterAlt"
+                class="absolute inset-0 size-full object-cover"
+              >
+              <div class="absolute inset-0 bg-linear-to-t from-black/60 via-black/15 to-transparent" />
+              <div class="absolute inset-x-0 bottom-0 p-5">
+                <p class="text-xs font-medium uppercase tracking-[0.24em] text-white/70">
+                  {{ lab.posterCaption }}
+                </p>
+              </div>
             </div>
           </div>
-
-          <div class="relative min-h-64 overflow-hidden rounded-2xl border border-white/10 bg-black/30">
-            <img
-              src="/labs/dealer-showroom/posters/hero-poster.svg"
-              :alt="t('labs_showroom.poster_alt')"
-              class="absolute inset-0 size-full object-cover"
-            >
-            <div class="absolute inset-0 bg-linear-to-t from-black/60 via-black/15 to-transparent" />
-            <div class="absolute inset-x-0 bottom-0 p-5">
-              <p class="text-xs font-medium uppercase tracking-[0.24em] text-white/70">
-                {{ t('labs_showroom.poster_caption') }}
-              </p>
-            </div>
-          </div>
-        </div>
-      </UCard>
+        </UCard>
+      </div>
 
       <div v-if="labs?.length" class="space-y-6">
         <h3 class="text-xl font-semibold tracking-tight text-highlighted">
@@ -144,7 +182,7 @@ const isShowroomRoute = computed(
 </template>
 
 <style scoped>
-.labs-nested-route-showroom {
+.labs-nested-route-immersive {
   position: fixed;
   inset: 0;
   z-index: 80;
