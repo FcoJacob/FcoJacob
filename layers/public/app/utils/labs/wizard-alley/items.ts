@@ -248,9 +248,11 @@ function buildWand(item: AlleyItem) {
 }
 
 /** Generated-model variants: which template each catalog item maps to and whether it is recoloured. */
-const WEARABLE_VARIANTS: Record<string, { name: AlleyWearableName; tint: string | null; lumRef: number }> = {
-  'hat-midnight': { name: 'HAT_pointed', tint: null, lumRef: 0.14 },
-  'hat-plum': { name: 'HAT_pointed', tint: '#6a2d6e', lumRef: 0.14 },
+const WEARABLE_VARIANTS: Record<string, { name: AlleyWearableName; tint: string | null; lumRef: number; scale?: [number, number, number] }> = {
+  // All three hats derive from the wide felt hat (the cleanest generation): the
+  // dark ones are stretched taller and narrower, then recoloured.
+  'hat-midnight': { name: 'HAT_wide', tint: '#232b4a', lumRef: 0.3, scale: [0.84, 1.45, 0.84] },
+  'hat-plum': { name: 'HAT_wide', tint: '#6a2d6e', lumRef: 0.3, scale: [0.8, 1.75, 0.8] },
   'hat-moss': { name: 'HAT_wide', tint: null, lumRef: 0.3 },
   'wand-holly': { name: 'WAND_holly', tint: null, lumRef: 0.45 },
   'wand-elder': { name: 'WAND_holly', tint: '#3b2b24', lumRef: 0.45 },
@@ -268,6 +270,9 @@ function buildFromLibrary(item: AlleyItem): THREE.Group | null {
   }
   const group = new THREE.Group()
   group.add(instance)
+  if (variant.scale) {
+    instance.scale.set(variant.scale[0], variant.scale[1], variant.scale[2])
+  }
   if (item.slot === 'head') {
     // Brim underside sits a touch below the crown so hair tucks under it.
     group.position.y = -0.025

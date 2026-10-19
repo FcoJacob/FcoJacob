@@ -150,7 +150,7 @@ export type AlleyBuildingName =
 export type AlleyBuildingLibrary = PropLibrary<AlleyBuildingName>
 
 /** Window glass on the village houses is pale blue; let it glow faintly at night. */
-const BUILDING_GLOW: GlowSettings = { threshold: 0.6, boost: 0.8 }
+const BUILDING_GLOW: GlowSettings = { threshold: 0.97, boost: 0.35 }
 
 function applyGlow(material: THREE.MeshStandardMaterial, settings: GlowSettings) {
   material.onBeforeCompile = (shader) => {
@@ -281,6 +281,7 @@ export interface RiggedApprentice {
     head: THREE.Bone | null
     neck: THREE.Bone | null
     rightHand: THREE.Bone | null
+    rightForeArm: THREE.Bone | null
     rightArm: THREE.Bone | null
     hips: THREE.Bone | null
     leftShoulder: THREE.Bone | null
@@ -344,6 +345,7 @@ export function loadRiggedApprentice(url = ALLEY_RIGGED_URL): Promise<RiggedAppr
           head: findBone(root, /(^|[:_])head$/i),
           neck: findBone(root, /neck$/i),
           rightHand: findBone(root, /right.?hand$/i),
+          rightForeArm: findBone(root, /right.?fore.?arm$/i),
           rightArm: findBone(root, /right.?arm$/i),
           hips,
           leftShoulder: findBone(root, /left.?shoulder$/i),

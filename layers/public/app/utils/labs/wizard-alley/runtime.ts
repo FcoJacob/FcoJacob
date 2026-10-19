@@ -188,6 +188,10 @@ export function createAlleyRuntime(options: AlleyRuntimeOptions): AlleyRuntime {
   // Dev helper: ?spawnZ=-44 starts the walk deeper in the alley.
   const spawnParam = import.meta.dev ? new URLSearchParams(window.location.search).get('spawnZ') : null
   const spawnZ = spawnParam === null ? Number.NaN : Number(spawnParam)
+  // Dev helper: ?freecam=x,y,z,tx,ty,tz pins the camera for scene inspection.
+  const freecamParam = import.meta.dev ? new URLSearchParams(window.location.search).get('freecam') : null
+  const freecam = freecamParam ? freecamParam.split(',').map(Number) : null
+  const freecamValid = freecam !== null && freecam.length === 6 && freecam.every((value) => Number.isFinite(value))
 
   const sparks = createSparkSystem(textures.glow)
   scene.add(sparks.points)
@@ -897,9 +901,13 @@ export function createAlleyRuntime(options: AlleyRuntimeOptions): AlleyRuntime {
       camera.updateProjectionMatrix()
     }
 
-    camera.position.copy(cameraPosition)
-    camera.lookAt(cameraTarget)
-
+    if (freecamValid && freecam) {
+      camera.position.set(freecam[0] ?? 0, freecam[1] ?? 0, freecam[2] ?? 0)
+      camera.lookAt(freecam[3] ?? 0, freecam[4] ?? 0, freecam[5] ?? 0)
+    } else {
+      camera.position.copy(cameraPosition)
+      camera.lookAt(cameraTarget)
+    }
     if (composer) {
       composer.render()
     } else {

@@ -379,8 +379,18 @@ export function createAvatar(contactShadow: THREE.Texture): AlleyAvatar {
       placeSlot(headSlot, headBone, new THREE.Vector3(0, crownY - (boneWorld.y - groupWorld.y), 0.01), new THREE.Euler(-0.05, 0, 0), 1)
     }
     placeSlot(cloakSlot, model.bones.neck ?? model.bones.head, new THREE.Vector3(0, -0.03, -0.02), new THREE.Euler(0, 0, 0), 0.58)
-    // Wand: along +y of the slot, so tilt it to point forward and up from the palm.
-    placeSlot(wandSlot, model.bones.rightHand, new THREE.Vector3(0, -0.04, -0.03), new THREE.Euler(Math.PI / 2 - 0.4, 0, 0), 1)
+    // Wand: the hand bone starts at the wrist, so step along the forearm
+    // direction to the centre of the closed fist, then point the wand forward/up.
+    const fistOffset = new THREE.Vector3(0, -0.02, 0.01)
+    if (model.bones.rightHand && model.bones.rightForeArm) {
+      const wrist = new THREE.Vector3()
+      const elbow = new THREE.Vector3()
+      model.bones.rightHand.getWorldPosition(wrist)
+      model.bones.rightForeArm.getWorldPosition(elbow)
+      fistOffset.copy(wrist).sub(elbow).normalize().multiplyScalar(0.085)
+      fistOffset.y -= 0.01
+    }
+    placeSlot(wandSlot, model.bones.rightHand, fistOffset, new THREE.Euler(Math.PI / 2 - 0.35, 0, 0), 1)
 
     group.rotation.y = savedYaw
     group.updateMatrixWorld(true)

@@ -970,14 +970,12 @@ export function createAlleyWorld(
     if (buildingsApplied) {
       return
     }
-    const names = library.names()
+    const names = library.names().filter((name) => name !== 'blacksmith')
     if (names.length === 0) {
       return
     }
     buildingsApplied = true
     const BASE_SCALE = 2.05
-    const gapMaterial = new THREE.MeshStandardMaterial({ color: '#2a2320', roughness: 0.95 })
-    disposables.push(gapMaterial)
     let lastName: AlleyBuildingName | null = null
     let fillerIndex = 0
 
@@ -1023,17 +1021,11 @@ export function createAlleyWorld(
         model.rotation.y = entry.side === -1 ? Math.PI / 2 : -Math.PI / 2
         model.position.set(entry.side * (ROW_X + depth / 2 - 0.05), 0, cursor - width / 2)
         group.add(model)
-        // Warm porch light so the house reads at night.
-        const porch = new THREE.PointLight('#ffb66a', 3.2, 7, 2)
-        porch.position.set(entry.side * (ROW_X - 0.7), 2.3, cursor - width / 2)
+        // Warm facade light so the house reads at night (door level + upper floor).
+        const porch = new THREE.PointLight('#ffb66a', 5, 11, 2)
+        porch.position.set(entry.side * (ROW_X - 1.3), 3.0, cursor - width / 2)
         group.add(porch)
         extraLights.push(porch)
-        // Dark party wall behind the house so there is never a hole between rows.
-        const wallHeight = size.y * scale
-        const gapWall = new THREE.Mesh(new THREE.BoxGeometry(0.6, wallHeight, width + 0.2), gapMaterial)
-        gapWall.position.set(entry.side * (ROW_X + 0.3), wallHeight / 2, cursor - width / 2)
-        group.add(gapWall)
-        disposables.push(gapWall.geometry)
         cursor -= width + 0.12
         lastName = name
       }
