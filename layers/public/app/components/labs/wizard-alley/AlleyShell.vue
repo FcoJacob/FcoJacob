@@ -41,6 +41,7 @@ const activeShop = computed(() => {
 const showPrompt = computed(() => !gateOpen.value && mode.value === 'alley' && nearShop.value !== null)
 const showDock = computed(() => mode.value === 'shop' && activeShop.value !== null)
 const lightMode = computed(() => runtimeState.value?.quality === 'low')
+const pointerLocked = computed(() => runtimeState.value?.pointerLocked ?? false)
 
 const slotMeta: Array<{ slot: AlleySlot; icon: string; labelKey: string }> = [
   { slot: 'head', icon: 'i-lucide-crown', labelKey: 'labs_alley.slot_head' },
@@ -254,6 +255,12 @@ onBeforeUnmount(() => {
     </div>
 
     <div class="alley-vignette" aria-hidden="true" />
+    <div
+      v-if="pointerLocked && mode === 'alley'"
+      class="alley-reticle"
+      :class="{ 'is-hot': nearShop !== null }"
+      aria-hidden="true"
+    />
     <div class="alley-fade" :class="{ 'is-active': isTransitioning, 'is-instant': reducedMotion }" aria-hidden="true" />
 
     <!-- Top HUD -->
@@ -310,7 +317,7 @@ onBeforeUnmount(() => {
         <template v-else>
           <span class="alley-hint"><UIcon name="i-lucide-footprints" class="size-3.5" />{{ t('labs_alley.hint_walk') }}</span>
           <span class="alley-hint"><UIcon name="i-lucide-door-open" class="size-3.5" />{{ t('labs_alley.hint_action') }}</span>
-          <span class="alley-hint"><UIcon name="i-lucide-mouse" class="size-3.5" />{{ t('labs_alley.hint_look') }}</span>
+          <span class="alley-hint"><UIcon name="i-lucide-mouse" class="size-3.5" />{{ pointerLocked ? t('labs_alley.hint_unlock') : t('labs_alley.hint_look') }}</span>
         </template>
         <span v-if="lightMode" class="alley-hint alley-hint-muted">{{ t('labs_alley.quality_low') }}</span>
       </div>
@@ -462,6 +469,28 @@ onBeforeUnmount(() => {
   background:
     radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.55) 100%),
     linear-gradient(180deg, rgba(0, 0, 0, 0.25), transparent 22%, transparent 78%, rgba(0, 0, 0, 0.35));
+}
+
+.alley-reticle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 4;
+  width: 0.5rem;
+  height: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.25);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.alley-reticle.is-hot {
+  border-color: var(--alley-gold);
+  background: var(--alley-gold);
+  transform: translate(-50%, -50%) scale(1.4);
+  box-shadow: 0 0 14px var(--alley-gold);
 }
 
 .alley-fade {

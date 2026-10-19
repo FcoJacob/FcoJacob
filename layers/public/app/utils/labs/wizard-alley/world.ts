@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { ALLEY_HALF_WIDTH, ALLEY_LENGTH, type AlleyShop } from './catalog'
-import type { AlleyPropLibrary } from './assets'
+import type { AlleyBuildingLibrary, AlleyBuildingName, AlleyPropLibrary } from './assets'
 import { createItemObject } from './items'
 import { createRandom, createSignTexture, createWindowTexture, type AlleyTextureSet } from './textures'
 
@@ -18,6 +18,8 @@ export interface AlleyWorld {
   setLightBudget(level: 'full' | 'reduced'): void
   /** Swaps procedural stand-ins for the Blender props once the GLB has loaded. */
   applyProps(library: AlleyPropLibrary): void
+  /** Replaces the procedural filler houses with the village buildings. */
+  applyBuildings(library: AlleyBuildingLibrary): void
   dispose(): void
 }
 
@@ -87,7 +89,16 @@ export function createAlleyWorld(
     halo: null,
   }
   const extraLights: THREE.PointLight[] = []
+  const fillerRegistry: Array<{
+    building: THREE.Group
+    side: -1 | 1
+    zStart: number
+    zEnd: number
+    windowStart: number
+    windowEnd: number
+  }> = []
   let propsApplied = false
+  let buildingsApplied = false
   const windowTexture = createWindowTexture()
   disposables.push(windowTexture)
 
@@ -274,9 +285,18 @@ export function createAlleyWorld(
     }
 
     const faceX = side * ROW_X
+    const windowStart = windowMatrices.length
     addWindows(side, faceX - side * jetty, segment.zStart - 0.4, segment.zEnd + 0.4, lowerHeight + 0.5, height - 0.6, 0.62)
     if (!segment.shop) {
       addWindows(side, faceX, segment.zStart - 0.5, segment.zEnd + 0.5, 0.9, lowerHeight - 0.4, 0.35)
+      fillerRegistry.push({
+        building,
+        side,
+        zStart: segment.zStart,
+        zEnd: segment.zEnd,
+        windowStart,
+        windowEnd: windowMatrices.length,
+      })
     } else {
       addStorefront(side, segment.shop, faceX, lowerHeight)
     }
@@ -939,6 +959,94 @@ export function createAlleyWorld(
     }
   }
 
+  const zeroMatrix = new THREE.Matrix4().makeScale(0, 0, 0)
+
+  /**
+   * Packs village houses along every filler segment: pick a building that
+   * fits the remaining length, face it toward the street, nudge its scale so
+   * the row closes without gaps, and park the procedural box + its windows.
+   */
+  function applyBuildings(library: AlleyBuildingLibrary) {
+    if (buildingsApplied) {
+      return
+    }
+    const names = library.names()
+    if (names.length === 0) {
+      return
+    }
+    buildingsApplied = true
+    const BASE_SCALE = 2.05
+    const gapMaterial = new THREE.MeshStandardMaterial({ color: '#2a2320', roughness: 0.95 })
+    disposables.push(gapMaterial)
+    let lastName: AlleyBuildingName | null = null
+    let fillerIndex = 0
+
+    for (const entry of fillerRegistry) {
+      fillerIndex += 1
+      // Keep some of the lit timber houses so the street stays glowing and varied.
+      if (fillerIndex % 3 === 0) {
+        continue
+      }
+      entry.building.visible = false
+      for (let i = entry.windowStart; i < entry.windowEnd; i += 1) {
+        windowsFinal.setMatrixAt(i, zeroMatrix)
+      }
+      let cursor = entry.zStart
+      const end = entry.zEnd
+      let guard = 0
+      while (cursor - end > 1.2 && guard < 8) {
+        guard += 1
+        const remaining = cursor - end
+        // Candidates whose scaled width fits the remaining stretch (allow 18% squash).
+        const candidates = names.filter((name) => {
+          const width = library.size(name).x * BASE_SCALE
+          return name !== lastName && width <= remaining * 1.18
+        })
+        const pool = candidates.length > 0 ? candidates : names.filter((name) => name !== lastName)
+        const name = pool[Math.floor(random() * pool.length)] ?? names[0]
+        if (!name) {
+          break
+        }
+        const size = library.size(name)
+        let scale = BASE_SCALE * (0.94 + random() * 0.12)
+        let width = size.x * scale
+        if (width > remaining) {
+          scale *= remaining / width
+          width = remaining
+        }
+        const model = library.create(name)
+        if (!model) {
+          break
+        }
+        const depth = size.z * scale
+        model.scale.setScalar(scale)
+        model.rotation.y = entry.side === -1 ? Math.PI / 2 : -Math.PI / 2
+        model.position.set(entry.side * (ROW_X + depth / 2 - 0.05), 0, cursor - width / 2)
+        group.add(model)
+        // Warm porch light so the house reads at night.
+        const porch = new THREE.PointLight('#ffb66a', 3.2, 7, 2)
+        porch.position.set(entry.side * (ROW_X - 0.7), 2.3, cursor - width / 2)
+        group.add(porch)
+        extraLights.push(porch)
+        // Dark party wall behind the house so there is never a hole between rows.
+        const wallHeight = size.y * scale
+        const gapWall = new THREE.Mesh(new THREE.BoxGeometry(0.6, wallHeight, width + 0.2), gapMaterial)
+        gapWall.position.set(entry.side * (ROW_X + 0.3), wallHeight / 2, cursor - width / 2)
+        group.add(gapWall)
+        disposables.push(gapWall.geometry)
+        cursor -= width + 0.12
+        lastName = name
+      }
+      if (cursor - end > 0.05) {
+        const filler = new THREE.Mesh(new THREE.BoxGeometry(BUILDING_DEPTH, 6.5, cursor - end), darkWoodMaterial)
+        filler.position.set(entry.side * (ROW_X + BUILDING_DEPTH / 2), 3.25, (cursor + end) / 2)
+        group.add(filler)
+        disposables.push(filler.geometry)
+      }
+    }
+    windowsFinal.instanceMatrix.needsUpdate = true
+  }
+
   function setLightBudget(level: 'full' | 'reduced') {
     lanternLights.forEach((light, index) => {
       light.visible = level === 'full' || index % 2 === 0
@@ -955,5 +1063,5 @@ export function createAlleyWorld(
     })
   }
 
-  return { group, update, setLightBudget, applyProps, dispose }
+  return { group, update, setLightBudget, applyProps, applyBuildings, dispose }
 }

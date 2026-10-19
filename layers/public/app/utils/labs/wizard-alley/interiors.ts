@@ -28,6 +28,8 @@ export interface ShopInterior {
   setVisible(visible: boolean): void
   /** Dresses the room with Blender props once the GLB has loaded. */
   applyProps(library: AlleyPropLibrary): void
+  /** Rebuilds the floating display items (e.g. once generated wearables are available). */
+  refreshDisplays(): void
   dispose(): void
 }
 
@@ -362,6 +364,20 @@ export function createShopInterior(shop: AlleyShop, textures: AlleyTextureSet): 
     group.visible = visible
   }
 
+  function refreshDisplays() {
+    for (const display of displays) {
+      display.pivot.remove(display.object)
+      disposeObject(display.object)
+      const object = createItemObject(display.item)
+      if (display.item.slot === 'wand') {
+        object.rotation.z = Math.PI / 2 - 0.35
+        object.position.set(-0.12, 0, 0)
+      }
+      display.pivot.add(object)
+      display.object = object
+    }
+  }
+
   let propsApplied = false
 
   function applyProps(library: AlleyPropLibrary) {
@@ -448,5 +464,5 @@ export function createShopInterior(shop: AlleyShop, textures: AlleyTextureSet): 
     })
   }
 
-  return { shop, group, displays, standPoint, cameraPosition, cameraTarget, update, setVisible, applyProps, dispose }
+  return { shop, group, displays, standPoint, cameraPosition, cameraTarget, update, setVisible, applyProps, refreshDisplays, dispose }
 }

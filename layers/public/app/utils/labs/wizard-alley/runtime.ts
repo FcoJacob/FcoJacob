@@ -13,10 +13,21 @@ import {
   type AlleyShop,
   type AlleySlot,
 } from './catalog'
-import { loadAlleyProps, type AlleyPropLibrary } from './assets'
+import {
+  loadAlleyBuildings,
+  loadAlleyProps,
+  loadApprenticeModel,
+  loadRiggedApprentice,
+  loadAlleyWearables,
+  type AlleyBuildingLibrary,
+  type AlleyWearableLibrary,
+  type AlleyPropLibrary,
+  type ApprenticeModel,
+  type RiggedApprentice,
+} from './assets'
 import { createAvatar } from './avatar'
 import { createShopInterior, type ShopInterior } from './interiors'
-import { createItemObject } from './items'
+import { createItemObject, setWearableLibrary } from './items'
 import { createSparkSystem } from './spells'
 import { createAlleyTextures, disposeAlleyTextures } from './textures'
 import { createAlleyWorld } from './world'
@@ -43,6 +54,8 @@ export interface AlleyRuntimeState {
   worn: Record<AlleySlot, string | null>
   ready: boolean
   quality: AlleyQuality
+  /** True while the mouse is captured for free look. */
+  pointerLocked: boolean
 }
 
 export type AlleyRuntimeEvent =
@@ -172,6 +185,9 @@ export function createAlleyRuntime(options: AlleyRuntimeOptions): AlleyRuntime {
 
   const avatar = createAvatar(textures.contactShadow)
   scene.add(avatar.group)
+  // Dev helper: ?spawnZ=-44 starts the walk deeper in the alley.
+  const spawnParam = import.meta.dev ? new URLSearchParams(window.location.search).get('spawnZ') : null
+  const spawnZ = spawnParam === null ? Number.NaN : Number(spawnParam)
 
   const sparks = createSparkSystem(textures.glow)
   scene.add(sparks.points)
@@ -179,8 +195,12 @@ export function createAlleyRuntime(options: AlleyRuntimeOptions): AlleyRuntime {
   // Blender props arrive asynchronously; the world renders with primitives
   // meanwhile and swaps them in once the GLB is parsed.
   let propLibrary: AlleyPropLibrary | null = null
+  let apprenticeModel: ApprenticeModel | null = null
+  let riggedApprentice: RiggedApprentice | null = null
+  let buildingLibrary: AlleyBuildingLibrary | null = null
+  let wearableLibrary: AlleyWearableLibrary | null = null
   let assetsSettled = false
-  loadAlleyProps()
+  const propsReady = loadAlleyProps()
     .then((library) => {
       if (disposed) {
         library.dispose()
@@ -193,22 +213,72 @@ export function createAlleyRuntime(options: AlleyRuntimeOptions): AlleyRuntime {
     .catch((error: unknown) => {
       console.warn('[wizard-alley] props failed to load, keeping primitives', error)
     })
-    .finally(() => {
-      assetsSettled = true
-      publishState(true)
+  // Preferred: the skinned, animated apprentice. Fallback: Blender parts. Last: primitives.
+  const apprenticeReady = loadRiggedApprentice()
+    .then((model) => {
+      if (disposed) {
+        model.dispose()
+        return
+      }
+      riggedApprentice = model
+      avatar.applyRiggedModel(model)
     })
+    .catch(async (error: unknown) => {
+      console.warn('[wizard-alley] rigged apprentice unavailable, trying the parts model', error)
+      try {
+        const model = await loadApprenticeModel()
+        if (disposed) {
+          model.dispose()
+          return
+        }
+        apprenticeModel = model
+        avatar.applyModel(model)
+      } catch (fallbackError) {
+        console.warn('[wizard-alley] apprentice model failed to load, keeping primitives', fallbackError)
+      }
+    })
+  const buildingsReady = loadAlleyBuildings()
+    .then((library) => {
+      if (disposed) {
+        library.dispose()
+        return
+      }
+      buildingLibrary = library
+      world.applyBuildings(library)
+    })
+    .catch((error: unknown) => {
+      console.warn('[wizard-alley] buildings failed to load, keeping primitives', error)
+    })
+  const wearablesReady = loadAlleyWearables()
+    .then((library) => {
+      if (disposed) {
+        library.dispose()
+        return
+      }
+      wearableLibrary = library
+      setWearableLibrary(library)
+      interiors.forEach((interior) => interior.refreshDisplays())
+    })
+    .catch((error: unknown) => {
+      console.warn('[wizard-alley] wearables failed to load, keeping primitives', error)
+    })
+  Promise.allSettled([propsReady, apprenticeReady, buildingsReady, wearablesReady]).then(() => {
+    assetsSettled = true
+    publishState(true)
+  })
 
   // ── State ───────────────────────────────────────────────────────────────
   let disposed = false
   let mode: AlleyMode = 'alley'
-  const position = new THREE.Vector2(0, 0) // x across the alley, y along z
+  const position = new THREE.Vector2(0, Number.isFinite(spawnZ) ? THREE.MathUtils.clamp(spawnZ, -(ALLEY_LENGTH - 2), 1) : 0) // x across the alley, y along z
   const velocity = new THREE.Vector2(0, 0)
   const keyInput = { forward: false, back: false, left: false, right: false, run: false }
   const stickInput = new THREE.Vector2(0, 0)
   const moveInput = new THREE.Vector2(0, 0)
   let wheelImpulse = 0
-  let lookX = 0
-  let smoothedLookX = 0
+  let cameraYaw = 0
+  let cameraPitch = 0.2
+  let pointerLocked = false
   let transitionTime = 0
   let activeInterior: ShopInterior | null = null
   let nearShop: AlleyShop | null = null
@@ -245,6 +315,7 @@ export function createAlleyRuntime(options: AlleyRuntimeOptions): AlleyRuntime {
       },
       ready: assetsSettled,
       quality,
+      pointerLocked,
     }
   }
 
@@ -260,7 +331,8 @@ export function createAlleyRuntime(options: AlleyRuntimeOptions): AlleyRuntime {
       previous.worn.head === next.worn.head &&
       previous.worn.cloak === next.worn.cloak &&
       previous.worn.wand === next.worn.wand &&
-      previous.ready === next.ready
+      previous.ready === next.ready &&
+      previous.pointerLocked === next.pointerLocked
     if (unchanged && !force) {
       return
     }
@@ -392,22 +464,45 @@ export function createAlleyRuntime(options: AlleyRuntimeOptions): AlleyRuntime {
     keyInput.run = false
   }
 
-  function handlePointerMove(event: PointerEvent) {
-    const rect = host.getBoundingClientRect()
-    if (event.pointerType === 'mouse' && rect.width > 0 && dragPointerId === null) {
-      lookX = THREE.MathUtils.clamp(((event.clientX - rect.left) / rect.width - 0.5) * 2, -1, 1)
+  function orbit(dx: number, dy: number, sensitivity: number) {
+    cameraYaw -= dx * sensitivity
+    cameraPitch = THREE.MathUtils.clamp(cameraPitch + dy * sensitivity * 0.75, -0.12, 0.8)
+  }
+
+  function handleMouseLook(event: MouseEvent) {
+    if (!pointerLocked || mode !== 'alley') {
+      return
     }
-    if (dragPointerId !== event.pointerId) {
+    orbit(event.movementX, event.movementY, 0.0024)
+  }
+
+  function handlePointerLockChange() {
+    pointerLocked = document.pointerLockElement === host
+    publishState(true)
+  }
+
+  function releasePointerLock() {
+    if (document.pointerLockElement === host) {
+      document.exitPointerLock()
+    }
+  }
+
+  let dragLastY = 0
+
+  function handlePointerMove(event: PointerEvent) {
+    if (dragPointerId !== event.pointerId || pointerLocked) {
       return
     }
     const dx = event.clientX - dragLastX
+    const dy = event.clientY - dragLastY
     dragLastX = event.clientX
-    dragDistance += Math.abs(dx) + Math.abs(event.clientY - dragStartY)
+    dragLastY = event.clientY
+    dragDistance += Math.abs(dx) + Math.abs(dy)
     if (mode === 'shop') {
       shopYawTarget += dx * 0.012
-    } else if (event.pointerType !== 'mouse') {
-      // Touch drag on the scene pans the look-around offset.
-      lookX = THREE.MathUtils.clamp(lookX + dx * 0.004, -1, 1)
+    } else {
+      // Drag (touch or un-captured mouse) orbits the camera.
+      orbit(dx, dy, event.pointerType === 'mouse' ? 0.004 : 0.006)
     }
   }
 
@@ -415,10 +510,15 @@ export function createAlleyRuntime(options: AlleyRuntimeOptions): AlleyRuntime {
     if (event.button !== 0 && event.pointerType === 'mouse') {
       return
     }
+    if (event.pointerType === 'mouse' && mode === 'alley' && !pointerLocked) {
+      // Game-style free look: capture the mouse on the first click.
+      host.requestPointerLock?.()
+    }
     dragPointerId = event.pointerId
     dragStartX = event.clientX
     dragStartY = event.clientY
     dragLastX = event.clientX
+    dragLastY = event.clientY
     dragDistance = 0
     host.setPointerCapture?.(event.pointerId)
   }
@@ -453,18 +553,13 @@ export function createAlleyRuntime(options: AlleyRuntimeOptions): AlleyRuntime {
     }
   }
 
-  function handlePointerLeave() {
-    if (dragPointerId === null) {
-      lookX = 0
-    }
-  }
-
   host.addEventListener('wheel', handleWheel, { passive: false })
   host.addEventListener('pointermove', handlePointerMove)
   host.addEventListener('pointerdown', handlePointerDown)
   host.addEventListener('pointerup', handlePointerUp)
   host.addEventListener('pointercancel', handlePointerUp)
-  host.addEventListener('pointerleave', handlePointerLeave)
+  host.addEventListener('mousemove', handleMouseLook)
+  document.addEventListener('pointerlockchange', handlePointerLockChange)
   window.addEventListener('keydown', handleKeyDown)
   window.addEventListener('keyup', handleKeyUp)
   window.addEventListener('blur', handleWindowBlur)
@@ -526,6 +621,7 @@ export function createAlleyRuntime(options: AlleyRuntimeOptions): AlleyRuntime {
     transitionTime = reducedMotion ? TRANSITION_SWAP : 0
     velocity.set(0, 0)
     wheelImpulse = 0
+    releasePointerLock()
     avatar.setTargetYaw(nearShop.side === 'left' ? -Math.PI / 2 : Math.PI / 2)
     publishState(true)
   }
@@ -559,7 +655,7 @@ export function createAlleyRuntime(options: AlleyRuntimeOptions): AlleyRuntime {
       publishState(true)
       return
     }
-    avatar.equip(item.slot, createItemObject(item))
+    avatar.equip(item.slot, createItemObject(item), item)
     wornItems[item.slot] = item
     avatar.group.updateMatrixWorld(true)
     equipWorldPosition(item.slot, scratch)
@@ -589,15 +685,20 @@ export function createAlleyRuntime(options: AlleyRuntimeOptions): AlleyRuntime {
       moveInput.normalize()
     }
     const speedLimit = WALK_SPEED * (keyInput.run ? RUN_MULTIPLIER : 1)
-    // Forward input walks deeper into the alley (negative z).
-    const targetVx = moveInput.x * speedLimit
-    let targetVz = -moveInput.y * speedLimit
+    // Movement is relative to the camera: forward walks where the camera looks.
+    const forwardX = -Math.sin(cameraYaw)
+    const forwardZ = -Math.cos(cameraYaw)
+    const rightX = Math.cos(cameraYaw)
+    const rightZ = -Math.sin(cameraYaw)
+    let forwardAmount = moveInput.y
     if (Math.abs(wheelImpulse) > 0.01) {
-      targetVz += -wheelImpulse
+      forwardAmount += wheelImpulse / speedLimit
       wheelImpulse *= Math.max(0, 1 - dt * 3.5)
     } else {
       wheelImpulse = 0
     }
+    const targetVx = (forwardX * forwardAmount + rightX * moveInput.x) * speedLimit
+    const targetVz = (forwardZ * forwardAmount + rightZ * moveInput.x) * speedLimit
     const accel = reducedMotion ? 1 : Math.min(1, dt * 9)
     velocity.x += (targetVx - velocity.x) * accel
     velocity.y += (targetVz - velocity.y) * accel
@@ -635,30 +736,22 @@ export function createAlleyRuntime(options: AlleyRuntimeOptions): AlleyRuntime {
     }
     avatar.update(dt, speed, elapsed, reducedMotion)
 
-    smoothedLookX += (lookX - smoothedLookX) * (reducedMotion ? 1 : Math.min(1, dt * 4))
-    const pullBack = Math.min(1.1, Math.abs(velocity.y) * 0.18)
-    if (nearShop) {
-      // Three-quarter framing: camera drifts to the opposite kerb and looks
-      // across the avatar toward the storefront.
-      const proximity = 1 - Math.min(1, nearShopDistance / (SHOP_PROMPT_RANGE + 1.2))
-      const blend = (0.5 + proximity * 0.5) * (isPortrait() ? 0.22 : 1)
-      desiredPosition.set(
-        position.x * 0.5 - shopSide * 2.4 * blend + smoothedLookX * 0.5,
-        2.0,
-        position.y + 3.4 + pullBack,
-      )
-      desiredTarget.set(
-        position.x * 0.5 + shopSide * 2.6 * blend + smoothedLookX * 0.8,
-        1.5,
-        nearShop.z - 1.2 * blend,
-      )
-    } else {
-      desiredPosition.set(position.x * 0.6 + smoothedLookX * 0.9, 2.05, position.y + 3.7 + pullBack)
-      desiredTarget.set(position.x * 0.8 + smoothedLookX * 1.7, 1.2, position.y - 3.6)
-    }
-    const cameraFollow = reducedMotion ? 1 : 1 - Math.exp(-dt * (nearShop ? 3 : 5))
+    // Third-person orbit camera driven by the mouse / drag.
+    const distance = (isPortrait() ? 4.6 : 4.1) + Math.min(0.9, speed * 0.16)
+    const cosPitch = Math.cos(cameraPitch)
+    desiredPosition.set(
+      position.x + Math.sin(cameraYaw) * cosPitch * distance,
+      1.0 + Math.sin(cameraPitch) * distance + 0.6,
+      position.y + Math.cos(cameraYaw) * cosPitch * distance,
+    )
+    // Keep the camera inside the street and above the cobbles.
+    desiredPosition.x = THREE.MathUtils.clamp(desiredPosition.x, -(ALLEY_HALF_WIDTH - 0.5), ALLEY_HALF_WIDTH - 0.5)
+    desiredPosition.y = Math.max(0.55, desiredPosition.y)
+    desiredTarget.set(position.x + forwardX * 1.4, 1.3, position.y + forwardZ * 1.4)
+    const cameraFollow = reducedMotion ? 1 : 1 - Math.exp(-dt * 7)
     cameraPosition.lerp(desiredPosition, cameraFollow)
     cameraTarget.lerp(desiredTarget, cameraFollow)
+    void shopSide
   }
 
   /**
@@ -723,8 +816,17 @@ export function createAlleyRuntime(options: AlleyRuntimeOptions): AlleyRuntime {
     }
     velocity.set(0, 0)
     avatar.group.position.set(position.x, 0, position.y)
-    cameraPosition.set(position.x * 0.6, 2.05, position.y + 3.7)
-    cameraTarget.set(position.x * 0.8, 1.2, position.y - 3.6)
+    // Camera settles behind the apprentice, looking back across the street.
+    const side = activeInterior ? (activeInterior.shop.side === 'left' ? -1 : 1) : 1
+    // Camera sits on the street side of the apprentice, looking at the shopfront.
+    cameraYaw = -side * (Math.PI / 2)
+    cameraPitch = 0.22
+    cameraPosition.set(
+      THREE.MathUtils.clamp(position.x + Math.sin(cameraYaw) * 4, -(ALLEY_HALF_WIDTH - 0.5), ALLEY_HALF_WIDTH - 0.5),
+      2.2,
+      position.y + Math.cos(cameraYaw) * 4,
+    )
+    cameraTarget.set(position.x - Math.sin(cameraYaw) * 1.4, 1.3, position.y - Math.cos(cameraYaw) * 1.4)
     fog.density = 0.03
   }
 
@@ -810,6 +912,11 @@ export function createAlleyRuntime(options: AlleyRuntimeOptions): AlleyRuntime {
   publishState(true)
   tick()
 
+  if (import.meta.dev) {
+    // Dev-only inspection hook for scripted visual checks.
+    ;(window as unknown as { __alleyDebug?: unknown }).__alleyDebug = { avatar, scene, camera, get mode() { return mode } }
+  }
+
   function dispose() {
     disposed = true
     cancelAnimationFrame(frameId)
@@ -819,7 +926,9 @@ export function createAlleyRuntime(options: AlleyRuntimeOptions): AlleyRuntime {
     host.removeEventListener('pointerdown', handlePointerDown)
     host.removeEventListener('pointerup', handlePointerUp)
     host.removeEventListener('pointercancel', handlePointerUp)
-    host.removeEventListener('pointerleave', handlePointerLeave)
+    host.removeEventListener('mousemove', handleMouseLook)
+    document.removeEventListener('pointerlockchange', handlePointerLockChange)
+    releasePointerLock()
     window.removeEventListener('keydown', handleKeyDown)
     window.removeEventListener('keyup', handleKeyUp)
     window.removeEventListener('blur', handleWindowBlur)
@@ -831,6 +940,15 @@ export function createAlleyRuntime(options: AlleyRuntimeOptions): AlleyRuntime {
     disposeAlleyTextures(textures)
     propLibrary?.dispose()
     propLibrary = null
+    apprenticeModel?.dispose()
+    apprenticeModel = null
+    riggedApprentice?.dispose()
+    riggedApprentice = null
+    buildingLibrary?.dispose()
+    buildingLibrary = null
+    setWearableLibrary(null)
+    wearableLibrary?.dispose()
+    wearableLibrary = null
     environment.dispose()
     pmrem.dispose()
     composer?.dispose()

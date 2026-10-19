@@ -245,8 +245,8 @@
     "canvas_label": "Escena 3D del callejón mágico",
     "gate_kicker": "Una noche de compras mágicas",
     "gate_copy": "La calle se construye en tu navegador al abrirla: adoquines, fachadas torcidas, farolas y estrellas, con atrezo traído de Blender. Camina hasta el fondo, entra en las tiendas y deja que una varita te elija.",
-    "gate_hint_desktop": "Flechas o WASD para moverte · Shift para correr · E o Espacio para entrar",
-    "gate_hint_touch": "Joystick para moverte · botón dorado para entrar",
+    "gate_hint_desktop": "Flechas o WASD para moverte · clic y ratón para mirar · Shift corre · E o Espacio para entrar",
+    "gate_hint_touch": "Joystick para moverte · arrastra para mirar · botón dorado para entrar",
     "gate_loading": "Levantando el callejón…",
     "gate_enter": "Empezar el paseo",
     "back_to_labs": "Labs",
@@ -259,8 +259,8 @@
     "prompt_kicker": "Estás delante de",
     "prompt_enter": "Entrar",
     "hint_walk": "Flechas / WASD · Shift corre",
-    "hint_look": "Ratón para mirar",
-    "hint_touch": "Joystick para moverte · arrastra para mirar",
+    "hint_look": "Clic en la escena para mirar con el ratón",
+    "hint_touch": "Joystick para moverte · arrastra para girar la cámara",
     "shop_kicker": "Dentro de la tienda",
     "shop_hint": "Haz clic en un objeto flotante o elígelo en la lista. Arrastra para girar al personaje.",
     "shop_hint_touch": "Toca un objeto flotante o elígelo en la lista. Arrastra para girar al personaje.",
@@ -307,7 +307,8 @@
     "action_next": "Otra",
     "shop_key_cycle": "cambia de pieza",
     "shop_key_turn": "gira",
-    "shop_key_exit": "sale"
+    "shop_key_exit": "sale",
+    "hint_unlock": "Esc libera el ratón"
   },
   "cv": {
     "work": "Experiencia Laboral",

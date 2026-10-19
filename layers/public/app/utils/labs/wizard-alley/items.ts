@@ -1,5 +1,60 @@
 import * as THREE from 'three'
 import type { AlleyItem } from './catalog'
+import type { AlleyWearableLibrary, AlleyWearableName } from './assets'
+
+let wearableLibrary: AlleyWearableLibrary | null = null
+
+/** Once the generated hats and wand are loaded, item builders use them instead of primitives. */
+export function setWearableLibrary(library: AlleyWearableLibrary | null) {
+  wearableLibrary = library
+}
+
+/**
+ * Recolours a textured wearable while keeping its shading: the texel is
+ * reduced to luminance and multiplied by the item colour, so a navy hat can
+ * become plum without losing seams, folds or the band.
+ */
+function tintMaterial(material: THREE.MeshStandardMaterial, hex: string, strength: number, lumRef: number) {
+  const tint = new THREE.Color(hex)
+  material.onBeforeCompile = (shader) => {
+    shader.uniforms.uTint = { value: tint }
+    shader.uniforms.uTintStrength = { value: strength }
+    shader.uniforms.uLumRef = { value: lumRef }
+    shader.fragmentShader = shader.fragmentShader
+      .replace('#include <common>', '#include <common>\nuniform vec3 uTint;\nuniform float uTintStrength;\nuniform float uLumRef;')
+      .replace(
+        '#include <color_fragment>',
+        [
+          '#include <color_fragment>',
+          'float tintLum = dot(diffuseColor.rgb, vec3(0.299, 0.587, 0.114));',
+          'vec3 tinted = uTint * clamp(tintLum / max(uLumRef, 0.02), 0.0, 1.8);',
+          'diffuseColor.rgb = mix(diffuseColor.rgb, tinted, uTintStrength);',
+        ].join('\n'),
+      )
+  }
+  material.customProgramCacheKey = () => `alley-tint-${hex}-${strength}-${lumRef}`
+  material.needsUpdate = true
+}
+
+function createWearableInstance(name: AlleyWearableName, tint: string | null, lumRef: number) {
+  if (!wearableLibrary?.has(name)) {
+    return null
+  }
+  const instance = wearableLibrary.create(name)
+  if (!instance) {
+    return null
+  }
+  instance.traverse((child) => {
+    if (child instanceof THREE.Mesh) {
+      const material = (child.material as THREE.MeshStandardMaterial).clone()
+      if (tint) {
+        tintMaterial(material, tint, 0.85, lumRef)
+      }
+      child.material = material
+    }
+  })
+  return instance
+}
 
 /**
  * Procedural wearables. Each builder returns a group whose origin matches the
@@ -85,6 +140,7 @@ function buildHat(item: AlleyItem) {
 
   // Lift slightly so the brim sits on the hair instead of cutting through it.
   group.position.y = -0.03
+  group.scale.setScalar(0.65)
   return group
 }
 
@@ -99,7 +155,7 @@ function buildCloak(item: AlleyItem) {
   const trim = brassMaterial(item.accent)
 
   const height = 1.14
-  const shell = new THREE.CylinderGeometry(0.27, 0.54, height, 36, 6, true)
+  const shell = new THREE.CylinderGeometry(0.4, 0.62, height, 36, 6, true)
   shell.translate(0, -height / 2 + 0.02, 0)
   // Let the back fall longer and flare so it reads as fabric, not a tube.
   const position = shell.attributes.position
@@ -121,13 +177,13 @@ function buildCloak(item: AlleyItem) {
   }
   group.add(new THREE.Mesh(shell, velvet))
 
-  const collar = new THREE.Mesh(new THREE.TorusGeometry(0.22, 0.045, 12, 32), velvet)
+  const collar = new THREE.Mesh(new THREE.TorusGeometry(0.21, 0.05, 12, 32), velvet)
   collar.rotation.x = Math.PI / 2
   collar.position.y = 0.03
   group.add(collar)
 
   if (item.variant === 'trim') {
-    const hem = new THREE.Mesh(new THREE.TorusGeometry(0.53, 0.015, 8, 48), trim)
+    const hem = new THREE.Mesh(new THREE.TorusGeometry(0.61, 0.015, 8, 48), trim)
     hem.rotation.x = Math.PI / 2
     hem.position.y = -height + 0.04
     group.add(hem)
@@ -186,13 +242,48 @@ function buildWand(item: AlleyItem) {
   tip.name = 'wand-tip'
   tip.position.y = length + 0.01
   group.add(tip)
+  group.scale.setScalar(0.9)
 
   return group
 }
 
+/** Generated-model variants: which template each catalog item maps to and whether it is recoloured. */
+const WEARABLE_VARIANTS: Record<string, { name: AlleyWearableName; tint: string | null; lumRef: number }> = {
+  'hat-midnight': { name: 'HAT_pointed', tint: null, lumRef: 0.14 },
+  'hat-plum': { name: 'HAT_pointed', tint: '#6a2d6e', lumRef: 0.14 },
+  'hat-moss': { name: 'HAT_wide', tint: null, lumRef: 0.3 },
+  'wand-holly': { name: 'WAND_holly', tint: null, lumRef: 0.45 },
+  'wand-elder': { name: 'WAND_holly', tint: '#3b2b24', lumRef: 0.45 },
+  'wand-vine': { name: 'WAND_holly', tint: '#8a5a36', lumRef: 0.45 },
+}
+
+function buildFromLibrary(item: AlleyItem): THREE.Group | null {
+  const variant = WEARABLE_VARIANTS[item.id]
+  if (!variant) {
+    return null
+  }
+  const instance = createWearableInstance(variant.name, variant.tint, variant.lumRef)
+  if (!instance) {
+    return null
+  }
+  const group = new THREE.Group()
+  group.add(instance)
+  if (item.slot === 'head') {
+    // Brim underside sits a touch below the crown so hair tucks under it.
+    group.position.y = -0.025
+  } else if (item.slot === 'wand') {
+    const tip = new THREE.Object3D()
+    tip.name = 'wand-tip'
+    tip.position.y = 0.34
+    group.add(tip)
+  }
+  return group
+}
+
 export function createItemObject(item: AlleyItem): THREE.Group {
+  const fromLibrary = buildFromLibrary(item)
   const object =
-    item.slot === 'head' ? buildHat(item) : item.slot === 'cloak' ? buildCloak(item) : buildWand(item)
+    fromLibrary ?? (item.slot === 'head' ? buildHat(item) : item.slot === 'cloak' ? buildCloak(item) : buildWand(item))
   object.name = `item:${item.id}`
   object.traverse((child) => {
     child.userData.itemId = item.id

@@ -245,8 +245,8 @@
     "canvas_label": "3D scene of the magical alley",
     "gate_kicker": "A night of magical shopping",
     "gate_copy": "The whole street is built in your browser the moment you open it: cobblestones, crooked facades, lanterns and stars, dressed with props brought in from Blender. Walk to the far end, step into the shops and let a wand choose you.",
-    "gate_hint_desktop": "Arrows or WASD to move · Shift to run · E or Space to enter",
-    "gate_hint_touch": "Joystick to move · gold button to enter",
+    "gate_hint_desktop": "Arrows or WASD to move · click and mouse to look · Shift runs · E or Space to enter",
+    "gate_hint_touch": "Joystick to move · drag to look · gold button to enter",
     "gate_loading": "Raising the alley…",
     "gate_enter": "Start walking",
     "back_to_labs": "Labs",
@@ -259,8 +259,8 @@
     "prompt_kicker": "You are standing in front of",
     "prompt_enter": "Enter",
     "hint_walk": "Arrows / WASD · Shift runs",
-    "hint_look": "Mouse to look around",
-    "hint_touch": "Joystick to move · drag to look",
+    "hint_look": "Click the scene to look with the mouse",
+    "hint_touch": "Joystick to move · drag to turn the camera",
     "shop_kicker": "Inside the shop",
     "shop_hint": "Click a floating item or pick one from the list. Drag to turn the character.",
     "shop_hint_touch": "Tap a floating item or pick one from the list. Drag to turn the character.",
@@ -307,7 +307,8 @@
     "action_next": "Next",
     "shop_key_cycle": "next item",
     "shop_key_turn": "turn",
-    "shop_key_exit": "leave"
+    "shop_key_exit": "leave",
+    "hint_unlock": "Esc releases the mouse"
   },
   "cv": {
     "work": "Work Experience",
