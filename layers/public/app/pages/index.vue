@@ -23,15 +23,17 @@ const basics = computed(() => cv.value?.basics)
 const skills = computed(() => cv.value?.skills ?? [])
 const work = computed(() => cv.value?.work ?? [])
 
-// Years of experience: earliest tech-related role, excluding the
-// consolidated military service entry (not relevant to a dev career stat).
+// Years of experience: counted from the start of the dev career (freelance
+// and early roles not listed in the CV timeline), or from the earliest
+// tech-related CV role if that is older. The military service entry is
+// excluded (not relevant to a dev career stat).
+const CAREER_START = '2018-10'
 const NON_TECH_WORK_NAMES = ['Fuerzas Armadas Españolas', 'Spanish Armed Forces']
 const experienceYears = computed(() => {
   const techWork = work.value.filter((w: any) => !NON_TECH_WORK_NAMES.includes(w.name))
-  if (!techWork.length) return 0
   const earliest = techWork.reduce(
     (min: string, w: any) => (w.startDate < min ? w.startDate : min),
-    techWork[0].startDate,
+    CAREER_START,
   )
   const [y, m] = earliest.split('-').map(Number)
   const start = new Date(y, (m || 1) - 1, 1).getTime()
