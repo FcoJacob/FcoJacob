@@ -36,7 +36,7 @@ const experienceYears = computed(() => {
     CAREER_START,
   )
   const [y, m] = earliest.split('-').map(Number)
-  const start = new Date(y, (m || 1) - 1, 1).getTime()
+  const start = new Date(y ?? 2018, (m || 1) - 1, 1).getTime()
   const years = (Date.now() - start) / (1000 * 60 * 60 * 24 * 365.25)
   return Math.floor(years)
 })
@@ -46,7 +46,10 @@ const topProjects = computed(() =>
     .sort((a: any, b: any) => Number(b.isActive) - Number(a.isActive))
     .slice(0, 3),
 )
-const projectsCount = computed(() => projects.value?.length ?? 0)
+// Delivered projects: the Convex list only holds the showcased ones, so the
+// counter never drops below the real delivered total.
+const DELIVERED_PROJECTS_MIN = 20
+const projectsCount = computed(() => Math.max(projects.value?.length ?? 0, DELIVERED_PROJECTS_MIN))
 
 // Structured data: Person + WebSite for search engines
 useHead(() => ({
