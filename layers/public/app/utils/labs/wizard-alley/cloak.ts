@@ -19,6 +19,26 @@ export interface CloakCollider {
   radius: number
 }
 
+/** Capsule from `a` to `b` (world space) used for torso and legs. */
+export interface CloakCapsule {
+  a: THREE.Vector3
+  b: THREE.Vector3
+  radius: number
+}
+
+/**
+ * Body frame for the half-space rule: nothing below the collar may cross in
+ * front of the plane through `origin` facing `forward`, which keeps the cloak
+ * on the wearer's back when they turn or stop abruptly.
+ */
+export interface CloakBody {
+  capsules: CloakCapsule[]
+  origin: THREE.Vector3
+  forward: THREE.Vector3
+  /** Allowed forward reach beyond the origin plane (metres). */
+  frontLimit: number
+}
+
 export interface ClothCloak {
   object: THREE.Group
   /**
@@ -26,7 +46,7 @@ export interface ClothCloak {
    * `forward` / `right` the wearer's horizontal axes (unit vectors).
    */
   setAnchors(neck: THREE.Vector3, forward: THREE.Vector3, right: THREE.Vector3): void
-  update(dt: number, colliders: CloakCollider[], velocity: THREE.Vector3, reducedMotion: boolean): void
+  update(dt: number, colliders: CloakCollider[], velocity: THREE.Vector3, reducedMotion: boolean, body?: CloakBody): void
   dispose(): void
 }
 
@@ -202,7 +222,7 @@ export function createClothCloak(style: CloakStyle, shoulderSpan = 0.36, length 
   }
 
   function integrate(windX: number, windY: number, windZ: number) {
-    const damping = 0.985
+    const damping = 0.972
     for (let i = 0; i < count; i += 1) {
       if (pinned[i]) continue
       const ix = i * 3
@@ -221,8 +241,31 @@ export function createClothCloak(style: CloakStyle, shoulderSpan = 0.36, length 
     }
   }
 
-  function satisfy(colliders: CloakCollider[]) {
-    for (let iteration = 0; iteration < 5; iteration += 1) {
+  const closest = new THREE.Vector3()
+  const segment = new THREE.Vector3()
+  const particle = new THREE.Vector3()
+
+  function pushOutOfCapsule(ix: number, capsule: CloakCapsule) {
+    particle.set(positions[ix]!, positions[ix + 1]!, positions[ix + 2]!)
+    segment.subVectors(capsule.b, capsule.a)
+    const lengthSq = segment.lengthSq()
+    let t = lengthSq > 0 ? particle.clone().sub(capsule.a).dot(segment) / lengthSq : 0
+    t = THREE.MathUtils.clamp(t, 0, 1)
+    closest.copy(capsule.a).addScaledVector(segment, t)
+    const dx = particle.x - closest.x
+    const dy = particle.y - closest.y
+    const dz = particle.z - closest.z
+    const distance = Math.hypot(dx, dy, dz)
+    if (distance < capsule.radius && distance > 0.0001) {
+      const push = (capsule.radius - distance) / distance
+      positions[ix] = particle.x + dx * push
+      positions[ix + 1] = particle.y + dy * push
+      positions[ix + 2] = particle.z + dz * push
+    }
+  }
+
+  function satisfy(colliders: CloakCollider[], body?: CloakBody) {
+    for (let iteration = 0; iteration < 7; iteration += 1) {
       for (let c = 0; c < constraints.length; c += 1) {
         const [a, b, rest] = constraints[c]!
         const ax = a * 3
@@ -248,6 +291,21 @@ export function createClothCloak(style: CloakStyle, shoulderSpan = 0.36, length 
       for (let i = 0; i < count; i += 1) {
         if (pinned[i]) continue
         const ix = i * 3
+        if (body) {
+          for (const capsule of body.capsules) {
+            pushOutOfCapsule(ix, capsule)
+          }
+          // Half-space: stay behind the wearer (collar rows get a little slack).
+          const row = Math.floor(i / COLS)
+          const limit = body.frontLimit + (row < 2 ? 0.06 : 0)
+          const dx = positions[ix]! - body.origin.x
+          const dz = positions[ix + 2]! - body.origin.z
+          const depth = dx * body.forward.x + dz * body.forward.z
+          if (depth > limit) {
+            positions[ix] = positions[ix]! - body.forward.x * (depth - limit)
+            positions[ix + 2] = positions[ix + 2]! - body.forward.z * (depth - limit)
+          }
+        }
         for (const collider of colliders) {
           const dx = positions[ix]! - collider.center.x
           const dy = positions[ix + 1]! - collider.center.y
@@ -267,7 +325,7 @@ export function createClothCloak(style: CloakStyle, shoulderSpan = 0.36, length 
     }
   }
 
-  function update(dt: number, colliders: CloakCollider[], velocity: THREE.Vector3, reducedMotion: boolean) {
+  function update(dt: number, colliders: CloakCollider[], velocity: THREE.Vector3, reducedMotion: boolean, body?: CloakBody) {
     if (!initialised || reducedMotion) {
       snapToAnchors()
       geometry.computeVertexNormals()
@@ -286,7 +344,7 @@ export function createClothCloak(style: CloakStyle, shoulderSpan = 0.36, length 
       accumulator -= STEP
       applyPins()
       integrate(windX, 0, windZ)
-      satisfy(colliders)
+      satisfy(colliders, body)
     }
     geometry.computeVertexNormals()
     positionAttribute.needsUpdate = true

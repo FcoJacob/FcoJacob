@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import type { AlleyItem, AlleySlot } from './catalog'
 import { disposeObject } from './items'
 import type { ApprenticeModel, RiggedApprentice } from './assets'
-import { createClothCloak, type CloakCollider, type ClothCloak } from './cloak'
+import { createClothCloak, type CloakBody, type CloakCollider, type ClothCloak } from './cloak'
 
 /**
  * Third-person apprentice built from primitives with a procedural walk cycle.
@@ -309,7 +309,15 @@ export function createAvatar(contactShadow: THREE.Texture): AlleyAvatar {
   const colliderHips = { center: new THREE.Vector3(), radius: 0.17 }
   const colliderChest = { center: new THREE.Vector3(), radius: 0.17 }
   const colliderHead = { center: new THREE.Vector3(), radius: 0.12 }
-  const colliders: CloakCollider[] = [colliderHips, colliderChest, colliderHead]
+  const colliders: CloakCollider[] = [colliderHead]
+  const torsoCapsule = { a: new THREE.Vector3(), b: new THREE.Vector3(), radius: 0.2 }
+  const legsCapsule = { a: new THREE.Vector3(), b: new THREE.Vector3(), radius: 0.17 }
+  const clothBody: CloakBody = {
+    capsules: [torsoCapsule, legsCapsule],
+    origin: new THREE.Vector3(),
+    forward: new THREE.Vector3(0, 0, 1),
+    frontLimit: -0.04,
+  }
   let mixer: THREE.AnimationMixer | null = null
   let idleAction: THREE.AnimationAction | null = null
   let walkAction: THREE.AnimationAction | null = null
@@ -475,11 +483,20 @@ export function createAvatar(contactShadow: THREE.Texture): AlleyAvatar {
         colliderHead.center.copy(clothNeck)
         colliderHead.center.y += 0.15
       }
+      // Body capsules: torso from hips to collar, legs from hips to the ground.
+      torsoCapsule.a.copy(colliderHips.center)
+      torsoCapsule.b.copy(clothNeck)
+      torsoCapsule.b.y += 0.04
+      legsCapsule.a.copy(colliderHips.center)
+      legsCapsule.b.copy(colliderHips.center)
+      legsCapsule.b.y = 0.05
+      clothBody.origin.copy(colliderHips.center)
+      clothBody.forward.copy(clothForward)
       group.getWorldPosition(clothVelocity)
       const dtSafe = Math.max(dt, 0.001)
       clothVelocity.sub(lastGroupPosition).divideScalar(dtSafe)
       group.getWorldPosition(lastGroupPosition)
-      cloth.update(dt, colliders, clothVelocity, reducedMotion)
+      cloth.update(dt, colliders, clothVelocity, reducedMotion, clothBody)
     }
 
     // Presentation pose: lift the wand arm after the mixer has posed the rig.

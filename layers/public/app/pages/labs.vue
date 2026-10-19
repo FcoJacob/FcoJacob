@@ -67,7 +67,7 @@ const immersiveLabs = computed(() => [
     </div>
 
     <div v-else class="space-y-12">
-      <PageHeader eyebrow="Experiments" :title="t('nav.labs')" />
+      <PageHeader eyebrow="AI · 3D" :title="t('nav.labs')" :subtitle="t('common.labs_subtitle')" />
 
       <div class="space-y-6">
         <UCard
